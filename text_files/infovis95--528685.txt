@@ -1,0 +1,17 @@
+The information mural: a technique for displaying and navigating large information spaces.
+
+Visualizations which depict entire information spaces provide
+context for navigation and browsing tasks; however, the limited size of
+the display screen makes creating effective global views difficult. We
+have developed a technique for displaying and navigating large
+information spaces. The key concept is the use of an information mural,
+a two-dimensional reduced representation of an entire information space
+that fits completely within a display window or screen. Information
+murals use grayscale shading and color along with anti-aliasing
+techniques to create a miniature version of the entire data set. By
+incorporating navigational capabilities, information murals become a
+tool that can be used as a global view along with more detailed
+informational displays. Information murals are utilized in our software
+visualization research to help depict the execution of object-oriented
+programs, and can also be used in more general information visualization
+applications.

@@ -1,0 +1,12 @@
+Managing software with new visual representations.
+
+Managing large projects is a very challenging task requiring
+the tracking and scheduling of many resources. Although new technologies
+have made it possible to automatically collect data on project
+resources, it is very difficult to access this data because of its size
+and lack of structure. We present three novel glyphs for simplifying
+this process and apply them to visualizing statistics from a
+multi-million line software project. These glyphs address four important
+needs in project management: viewing time dependent data; managing large
+data volumes; dealing with diverse data types; and correspondence of
+data to real-world concepts.

@@ -1,0 +1,3 @@
+Interactive information visualization of a million items.
+
+ Existing information visualization techniques are usually limited to the display of a few thousand items. This article describes new interactive techniques capable of handling a million items (effectively visible and manageable on screen). We evaluate the use of hardware-based techniques available with newer graphics cards, as well as new animation techniques and non-standard graphical features such as stereovision and overlap count. These techniques have been applied to two popular information visualizations: treemaps and scatter plot diagrams; but are generic enough to be applied to other 2D representations as well.

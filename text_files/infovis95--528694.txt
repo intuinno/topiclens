@@ -1,0 +1,8 @@
+Case study. A WWW viewpoint on scientific visualization: an EPA case study for technology transfer.
+
+The paper examines how to provide scientific visualization
+capabilities to environmental scientists, policy analysts and decision
+makers with personal computers (PCs) on their desktops. An approach for
+using the World Wide Web (WWW) for disseminating knowledge on scientific
+visualization and for intelligent access to visualization capabilities
+on high performance (UNIX) workstations is outlined.

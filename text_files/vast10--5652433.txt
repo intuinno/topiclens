@@ -1,0 +1,19 @@
+Improving the visual analysis of high-dimensional datasets using quality measures.
+
+Modern visualization methods are needed to cope with very
+high-dimensional data. Efficient visual analytical techniques are
+required to extract the information content in these data. The large
+number of possible projections for each method, which usually grow
+quadrat-ically or even exponentially with the number of dimensions,
+urges the necessity to employ automatic reduction techniques,
+automatic sorting or selecting the projections, based on their
+information-bearing content. Different quality measures have been
+successfully applied for several specified user tasks and established
+visualization techniques, like Scatterplots, Scatterplot Matrices or
+Parallel Coordinates. Many other popular visualization techniques
+exist, but due to the structural differences, the measures are not
+directly applicable to them and new approaches are needed. In this
+paper we propose new quality measures for three popular visualization
+methods: Radviz, Pixel-Oriented Displays and Table Lenses. Our
+experiments show that these measures efficiently guide the visual
+analysis task.

@@ -1,0 +1,19 @@
+Model space visualization for multivariate linear trend discovery.
+
+Discovering and extracting linear trends and correlations in
+datasets is very important for analysts to understand multivariate
+phenomena. However, current widely used multivariate visualization
+techniques, such as parallel coordinates and scatterplot matrices, fail
+to reveal and illustrate such linear relationships intuitively,
+especially when more than 3 variables are involved or multiple trends
+coexist in the dataset. We present a novel multivariate model parameter
+space visualization system that helps analysts discover single and
+multiple linear patterns and extract subsets of data that fit a model
+well. Using this system, analysts are able to explore and navigate in
+model parameter space, interactively select and tune patterns, and
+refine the model for accuracy using computational techniques. We build
+connections between model space and data space visually, allowing
+analysts to employ their domain knowledge during exploration to better
+interpret the patterns they discover and their validity. Case studies
+with real datasets are used to investigate the effectiveness of the
+visualizations.

@@ -1,0 +1,17 @@
+Coordinating declarative queries with a direct manipulation data exploration environment.
+
+Interactive visualization techniques allow data exploration to
+be a continuous process, rather than a discrete sequence of queries and
+results as in traditional database systems. However limitations in
+expressive power of current visualization systems force users to go
+outside the system and form a new dataset in order to perform certain
+operations, such as those involving the relationship among multiple
+objects. Further, there is no support for integrating data from the new
+dataset into previous visualizations, so users must recreate them.
+Visage's information centric paradigm provides an architectural hook for
+linking data across multiple queries, removing this overhead. This paper
+describes the addition to Visage of a visual query language, called VQE,
+which allows users to express more complicated queries than in previous
+interactive visualization systems. Visualizations can be created from
+queries and vice versa. When either is updated, the other changes to
+maintain consistency.

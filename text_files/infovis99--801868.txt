@@ -1,0 +1,3 @@
+The sunflower visual metaphor, a new paradigm for dimensional compression.
+
+This paper introduces the Sunflower visual metaphor for information visualization. The visual metaphor is presented as an alternative to current techniques of dimensional compression and the visualization tools that employ them. The paper discusses the motivation for the Sunflower paradigm, its implementation and critical factors for producing an effective visualization. A primary driver in this research effort has been to develop a visualization tool that facilitates browsing, knowledge discovery, and that supports learning through sense making and integration of new information

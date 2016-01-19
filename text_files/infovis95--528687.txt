@@ -1,0 +1,26 @@
+VRMosaic: WEB access from within a virtual environment.
+
+Virtual reality can aid in designing large and complex
+structures such as ships, skyscrapers, factories, and aircraft. But
+before VR can realize this potential, we need to solve a number of
+problems. One of these problems: the user's need to see and interact
+with non-geometric information is examined. Our VR environment,
+RealEyes, can display large-scale and detailed geometry at reasonable
+frame rates (>20 Hz) allowing a user to see and navigate within a design
+from a first person perspective. However, much (if not most) of the
+information associated with a particular design has no geometric
+representation. This includes information such as schematics of
+electrical, hydraulic, and plumbing systems; information describing
+materials or processes; and descriptive (textual) information of other
+types. Many researchers have developed a wealth of techniques for
+presenting such data on flat-screen displays, but until recently, we
+have not had a means for naturally displaying such information within a
+VR environment. To make non-geometric data more available, we have
+implemented a version of Mosaic that functions within a fully immersive
+VR system. Our system, VRMosaic, allows a user of VR to access and
+display most of the data available using flat screen Mosaic. Moreover,
+we have made it extensible to allow for the seamless integration of
+specialized forms of data and interaction. This paper describes how we
+implemented VRMosaic using a VR-capable version of Interviews, It also
+describes some Mosaic-like uses of that system and some
+"non-Mosaic-like" extensions.

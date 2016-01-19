@@ -1,0 +1,12 @@
+On the semantics of interactive visualizations.
+
+Interactive techniques are powerful tools for manipulating
+visualizations to analyze, communicate and acquire information. This is
+especially true for large data sets or complex 3D visualizations.
+Although many new types of interaction have been introduced recently,
+very little work has been done on understanding what their components
+are, how they are related and how they can be combined. This paper
+begins to address these issues with a framework for classifying
+interactive visualizations. Our goal is a framework that will enable us
+to develop toolkits for assembling visualization interfaces both
+interactively and automatically

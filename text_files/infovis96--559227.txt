@@ -1,0 +1,15 @@
+Visualizing usability log data.
+
+Our approach to testing graphical user interfaces involves
+logging large amounts of data. These logs capture information at the key
+press and mouse click level about how an application is used. Since the
+raw data is voluminous and not at a useful level of detail, we use
+analysis and visualization to find information that is interesting and
+useful to a usability analyst but was previously buried in the data. We
+call some of our custom visualizations ?contextual? meaning they use key
+elements of the context the data was collected in as an organizing
+structure. We expect this type of visualization to be easier and faster
+to understand and more helpful than traditional charts. We hope that our
+finding a natural geometry for these visualizations will inspire others
+whose data apparently has no inherent geometry to find natural ways to
+visualize their data

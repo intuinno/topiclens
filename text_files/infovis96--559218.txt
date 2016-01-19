@@ -1,0 +1,14 @@
+Towards rich information landscapes for visualising structured Web spaces.
+
+The Harmony browser for the Hyper-G Web server utilises
+Hyper-G's rich data model to provide a number of tightly-coupled, two-
+and three-dimensional visualisation and navigational facilities. In
+particular the Harmony Information Landscape visualises the hierarchical
+structure of Hyper-G spaces upon a plane in three-dimensional space. The
+Harmony Information Landscape has now been extended to display a
+combined structure and link map by selectively superimposing hyperlink
+relationships in the vertical dimension above and below the hierarchy
+map. In addition, documents returned by search queries may be
+selectively ?plotted? in the landscape, indicating their whereabouts in
+a broader context, and several sets of 3D icons are available for
+representing the various document types

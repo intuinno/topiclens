@@ -1,0 +1,8 @@
+Metrics for effective information visualization.
+
+Metrics for information visualization will help designers
+create and evaluate 3D information visualizations. Based on experience
+from 60+ 3D information visualizations, the metrics we propose are:
+number of data points and data density; number of dimensions and
+cognitive overhead; occlusion percentage; and reference context and
+percentage of identifiable points.

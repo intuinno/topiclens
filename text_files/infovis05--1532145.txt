@@ -1,0 +1,3 @@
+A note on space-filling visualizations and space-filling curves.
+
+ A recent line of treemap research has focused on layout algorithms that optimize properties such as stability, preservation of ordering information, and aspect ratio of rectangles. No ideal treemap layout algorithm has been found, and so it is natural to explore layouts that produce nonrectangular regions. This note describes a connection between space-filling visualizations and the mathematics of space-filling curves, and uses that connection to characterize a family of layout algorithms which produce nonrectangular regions but enjoy geometric continuity under changes to the data and legibility even for highly unbalanced trees.

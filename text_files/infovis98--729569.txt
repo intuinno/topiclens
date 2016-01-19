@@ -1,0 +1,11 @@
+BiblioMapper: a cluster-based information visualization technique .
+
+        The purpose of the paper is to develop a visualization system
+of a document space, called BiblioMapper, for CISI collections, one of
+the bibliographic databases available on the Internet. The major
+function of BiblioMapper is to visualize the document space with a
+cluster-based visualization technique. The cluster-based visualization
+technique assembles a set of documents according to semantic
+similarities. One advantage of this technique is that users are able to
+focus on and assess each cluster and the documents which the cluster
+comprises according to their information needs

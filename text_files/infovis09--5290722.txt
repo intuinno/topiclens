@@ -1,0 +1,12 @@
+Participatory Visualization with Wordle.
+
+We discuss the design and usage of ldquoWordle,rdquo a
+Web-based tool for visualizing text. Wordle creates tag-cloud-like
+displays that give careful attention to typography, color, and
+composition. We describe the algorithms used to balance various
+aesthetic criteria and create the distinctive Wordle layouts. We then
+present the results of a study of Wordle usage, based both on
+spontaneous behaviour observed in the wild, and on a large-scale survey
+of Wordle users. The results suggest that Wordles have become a kind of
+medium of expression, and that a ldquoparticipatory culturerdquo has
+arisen around them.

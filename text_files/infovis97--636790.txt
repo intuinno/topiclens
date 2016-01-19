@@ -1,0 +1,9 @@
+Design and evaluation of incremental data structures and algorithms for dynamic query interfaces.
+
+A dynamic query interface (DQI) is a database access mechanism
+that provides continuous real-time feedback to the user during query
+formulation. Previous work shows that DQIs are elegant and powerful
+interfaces to small databases. Unfortunately, when applied to large
+databases, previous DQI algorithms slow to a crawl. We present a new
+incremental approach to DQI algorithms and display updates that work
+well with large databases, both in theory and in practice.

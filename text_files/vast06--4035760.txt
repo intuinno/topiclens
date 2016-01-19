@@ -1,0 +1,3 @@
+Visualizing the Performance of Computational Linguistics Algorithms.
+
+We have built a visualization system and analysis portal for evaluating the performance of computational linguistics algorithms. Our system focuses on algorithms that classify and cluster documents by assigning weights to words and scoring each document against high dimensional reference concept vectors. The visualization and algorithm analysis techniques include confusion matrices, ROC curves, document visualizations showing word importance, and interactive reports. One of the unique aspects of our system is that the visualizations are thin-client Web-based components built using SVG visualization components

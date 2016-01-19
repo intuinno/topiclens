@@ -1,0 +1,13 @@
+Towards a generative theory of diagram design.
+
+We describe the theoretical background for AVE, an automatic
+visualization engine for semantic networks. We have a functional notion
+of aesthetics and therefore understand meaningfulness as a central issue
+for information visualization. This implies that the diagrams should
+communicate the characteristics of the data as effectively as possible.
+In this generative theory of diagram design, we include data
+characterization, systematic use of graphical means of expression and
+the combination of graphical means of expression. After giving a brief
+introduction and an application scenario we discuss these aspects in
+detail. Finally, a process model of an automatic visualization process
+is sketched and directions for further research are outlined.

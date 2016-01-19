@@ -1,0 +1,17 @@
+Research report: information animation applications in the capital markets.
+
+3D computer graphics can be extremely expressive. It is
+possible to display an entire securities market, like the S&P 500, on a
+single screen. With the correct approach to the visual design of the
+layout, these massive amounts of information can be quickly and easily
+comprehended by a human observer. By using motion and animated
+interaction, it is possible to use 3D as a reliable, accurate and
+precise decision-support tool. Information animation applications are
+particularly suited to the securities industry because that is where we
+find huge amounts of data, the value of which declines rapidly with
+time, and where critical decisions are being made on this data in very
+short periods of time. Information animation technology is an important
+new tool for the securities industry, where people need to be in the
+decision-making loop without suffering from information overload.
+Several examples are discussed including equity trading analytics, fixed
+income trading analytics and fixed-income risk viewing.

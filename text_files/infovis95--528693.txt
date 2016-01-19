@@ -1,0 +1,18 @@
+Case study: fishing for information on the Internet.
+
+As the Internet continues to grow, the amount of accessible
+information becomes increasingly vast. Search tools exist that allow
+users to find relevant information. However, a search can often produce
+such a large amount of data that it becomes hard to ferret out the most
+appropriate and highest quality information. In addition, some search
+tools lose valuable information when displaying the results to the user.
+The paper describes a search visualization tool, called FISH, for
+viewing hierarchically structured information and managing information
+overload. FISH (Forager for the Information Super Highway) allows users
+to visualize the results of search requests across large document spaces
+in a way that preserves the structure of the information space. FISH
+displays the returned documents as rectangles, using a combination of
+order, indentation, size, and color to denote document hierarchy, the
+score of the documents with respect to the search, and other data
+attributes. In addition, the user can navigate through the document
+space for in-depth probing and refinement.

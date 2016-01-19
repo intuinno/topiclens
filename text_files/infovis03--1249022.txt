@@ -1,0 +1,29 @@
+Conveying shape with texture: an experimental investigation of the impact of texture type on shape categorization judgments.
+
+As visualization researchers, we are interested in gaining a
+better understanding of how to effectively use texture to facilitate
+shape perception. If we could design the ideal texture pattern to apply
+to an arbitrary smoothly curving shape to be most accurately and
+effectively perceived, what would the characteristics of that texture
+pattern be? In this paper we describe the results of a comprehensive
+controlled observer experiment intended to yield insight into that
+question. Here, we report the results of a new study comparing the
+relative accuracy of observers' judgments of shape type (elliptical,
+cylindrical, hyperbolic or flat) and shape orientation (convex, concave,
+both, or neither) for local views of boundary masked quadric surface
+patches under six different principal direction texture pattern
+conditions plus two texture conditions (an isotropic pattern and a
+non-principal direction oriented anisotropic pattern), under both
+perspective and orthographic projection conditions and from both head-on
+and oblique viewpoints. Our results confirm the hypothesis that accurate
+shape perception is facilitated to a statistically significantly greater
+extent by some principal direction texture patterns than by others.
+Specifically, we found that, for both views, under conditions of
+perspective projection, participants more often correctly identified the
+shape category and the shape orientation when the surface was textured
+with the pattern that contained oriented energy along both the first and
+second principal directions only than in the case of any other texture
+condition. Patterns containing markings following only one of the
+principal directions, or containing information along other directions
+in addition to the principal directions yielded poorer performance
+overall.

@@ -1,0 +1,3 @@
+Case study: e-commerce clickstream visualization.
+
+We have developed an interactive, scalable visualization tool for analyzing the behavior of users of a web site. Our system not only shows site topology and traffic flow, but by segmenting site traffic data based on user attributes, including demographic data and purchase history, we can present a more complete picture of web site usage. This can lead to a more focussed analysis that allows direct comparison between user segments, and ultimately a deeper understanding of how users interact with a site. The tool is designed for real world use, and we present a usage study of the tool by analyzing the data of a failed ¡°dot-com¡±.

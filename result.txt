@@ -1,0 +1,31 @@
+41 patient                        5 mg                            
+ 9 started                        3 blood                         
+ 7 graft                         41 patient                       
+ 9 discharge                      1 coumadin                      
+ 9 noted                          2 pressure                      
+ 8 follow                         1 appointment                   
+ 6 discontinued                   5 dr                            
+ 5 postoperative                  2 po                            
+ 5 subsequently                   0 pd                            
+ 5 amiodarone                     2 vein                          
+ 5 underwent                      2 dose                          
+ 4 cardiac                        0 brachiocephalic               
+ 4 disease                        0 clinic                        
+ 4 positive                       0 inr                           
+ 4 initially                      3 call                          
+------------------------------------------------------------------
+18 pressure                      28 mg                            
+25 blood                         25 blood                         
+ 6 keppra                        20 patient                       
+13 labetalol                     19 coumadin                      
+11 hydralazine                   18 pressure                      
+19 coumadin                      10 appointment                   
+28 mg                             9 dr                            
+11 medications                   10 po                            
+ 5 aliskiren                     10 pd                            
+ 5 past                           8 vein                          
+ 5 vte                           10 dose                          
+ 5 elevated                       9 brachiocephalic               
+ 9 outpatient                     9 clinic                        
+10 prednisone                    10 inr                           
+ 7 chronic                        7 call     

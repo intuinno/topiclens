@@ -1,0 +1,3 @@
+Topographic Visualization of Prefix Propagation in the Internet.
+
+We propose a new metaphor for the visualization of prefixes propagation in the Internet. Such a metaphor is based on the concept of topographic map and allows to put in evidence the relative importance of the Internet Service Providers (ISPs) involved in the routing of the prefix. Based on the new metaphor we propose an algorithm for computing layouts and experiment with such algorithm on a test suite taken from the real Internet. The paper extends the visualization approach of the BGPlay service, which is an Internet routing monitoring tool widely used by ISP operators.

@@ -1,0 +1,3 @@
+Graph-theoretic scagnostics.
+
+ We introduce Tukey and Tukey scagnostics and develop graph-theoretic methods for implementing their procedure on large datasets.

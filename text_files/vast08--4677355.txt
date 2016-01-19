@@ -1,0 +1,3 @@
+Configurable Spaces: Temporal analysis in diagrammatic contexts.
+
+Social network graphs, concept maps, and process charts are examples of diagrammatic representations employed by intelligence analysts to understand complex systems. Unfortunately, these 2D representations currently do not easily convey the flow, sequence, tempo and other important dynamic behaviors within these systems. In this paper we present Configurable Spaces, a novel analytical method for visualizing patterns of activity over time in complex diagrammatically-represented systems. Configurable Spaces extends GeoTime¡¯s X, Y, T coordinate workspace space for temporal analysis to any arbitrary diagrammatic work space by replacing a geographic map with a diagram.

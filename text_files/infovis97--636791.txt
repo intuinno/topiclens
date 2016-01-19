@@ -1,0 +1,14 @@
+Volume rendering for relational data.
+
+A method for efficiently volume rendering dense scatterplots
+of relational data is described. Plotting difficulties that arise from
+large numbers of data points, categorical variables, interaction with
+non-axis dimensions, and unknown values, are addressed by this method.
+The domain of the plot is voxelized using binning and then volume
+rendering. Since a table is used as the underlying data structure, no
+storage is wasted on regions with no data. The opacity of each voxel is
+a function of the number of data points in a corresponding bin. A
+voxel's color is derived by averaging the value of one of the variables
+for all the data points that fall in a bin. Other variables in the data
+may be mapped to external query sliders. A dragger object permits a user
+to select regions inside the volume.

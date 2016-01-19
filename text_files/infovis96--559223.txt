@@ -1,0 +1,10 @@
+Animating multidimensional scaling to visualize N-dimensional data sets.
+
+Many techniques have been developed for visualizing
+multivariate (multidimensional) data. Most, if not all, are limited by
+the number of dimensions which can be effectively displayed.
+Multidimensional scaling (MDS) is an iterative non-linear technique for
+projecting n-D data down to a lower number of dimensions. This work
+presents extensions to MDS that enhance visualization of
+high-dimensional data sets. These extensions include animation,
+stochastic perturbation, and flow visualization techniques

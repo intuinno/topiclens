@@ -1,0 +1,21 @@
+Rethinking Map Legends with Visualization.
+
+This design paper presents new guidance for creating map legends in a
+dynamic environment. Our contribution is a set ofguidelines for legend
+design in a visualization context and a series of illustrative themes
+through which they may be expressed. Theseare demonstrated in an
+applications context through interactive software prototypes. The
+guidelines are derived from cartographicliterature and in liaison with
+EDINA who provide digital mapping services for UK tertiary
+education. They enhance approaches tolegend design that have evolved
+for static media with visualization by considering: selection, layout,
+symbols, position, dynamismand design and process. Broad visualization
+legend themes include: The Ground Truth Legend, The Legend as
+Statistical Graphicand The Map is the Legend. Together, these concepts
+enable us to augment legends with dynamic properties that address
+specificneeds, rethink their nature and role and contribute to a wider
+re-evaluation of maps as artifacts of usage rather than statements
+offact. EDINA has acquired funding to enhance their clients with
+visualization legends that use these concepts as a consequence ofthis
+work. The guidance applies to the design of a wide range of legends
+and keys used in cartography and information visualization.

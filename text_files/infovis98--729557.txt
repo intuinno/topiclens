@@ -1,0 +1,11 @@
+Dynamic aggregation with circular visual designs.
+
+        One very effective method for managing large data sets is
+aggregation or binning. We consider two aggregation methods that are
+tightly coupled with interactive manipulation and the visual
+representation of the data. Through this integration we hope to provide
+effective support for the aggregation process, specifically by enabling:
+1) automatic aggregation, 2) continuous change and control of the
+aggregation level, 3) spatially based aggregates, 4) context maintenance
+across different aggregate levels, and 5) feedback on the level of
+aggregation

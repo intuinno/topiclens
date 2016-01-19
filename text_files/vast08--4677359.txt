@@ -1,0 +1,3 @@
+Visual evaluation of text features for document summarization and analysis.
+
+Thanks to the web-related and other advanced technologies, textual information is increasingly being stored in digital form and posted online. Automatic methods to analyze such textual information are becoming inevitable. Many of those methods are based on quantitative text features. Analysts face the challenge to choose the most appropriate features for their tasks. This requires effective approaches for evaluation and feature-engineering.

@@ -1,0 +1,15 @@
+Visualisation for functional design.
+
+We present two novel visualisation tools: the Influence
+Explorer and the Prosection Matrix. These were specifically created to
+support engineering artifact design and similar tasks in which a set of
+parameter values must be chosen to lead to acceptable artifact
+performance. These tools combine two concepts. One is the interactive
+and virtually immediate responsive display of data in a manner conducive
+to the acquisition of insight. The other, involving the precalculation
+of samples of artifact performance, facilitates smooth exploration and
+optimisation leading to a design decision. The anticipated benefits of
+these visualisation tools are illustrated by an example taken from
+electronic circuit design, in which full account must be taken of the
+uncertainties in parameter values arising from inevitable variations in
+the manufacturing process.

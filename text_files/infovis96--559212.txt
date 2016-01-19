@@ -1,0 +1,15 @@
+Rapid prototyping of information visualizations using VANISH.
+
+Discusses a software tool called VANISH (Visualizing And
+Navigating Information Structured Hierarchically), which supports the
+rapid prototyping of interactive 2D and 3D information visualizations.
+VANISH supports rapid prototyping through a special-purpose visual
+language called VaPL (VANISH Programming Language) tailored for
+visualizations, through a software architecture that insulates
+visualization-specific code from changes in both the domain being
+visualized and the presentation toolkit used, and through the reuse of
+visualization techniques between application domains. The generality of
+VANISH is established by showing how it is able to re-create a wide
+variety of ?standard? visualization techniques. VANISH's support for
+prototyping is shown through an extended example, where we build a C++
+class browser, exploring many visualization alternatives in the process

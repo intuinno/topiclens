@@ -1,0 +1,20 @@
+H3: laying out large directed graphs in 3D hyperbolic space.
+
+We present the H3 layout technique for drawing large directed
+graphs as node-link diagrams in 3D hyperbolic space. We can lay out much
+larger structures than can be handled using traditional techniques for
+drawing general graphs because we assume a hierarchical nature of the
+data. We impose a hierarchy on the graph by using domain-specific
+knowledge to find an appropriate spanning tree. Links which are not part
+of the spanning tree do not influence the layout but can be selectively
+drawn by user request. The volume of hyperbolic 3-space increases
+exponentially, as opposed to the familiar geometric increase of
+euclidean 3-space. We exploit this exponential amount of room by
+computing the layout according to the hyperbolic metric. We optimize the
+cone tree layout algorithm for 3D hyperbolic space by placing children
+on a hemisphere around the cone mouth instead of on its perimeter.
+Hyperbolic navigation affords a Focus+Context view of the structure with
+minimal visual clutter. We have successfully laid out hierarchies of
+over 20,000 nodes. Our implementation accommodates navigation through
+graphs too large to be rendered interactively by allowing the user to
+explicitly prune or expand subtrees.

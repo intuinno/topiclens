@@ -1,0 +1,11 @@
+The structure of the information visualization design space.
+
+Research on information visualization has reached the point
+where a number of successful point designs have been proposed and a
+variety of techniques have been discovered. It is now appropriate to
+describe and analyze portions of the design space so as to understand
+the differences among designs and to suggest new possibilities. This
+paper proposes an organization of the information visualization
+literature and illustrates it with a series of examples. The result is a
+framework for designing new visualizations and augmenting existing
+designs.

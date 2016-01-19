@@ -1,0 +1,17 @@
+Domesticating Bead: adapting an information visualization system to a financial institution.
+
+The Bead visualization system employs a fast algorithm for
+laying out high-dimensional data in a low-dimensional space, and a
+number of features added to 3D visualizations to improve imageability.
+We describe recent work on both aspects of the system, in particular a
+generalization of the data types laid out and the implementation of
+imageability features in a 2D visualization tool. The variety of data
+analyzed in a financial institution such as UBS, and the ubiquity of
+spreadsheets as a medium for analysis, led us to extend our layout tools
+to handle data in a generic spreadsheet format. We describe the metrics
+of similarity used for this data type, and give examples of layouts of
+sets of records of financial trades. Conservatism and scepticism with
+regard to 3D visualization, along with the lack of functionality of
+widely available 3D web browsers, led to the development of a 2D
+visualization tool with refinements of a number of our imageability
+features.

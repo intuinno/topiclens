@@ -1,0 +1,22 @@
+Case study: visualizing Internet resources.
+
+The goal is to improve the ability of people from all walks of
+life and interests to access, search, and use the information
+distributed in Internet resources. The process of interacting with
+information resources starts with browsing, continues with digesting and
+assimilating pieces of information, terminates with generation of new
+information, and begins anew with analysis of pre-existing and new
+information. Our approach is user-centric-taking users needs into
+account by allowing them to interact with the information contained in
+large arrays of documents. The visualization process is an integral part
+of the overall process. We have covered three related categories in this
+methodology. The first one is browsing through the World-Wide Web (WWW)
+hyperspace without becoming lost, based on a visual representation of
+the hyperspace hierarchical structure (hyperspace view). The second
+category is overcoming the rigidity of the WWW by allowing the user to
+construct interactively and visually a personal hyperspace of
+information, linking the documents according to the application or
+problem domain, or to the user's own perception, experience, culture, or
+way of thinking. The third category includes discovery and analysis of
+new information and relationships in retrieved documents by aggregating
+relevant information and representing it visually.

@@ -1,0 +1,14 @@
+Managing multiple focal levels in Table Lens.
+
+The Table Lens, focus+context visualization for large data
+tables, allows users to see 100 times as many data values as a
+spreadsheet in the same screen space in a manner that enables an
+extremely immediate form of exploratory data analysis. In the original
+Table Lens design, data are shown in the context area using graphical
+representations in a single pixel row. Scaling up the Table Lens
+technique beyond approximately 500 cases (rows) by 40 variables
+(columns) requires not showing every value individually and thus raises
+challenges for preserving the exploratory and navigational ease and
+power of the original design. We describe two design enhancements for
+introducing regions of less than a pixel row for each data value and
+discuss the issues raised by each.

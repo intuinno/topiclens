@@ -1,0 +1,14 @@
+Data characterization for automatically visualizing heterogeneous information.
+
+Automated graphical generation systems should be able to
+design effective presentations for heterogeneous (quantitative and
+qualitative) information in static or interactive environments. When
+building such a system, it is important to thoroughly understand the
+presentation-related characteristics of domain-specific information. We
+define a data-analysis taxonomy that can be used to characterize
+heterogeneous information. In addition to capturing the
+presentation-related properties of data, our characterization takes into
+account the user's information-seeking goals and visual-interpretation
+preferences. We use automatically-generated examples from two different
+application domains to demonstrate the coverage of the proposed taxonomy
+and its utility for selecting effective graphical techniques

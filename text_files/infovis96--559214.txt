@@ -1,0 +1,9 @@
+Techniques for non-linear magnification transformations.
+
+This paper presents efficient methods for implementing general
+non-linear magnification transformations. Techniques are provided for:
+combining linear and non-linear magnifications, constraining the domain
+of magnifications, combining multiple transformations, and smoothly
+interpolating between magnified and normal views. In addition, piecewise
+linear methods are introduced which allow greater efficiency and
+expressiveness than their continuous counterparts

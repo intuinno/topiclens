@@ -1,0 +1,11 @@
+Saying it in graphics: from intentions to visualizations.
+
+        The authors propose a methodology for automatically realizing
+communicative goals in graphics. It features a task model that mediates
+the communicative intent and the selection of graphical techniques. The
+methodology supports the following functions: isolating assertions
+presentable in graphics; mapping such assertions into tasks for the
+potential reader, and selecting graphical techniques that support those
+tasks. They illustrate the methodology by redesigning a textual argument
+into a multimedia one with the same rhetorical and content structures
+but employing graphics to achieve some of the intentions

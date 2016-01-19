@@ -1,0 +1,13 @@
+Nonlinear magnification fields.
+
+We introduce nonlinear magnification fields as an abstract
+representation of nonlinear magnification, providing methods for
+converting transformation routines to magnification fields and
+vice-versa. This new representation provides ease of manipulation and
+power of expression. By removing the restrictions of explicit foci and
+allowing precise specification of magnification values, we can achieve
+magnification effects which were not previously possible. Of particular
+interest are techniques we introduce for expressing complex and subtle
+magnification effects through magnification brushing, and allowing
+intrinsic properties of the data being visualized to create data-driven
+magnifications.

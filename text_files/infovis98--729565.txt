@@ -1,0 +1,12 @@
+Visualizing decision table classifiers.
+
+        Decision tables, like decision trees or neural nets, are
+classification models used for prediction. They are induced by machine
+learning algorithms. A decision table consists of a hierarchical table
+in which each entry in a higher level table gets broken down by the
+values of a pair of additional attributes to form another table. The
+structure is similar to dimensional stacking. A visualization method is
+presented that allows a model based on many attributes to be understood
+even by those unfamiliar with machine learning. Various forms of
+interaction are used to make this visualization more useful than other
+static designs

@@ -1,0 +1,15 @@
+Multidimensional detective.
+
+The display of multivariate datasets in parallel coordinates,
+transforms the search for relations among the variables into a 2-D
+pattern recognition problem. This is the basis for the application to
+visual data mining. The knowledge discovery process together with some
+general guidelines are illustrated on a dataset from the production of a
+VLSI chip. The special strength of parallel coordinates is in modeling
+relations. As an example, a simplified economic model is constructed
+with data from various economic sectors of a real country. The visual
+model shows the interelationship and dependencies between the sectors,
+circumstances where there is competition for the same resource, and
+feasible economic policies. Interactively, the model can be used to do
+trade-off analyses, discover sensitivities, do approximate optimization,
+monitor (as in a process) and provide decision support.

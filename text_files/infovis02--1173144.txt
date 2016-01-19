@@ -1,0 +1,3 @@
+Efficient cartogram generation: a comparison.
+
+ Cartograms are a well-known technique for showing geography-related statistical information, such as population demographics and epidemiological data. The basic idea is to distort a map by resizing its regions according to a statistical parameter, but in a way that keeps the map recognizable. We deal with the problem of making continuous cartograms that strictly retain the topology of the input mesh. We compare two algorithms to solve the continuous cartogram problem. The first one uses an iterative relocation of the vertices based on scanlines. The second one is based on the Gridfit technique, which uses pixel-based distortion based on a quadtree-like data structure.

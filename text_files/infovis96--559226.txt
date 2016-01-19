@@ -1,0 +1,23 @@
+Visualizing the global topology of the MBone.
+
+We present a case study of visualizing the global topology of
+the Internet MBone. The MBone is the Internet's multicast backbone.
+Multicast is the most efficient way of distributing data from one sender
+to multiple receivers with minimal packet duplication. Developed and
+initially deployed by researchers within the Internet community, the
+MBone has been extremely popular for efficient transmission across the
+Internet of real-time video and audio streams such as conferences,
+meetings, congressional sessions, and NASA shuttle launches. The MBone,
+like the Internet itself grew exponentially with no central authority.
+The resulting suboptimal topology is of growing concern to network
+providers and the multicast research community. We create a geographic
+representation of the tunnel structure as arcs on a globe by resolving
+the latitude and longitude of MBone routers. The interactive 3D maps
+permit an immediate understanding of the global structure unavailable
+from the data in its original form as lines of text with only hostnames
+and IP addresses. Data visualization techniques such as grouping and
+thresholding allow further analysis of specific aspects of the MBone
+topology. We distribute the interactive 3D maps through the World-Wide
+Web using the VRML file format thus allowing network maintainers
+throughout the world to analyze the structure move effectively than
+would be possible with still pictures or pre-made videos

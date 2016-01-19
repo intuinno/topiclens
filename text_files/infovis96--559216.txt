@@ -1,0 +1,20 @@
+Selection: 524,288 ways to say ?this is interesting? .
+
+Visualization is a critical technology for understanding
+complex, data-rich systems. Effective visualizations make important
+features of the data immediately recognizable and enable the user to
+discover interesting and useful results by highlighting patterns. A key
+element of such systems is the ability to interact with displays of data
+by selecting a subset for further investigation. This operation is
+needed for use in linked-views systems and in drill-down analysis. It is
+a common manipulation in many other systems. It is as ubiquitous as
+selecting icons in a desktop GUI. It is therefore surprising to note
+that little research has been done on how selection can be implemented.
+This paper addresses this omission, presenting a taxonomy for selection
+mechanisms and discussing the interactions between branches of the
+taxonomy. Our suggestion of 524,288 possible systems [2^16 operation
+systems? (memory/memoryless)? (data-dependent/independent)?
+(brush/lasso)] is more in fun than serious, as within the taxonomy there
+are many different choices that can be made. This framework is the
+result of considering both the current state of the art and historical
+antecedents

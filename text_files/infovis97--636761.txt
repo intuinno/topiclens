@@ -1,0 +1,22 @@
+A spreadsheet approach to information visualization.
+
+In information visualization, as the volume and complexity of
+the data increases, researchers require more powerful visualization
+tools that enable them to more effectively explore multidimensional
+datasets. We discuss the general utility of a novel visualization
+spreadsheet framework. Just as a numerical spreadsheet enables
+exploration of numbers, a visualization spreadsheet enables exploration
+of visual forms of information. We show that the spreadsheet approach
+facilitates certain information visualization tasks that are more
+difficult using other approaches. Unlike traditional spreadsheets, which
+store only simple data elements and formulas in each cell, a
+visualization spreadsheet cell can hold an entire complex data set,
+selection criteria, viewing specifications, and other information needed
+for a full-fledged information visualization. Similarly, inter-cell
+operations are far more complex, stretching beyond simple arithmetic and
+string operations to encompass a range of domain-specific operators. We
+have built two prototype systems that illustrate some of these research
+issues. The underlying approach in our work allows domain experts to
+define new data types and data operations, and enables visualization
+experts to incorporate new visualizations, viewing parameters, and view
+operations.

@@ -1,0 +1,17 @@
+On integrating visualization techniques for effective software exploration.
+
+This paper describes the SHriMP visualization technique for
+seamlessly exploring software structure and browsing source code, with a
+focus on effectively assisting hybrid program comprehension strategies.
+The technique integrates both pan+zoom and fisheye-view visualization
+approaches for exploring a nested graph view of software structure. The
+fisheye-view approach handles multiple focal points, which are necessary
+when examining several subsystems and their mutual interconnections.
+Source code is presented by embedding code fragments within the nodes of
+the nested graph. Finer connections among these fragments are
+represented by a network that is navigated using a hypertext
+link-following metaphor. SHriMP combines this hypertext metaphor with
+animated panning and zooming motions over the nested graph to provide
+continuous orientation and contextual cues for the user. The SHriMP tool
+is being evaluated in several user studies. Observations of users
+performing program understanding tasks with the tool are discussed.

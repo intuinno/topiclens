@@ -1,0 +1,103 @@
+<?xml version="1.0"?>
+<DataSet id="564">
+    <node id="0">
+        <doc_count>31</doc_count>
+        <top_terms>
+            <term name="rodman	335"/>
+            <term name="north	7231"/>
+            <term name="kim	2007"/>
+            <term name="korea	6249"/>
+            <term name="pyongyang	1820"/>
+        </top_terms>
+    </node>
+    <node id="1">
+        <doc_count>135</doc_count>
+        <top_terms>
+            <term name="korea	6249"/>
+            <term name="north	7231"/>
+            <term name="south	3065"/>
+            <term name="korean	3061"/>
+            <term name="seoul	1333"/>
+        </top_terms>
+    </node>
+    <node id="2">
+        <doc_count>72</doc_count>
+        <top_terms>
+            <term name="north	7231"/>
+            <term name="korea	6249"/>
+            <term name="korean	3061"/>
+            <term name="pyongyang	1820"/>
+            <term name="ap	1214"/>
+        </top_terms>
+    </node>
+    <node id="3">
+        <doc_count>27</doc_count>
+        <top_terms>
+            <term name="korean	3061"/>
+            <term name="south	3065"/>
+            <term name="north	7231"/>
+            <term name="kaesong	312"/>
+            <term name="korea	6249"/>
+        </top_terms>
+    </node>
+    <node id="4">
+        <doc_count>62</doc_count>
+        <top_terms>
+            <term name="kim	2007"/>
+            <term name="north	7231"/>
+            <term name="korea	6249"/>
+            <term name="jong	788"/>
+            <term name="korean	3061"/>
+        </top_terms>
+    </node>
+    <node id="5">
+        <doc_count>111</doc_count>
+        <top_terms>
+            <term name="north	7231"/>
+            <term name="korea	6249"/>
+            <term name="nuclear	1850"/>
+            <term name="south	3065"/>
+            <term name="missile	628"/>
+        </top_terms>
+    </node>
+    <node id="6">
+        <doc_count>35</doc_count>
+        <top_terms>
+            <term name="north	7231"/>
+            <term name="korea	6249"/>
+            <term name="bae	307"/>
+            <term name="korean	3061"/>
+            <term name="release	152"/>
+        </top_terms>
+    </node>
+    <node id="7">
+        <doc_count>31</doc_count>
+        <top_terms>
+            <term name="china	873"/>
+            <term name="north	7231"/>
+            <term name="korea	6249"/>
+            <term name="beijing	393"/>
+            <term name="chinese	316"/>
+        </top_terms>
+    </node>
+    <node id="8">
+        <doc_count>32</doc_count>
+        <top_terms>
+            <term name="north	7231"/>
+            <term name="korea	6249"/>
+            <term name="korean	3061"/>
+            <term name="rights	745"/>
+            <term name="schools	43"/>
+        </top_terms>
+    </node>
+    <node id="9">
+        <doc_count>28</doc_count>
+        <top_terms>
+            <term name="north	7231"/>
+            <term name="korea	6249"/>
+            <term name="korean	3061"/>
+            <term name="south	3065"/>
+            <term name="pyongyang	1820"/>
+        </top_terms>
+    </node>
+</DataSet>

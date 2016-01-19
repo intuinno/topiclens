@@ -1,0 +1,16 @@
+Case study. Narcissus: visualising information.
+
+It is becoming increasingly important that support is provided
+for users who are dealing with complex information spaces. The need is
+driven by the growing number of domains where there is a requirement for
+users to understand, navigate and manipulate large sets of computer
+based data; by the increasing size and complexity of this information
+and by the pressures to use this information efficiently. The
+paradigmatic example is the World Wide Web, but other domains include
+software systems, information systems and concurrent engineering. One
+approach to providing this support is to provide sophisticated
+visualisation tools which lead the users to form an intuitive
+understanding of the structure and behaviour of their domain and which
+provide mechanisms which allow them to manipulate objects within their
+system. The paper describes such a tool and a number of visualisation
+techniques that it implements.

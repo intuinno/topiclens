@@ -1,0 +1,12 @@
+Distortion viewing techniques for 3-dimensional data.
+
+As the use of 3D information presentation becomes more
+prevalent, the need for effective viewing tools grows accordingly. Much
+work has been done in developing tools for 2D spaces which allow for
+detail in context views. We examine the extension of such 2D methods to
+3D and explore the limitations encountered in accessing internal regions
+of the data with these methods. We then describe a novel solution to
+this problem of internal access with the introduction of a distortion
+function which creates a clear line of sight to the focus revealing
+sections previously obscured. The distortion is symmetric about the line
+of sight and is smoothly integrated back into the original 3D layout

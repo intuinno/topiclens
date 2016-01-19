@@ -1,0 +1,10 @@
+SDM: malleable information graphics.
+
+Selective dynamic manipulation (SDM) is a paradigm for
+interacting with objects in visualizations. Its methods offer a high
+degree of selectivity, in choosing object sets, in the selection of
+interactive techniques and the properties they affect, and in the degree
+to which a user action affects the visualization. Our goal is to provide
+a flexible set of techniques and feedback mechanisms that enable users
+to move objects and transform their appearance to perform a variety of
+information analysis tasks.

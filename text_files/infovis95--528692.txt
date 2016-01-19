@@ -1,0 +1,12 @@
+Case study. Visualising cyberspace: information visualisation in the Harmony Internet browser.
+
+The explosive growth of information systems on the Internet
+has clearly demonstrated the need to organise, filter, and present
+information in ways which allow users to cope with the sheer quantities
+of information available. The scope for visualisation of Gopher and WWW
+spaces is restricted by the limitations of their respective data models.
+The far richer data model supported by the Hyper-G Internet information
+system is exploited by its Harmony client to provide a number of
+tightly-coupled, two- and three-dimensional visualisation and
+navigational facilities, which help provide location feedback and
+alleviate user disorientation.

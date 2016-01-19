@@ -1,0 +1,15 @@
+Case study: 3D displays of Internet traffic.
+
+The explosive growth in world-wide communications, especially
+the Internet, has highlighted the need for techniques to visualize
+network traffic. The traditional node and link network displays work
+well for small datasets but become visually cluttered and
+uninterpretable for large datasets. A natural 3D metaphor for displaying
+world-wide network data is to position the nodes on a globe and draw
+arcs between them coding the traffic. This technique has several
+advantages of over the traditional 2D displays, it naturally reduces
+line crossing clutter, provides an intuitive model for navigation and
+indication of time, and retains the geographic context. Coupling these
+strengths with some novel interaction techniques involving the globe
+surface translucency and arc heights illustrates the usefulness for this
+class of displays.

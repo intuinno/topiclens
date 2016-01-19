@@ -1,0 +1,13 @@
+Visualizing the non-visual: spatial analysis and interaction with information from text documents.
+
+The paper describes an approach to IV that involves
+spatializing text content for enhanced visual browsing and analysis. The
+application arena is large text document corpora such as digital
+libraries, regulations and procedures, archived reports, etc. The basic
+idea is that text content from these sources may be transformed to a
+spatial representation that preserves informational characteristics from
+the documents. The spatial representation may then be visually browsed
+and analyzed in ways that avoid language processing and that reduce the
+analysts mental workload. The result is an interaction with text that
+more nearly resembles perception and action with the natural world than
+with the abstractions of written language.

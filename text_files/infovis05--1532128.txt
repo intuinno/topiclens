@@ -1,0 +1,3 @@
+Voronoi treemaps.
+
+ Treemaps are a well known method for the visualization of attributed hierarchical data. Previously proposed treemap layout algorithms are limited to rectangular shapes, which cause problems with the aspect ratio of the rectangles as well as with identifying the visualized hierarchical structure. The approach of Voronoi treemaps presented in this paper eliminates these problems through enabling subdivisions of and in polygons. Additionally, this allows for creating treemap visualizations within areas of arbitrary shape, such as triangles and circles, thereby enabling a more flexible adaptation of treemaps for a wider range of applications.

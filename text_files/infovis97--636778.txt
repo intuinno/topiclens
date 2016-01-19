@@ -1,0 +1,12 @@
+Adaptive information visualization based on the user's multiple viewpoints-interactive 3D visualization of the WWW.
+
+We introduce the adaptive information visualization method for
+hypermedia and the WWW based on the user's multiple viewpoints. We
+propose two graphical interfaces, the CVI and the RF-Cone. The CVI is
+the interface for interactive viewpoint selection. We can select a
+viewpoint reflecting our interests by using the CVI. According to the
+given viewpoint, the RF-Cone adaptively organizes the 3D representation
+of the hypermedia so that we can understand the semantic and structural
+relationship of the hypermedia and easily retrieve the information.
+Combining these methods, we have developed the WWW visualization system
+which can provide highly efficient navigation.

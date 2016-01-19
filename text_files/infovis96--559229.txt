@@ -1,0 +1,13 @@
+Visualizing a tennis match.
+
+This paper describes our work on visualizing the information
+of a tennis match. We use competition trees to organize the information
+of a tennis match and visualize the competition trees by the top-nesting
+layered maps with translucent colored layers. We create iconic
+representations to describe the detailed information of athletic events
+in an intuitive manner. Specialized views of the information are
+displayed by applying multiple Magic Lens filters on the top-nesting
+layered maps. The dynamic nature of the tennis match is depicted by the
+time-varying display. The approach we present in this paper can be used
+to visualize other sports information, information with competition
+property, or information with hierarchical structure

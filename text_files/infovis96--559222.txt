@@ -1,0 +1,13 @@
+FINESSE: a financial information spreadsheet.
+
+We outline a spreadsheet-based system for visualization of
+real-time financial information. Our system permits the user to define
+arithmetic and presentation relationships amongst the various cells of
+the spreadsheet. The cells contain primitives that can be numbers, text,
+images, functions and graphics. Presenting financial information in this
+format allows its intended clients, the financial analysts, to work in
+the familiar environment of a spreadsheet and allows them the
+flexibility afforded by the powerful interface of the spreadsheet
+paradigm. In addition, our system permits real-time visualization of the
+financial data stream allowing its user to visually trade the changing
+market trends in two and three dimensions

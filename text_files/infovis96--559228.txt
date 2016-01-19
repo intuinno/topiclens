@@ -1,0 +1,15 @@
+DEPICT: Documents Evaluated as Pictures. Visualizing information using context vectors and self-organizing maps.
+
+HNC Software, Inc. has developed a system called DEPICT for
+visualizing the information content of large textual corpora. The system
+is built around two separate neural network methodologies: context
+vectors and self-organizing maps. Context vectors (CVs) are high
+dimensional information representations that encode the semantic content
+of the textual entities they represent. Self-organizing maps (SOMs) are
+capable of transforming an input, high dimensional signal space into a
+much lower (usually two or three) dimensional output space useful for
+visualization. Neither process requires human intervention, nor an
+external knowledge base. Together, these neural network techniques can
+be utilized to automatically identify the relevant information themes
+present in a corpus, and present those themes to the user in a intuitive
+visual form

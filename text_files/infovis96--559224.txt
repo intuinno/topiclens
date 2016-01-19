@@ -1,0 +1,8 @@
+Dual multiresolution HyperSlice for multivariate data visualization .
+
+We present a new multiresolution visualization design which
+allows a user to control the physical data resolution as well as the
+logical display resolution of multivariate data. A system prototype is
+described which uses the HyperSlice representation. The notion of space
+projection in multivariate data is introduced. This process is coupled
+with wavelets to form a powerful tool for very large data visualization

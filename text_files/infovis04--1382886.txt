@@ -1,0 +1,3 @@
+A Comparison of the Readability of Graphs Using Node-Link and Matrix-Based Representations.
+
+In this paper, we describe a taxonomy of generic graph related tasks and an evaluation aiming at assessing the readability of two representations of graphs: matrix-based representations and node-link diagrams. This evaluation bears on seven generic tasks and leads to important recommendations with regard to the representation of graphs according to their size and density. For instance, we show that when graphs are bigger than twenty vertices, the matrix-based visualization performs better than node-link diagrams on most tasks. Only path finding is consistently in favor of node-link diagrams throughout the evaluation

@@ -1,0 +1,14 @@
+Visage: a user interface environment for exploring information.
+
+Visage is a prototype user interface environment for exploring
+and analyzing information. It represents an approach to coordinating
+multiple visualizations, analysis and presentation tools in
+data-intensive domains. Visage is based on an information-centric
+approach to user interface design which strives to eliminate impediments
+to direct user access to information objects across applications and
+visualizations. Visage consists of a set of data manipulation
+operations, an intelligent system for generating a wide variety of data
+visualizations (SAGE) and a briefing tool that supports the conversion
+of visual displays used during exploration into interactive presentation
+slides. This paper presents the user interface components and styles of
+interaction that are central to Visage's information-centric approach

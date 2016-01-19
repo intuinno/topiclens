@@ -1,0 +1,21 @@
+The shape of Shakespeare: visualizing text using implicit surfaces .
+
+        Information visualization focuses on the use of visual means
+for exploring non-visual information. While free-form text is a rich,
+common source of information, visualization of text is a challenging
+problem since text is inherently non-spatial. The paper explores the use
+of implicit surface models for visualizing text. The authors describe
+several techniques for text visualization that aid in understanding
+document content and document relationships. A simple method is defined
+for mapping document content to shape. By comparing the shapes of
+multiple documents, global content similarities and differences may be
+noted. In addition, they describe a visual clustering method in which
+documents are arranged in 3D based upon similarity scoring. Documents
+deemed closely related blend together as a single connected shape.
+Hence, a document corpus becomes a collection of shapes that reflect
+inter-document relationships. These techniques provide methods to
+visualize individual documents as well as corpus meta-data. They then
+combine the two techniques to produce transparent clusters enclosing
+individual document shapes. This provides a way to visualize both local
+and global contextual information. Finally, they elaborate on several
+potential applications of these methods

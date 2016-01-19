@@ -1,0 +1,13 @@
+Geospatial metadata querying and visualization on the WWW using Java^TM applets.
+
+This paper presents the query and visualization interfaces of
+the Master Environmental Library (MEL) system. MEL uses the World Wide
+Web (WWW) to make accessible distributed data whose metadata conform to
+the Federal Geographic Data Committee's (FGDC) content standards for
+digital geospatial metadata. The interfaces are implemented as Java^TM
+applets and are more intuitive, interactive and possess greater
+functionality than their Hypertext Markup Language (HTML) counterparts.
+As well as querying, the interface allows users to visualize and manage
+the list of query results so that users can more quickly discover the
+datasets of real interest. Several new tools used to visualize
+attributes of the metadata are presented

@@ -1,0 +1,9 @@
+LensBar-visualization for browsing and filtering large lists of data.
+
+        The author proposes a simple and powerful graphical interface
+tool called the LensBar for filtering and visualizing large lists of
+data. Browsing and querying are the most important tasks in retrieving
+information and LensBar integrates the two techniques into a simple
+scroll window with slider. While it looks familiar to users of
+conventional graphical interface tools, its filtering and zooming
+features offer sophisticated handling of large lists of textual data

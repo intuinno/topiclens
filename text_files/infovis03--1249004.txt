@@ -1,0 +1,14 @@
+Smooth and efficient zooming and panning.
+
+Large 2D information spaces, such as maps, images, or abstract
+visualizations, require views at various level of detail: close ups to
+inspect details, overviews to maintain (literally) an overview. Users
+often switch between these views. We discuss how smooth animations from
+one view to another can be defined. To this end, a metric on the effect
+of simultaneous zooming and panning is defined, based on an estimate of
+the perceived velocity. Optimal is defined as smooth and efficient.
+Given the metric, these terms can be translated into a computational
+model, which is used to calculate an analytic solution for optimal
+animations. The model has two free parameters: animation speed and
+zoom/pan trade off. A user experiment to find good values for these is
+described.

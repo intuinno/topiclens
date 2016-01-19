@@ -1,0 +1,3 @@
+Angular brushing of extended parallel coordinates.
+
+ In this paper we present angular brushing for parallel coordinates (PC) as a new approach to highlighting rational data-properties, i.e., features which - in a non-separable way - depend on two data dimensions. We also demonstrate smooth brushing as an intuitive tool for specifying nonbinary degree-of-interest functions (for focus+context visualization). We also briefly describe our implementation as well as its application to the visualization of CFD data.

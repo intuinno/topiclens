@@ -1,0 +1,3 @@
+Visual path analysis.
+
+ We describe a system for analyzing the flow of traffic through Web sites. We decomposed the general path analysis problem into a set of distinct subproblems, and created a visual metaphor for analyzing each of them. Our system works off of multiple representations of the clickstream, and exposes the path extraction algorithms and data to the visual metaphors as Web services. We have combined the visual metaphors into a Web-based "path analysis portal" that lets the user easily switch between the different modes of analysis.

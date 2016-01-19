@@ -1,0 +1,17 @@
+Cacti: a front end for program visualization.
+
+We describe a system that allows the user to rapidly construct
+program visualizations over a variety of data sources. Such a system is
+a necessary foundation for using visualization as an aid to software
+understanding. The system supports an arbitrary set of data sources so
+that information from both static and dynamic analysis can be combined
+to offer meaningful software visualizations. It provides the user with a
+visual universal-relation front end that supports the definition of
+queries over multiple data sources without knowledge of the structure or
+contents of the sources. It uses a flexible back end with a range of
+different visualizations, most geared to the efficient display of large
+amounts of data. The result is a high-quality, easy-to-define program
+visualization that can address specific problems and hence is useful for
+software understanding. The overall system is flexible and extensible in
+that both the underlying data model and the set of visualizations are
+defined in resource files.

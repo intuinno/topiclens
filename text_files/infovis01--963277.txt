@@ -1,0 +1,3 @@
+Technical note: visually encoding program test information to find faults in software.
+
+Large test suites are frequently used to evaluate software systems and to locate errors. Unfortunately, this process can generate a huge amount of data that is difficult to interpret manually. We have created a system, TARANTULA, that visually encodes test data to help find program errors. The system uses a principled color mapping to represent how source lines act in passed and failed tests. It also provides a flexible user interface for examining different perspectives that show the behavior of the source code on test sets, ranging from individual tests, to important subsets such as the set of failed tests, to the entire test suite.

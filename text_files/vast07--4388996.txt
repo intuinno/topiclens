@@ -1,0 +1,3 @@
+Thin Client Visualization.
+
+We have developed a Web 2.0 thin client visualization framework called GeoBoosttrade. Our framework focuses on geospatial visualization and using scalable vector graphics (SVG), AJAX, RSS and GeoRSS we have built a complete thin client component set. Our component set provides a rich user experience that is completely browser based. It includes maps, standard business charts, graphs, and time-oriented components. The components are live, interactive, linked, and support real time collaboration.

@@ -1,0 +1,17 @@
+IVEE: an Information Visualization and Exploration Environment.
+
+The Information Visualization and Exploration Environment
+(NEE) is a system for automatic creation of dynamic queries
+applications. IVEE imports database relations and automatically creates
+environments holding visualizations and query devices. IVEE offers
+multiple visualizations such as maps and starfields, and multiple query
+devices, such as sliders, alphasliders, and toggles. Arbitrary graphical
+objects can be attached to database objects in visualizations. Multiple
+visualizations may be active simultaneously. Users can interactively lay
+out and change between types of query devices. Users may retrieve
+details-on-demand by clicking on visualization objects. An HTML file may
+be provided along with the database, specifying how details-on-demand
+information should be presented, allowing for presentation of multimedia
+information in database objects. Finally, multiple IVEE clients running
+on separate workstations on a network can communicate by letting one
+user's actions affect the visualization in an another IVEE client.

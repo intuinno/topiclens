@@ -1,0 +1,8 @@
+Visualizing the results of multimedia Web search engines.
+
+Search engines are very useful because they allow the user to
+retrieve documents of interest from the World-Wide Web. However, if the
+user's query results in lots of records to be retrieved, just listing
+the results is not very user-friendly. We are developing a system that
+allows the visualization of the results. Visualizations of both text and
+image search are generated on the fly based on the search results

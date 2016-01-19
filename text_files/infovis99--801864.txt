@@ -1,0 +1,3 @@
+VisageWeb: visualizing WWW data in Visage.
+
+VisageWeb is an information-centric user interface to the World Wide Web built within the Visage data visualization environment. This paper traces the development of the VisageWeb project, using it to motivate an exploration of how an information-centric architecture copes with new visualization challenges. We conclude with a presentation of the VisageWeb prototype itself

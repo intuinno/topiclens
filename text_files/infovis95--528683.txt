@@ -1,0 +1,16 @@
+Research report: improving browsing in information by the automatic display layout.
+
+It is well known that graphical representations could be very
+helpful to browse in graph structured information. But this promising
+approach requires the capability of an automatic layout system because
+the tedious and time consuming task of a manual layout leads to a
+rejection of this approach by the user. In our approach, we split the
+task of retrieving information into two phases that are getting the
+orientation within the network and reading currently visited
+information. We present layout algorithms for both phases which have the
+benefit of being flexible and adaptable to individual user requests and
+ensure the topological consistency, i.e. the stability of the topology
+of the information layout during a sequence of display layouts. The
+results show that especially the possibility of an animation of the
+layout process can assist the user essentially in maintaining the
+orientation in the information network.

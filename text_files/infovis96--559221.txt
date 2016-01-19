@@ -1,0 +1,9 @@
+Interactive visualization of multiway tables.
+
+Many business data visualization applications involve large
+databases with dozens of fields and millions of rows. Interactive
+visualization of these databases is difficult because of the large
+amount of data involved. We present a method of summarizing large
+databases which is well suited to interactive visualization. We
+illustrate this with a visualization tool for the domain of call billing
+data

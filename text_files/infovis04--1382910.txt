@@ -1,0 +1,3 @@
+Non-Euclidean Spring Embedders.
+
+We present a method by which force-directed algorithms for graph layouts can be generalized to calculate the layout of a graph in an arbitrary Riemannian geometry. The method relies on extending the Euclidean notions of distance, angle, and force-interactions to smooth nonEuclidean geometries via projections to and from appropriately chosen tangent spaces. In particular, we formally describe the calculations needed to extend such algorithms to hyperbolic and spherical geometries

@@ -1,0 +1,3 @@
+A comparison of 2-D visualizations of hierarchies.
+
+This paper describes two experiments that compare four two-dimensional visualizations of hierarchies: organization chart, icicle plot, treemap, and tree ring. The visualizations are evaluated in the context of decision tree analyses prevalent in data mining applications. The results suggest that either the tree ring or icicle plot is equivalent to the organization chart.

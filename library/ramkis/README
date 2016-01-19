@@ -1,0 +1,4 @@
+NMF algorithms:
+KL-divergence - nmfsh_comb_kl.m
+Standard NMF  - nmfsh_comb_fro.m
+Affine NMF    - nmfsh_comb_mixture.m

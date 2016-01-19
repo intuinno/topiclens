@@ -1,0 +1,3 @@
+A framework for focus+context visualization.
+
+This paper aims to give a systematic account of focus+context visualization techniques, i.e. visualizations which aim to give users integrated visual access to details and context in a data set. We introduce the notion that there are different orders of information visualization with focus+context being a second-order visualization and provide a formal framework for describing and constructing focus+context visualizations

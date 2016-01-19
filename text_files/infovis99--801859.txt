@@ -1,0 +1,3 @@
+Dynamic hierarchy specification and visualization.
+
+This paper describes concepts that underlie the design and implementation of an information exploration system that allows users to impose arbitrary hierarchical organizations on their data. Such hierarchies allow a user to embed important semantic information into the hierarchy definition. Our goal is to recognize the significance of this implicit information and to utilize it in the hierarchy visualization. The innovative features of our system include the dynamic modification of the hierarchy definitions and the definition and implementation of a set of layout algorithms that utilize semantic information implicit in the tree construction

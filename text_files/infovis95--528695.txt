@@ -1,0 +1,12 @@
+Case study: an empirical investigation of thumbnail imag recognition.
+
+The use of thumbnails (i.e., miniatures) in the user-interface
+of image databases allows searching and selection of images without the
+need for naming policies. Treating parent images prior to reduction with
+edge-detecting smoothing, lossy image compression, or static codebook
+compression resulted in thumbnails where the distortion caused by
+reduction was lessened. An experiment assessing these techniques found
+resulting thumbnails could be recognised more quickly and accurately
+than thumbnails of the same parent images that had been reduced without
+treatment. This pretreatment in thumbnail creation is offered as an
+improvement.

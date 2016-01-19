@@ -1,0 +1,3 @@
+Paint Inspired Color Mixing and Compositing for Visualization.
+
+Color is often used to convey information, and color compositing is often required while visualizing multiattribute information. This paper proposes an alternative method for color compositing. In order to present understandable color blending to the general public, several techniques are proposed. First, a paint-inspired RYB color space is used. In addition, noise patterns are employed to produce subregions of pure color within an overlapped region. We show examples to demonstrate the effectiveness of our technique for visualization

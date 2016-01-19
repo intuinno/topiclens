@@ -1,0 +1,17 @@
+Minimally-immersive interactive volumetric information visualization.
+
+This paper describes a minimally immersive volumetric
+interactive system for information visualization. The system, SFA, uses
+glyph-based volume rendering, enabling more information attributes to be
+visualized than traditional 2D and surface-based information
+visualization systems. Two-handed interaction and stereoscopic viewing
+combine to produce a minimally immersive interactive system that
+enhances the user's three-dimensional perception of the information
+space, capitalizing on the human visual system's pre-attentive learning
+capabilities to quickly analyze the displayed information. The paper
+describes the usefulness of this system for the visualization of
+document similarity within a corpus of textual documents. SFA allows the
+three-dimensional volumetric visualization, manipulation, navigation,
+and analysis of multivariate, time-varying information spaces,
+increasing the quantity and clarity of information conveyed from the
+visualization as compared to traditional 2D information systems

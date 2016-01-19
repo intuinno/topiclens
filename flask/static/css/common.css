@@ -1,0 +1,31 @@
+
+.text-box {
+	width: 100%;
+	white-space: pre-wrap;
+	margin: 0px 0px 0px 0px;
+	padding: 0px;
+	overflow: auto;
+	font-family: arial, Helvetica, sans-serif;
+	font-size: 13px;
+	background-color: #FFFFFB;
+	border: 2px ridge #99CCFF;
+	z-index: 5
+}
+.axis line {
+  fill: none;
+  stroke: #ddd;
+  shape-rendering: crispEdges;
+  vector-effect: non-scaling-stroke;
+}
+.noselect {
+	pointer-events: none;
+}
+
+.total > .center {height:30px;overflow:hidden;}
+.total > .center > div > span {width:20%;height:10px;margin-top:10px;border-right:1px solid #F5F5F5;background:#E5E5E5;float:left;}
+.total > .center > div > span:first-child {border-radius:5px 0 0 5px;}
+.total > .center > div > span:last-child {border-radius:0 5px 5px 0;}
+
+.total > .center > div > span {height:20px;margin-top:5px;border-radius:0;border:none;background:url('./images/lectureEval_star.png') top center no-repeat;background-size:20px 40px;}
+.total > .center > div > span.active {background-position:center -20px;}
+

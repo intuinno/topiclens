@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+	<head>
+		<title>t-SNE</title>
+		<link rel="stylesheet" type="text/css" href="../static/css/html5reset-1.6.1.css">
+		<link rel="stylesheet" href="./../static/css/common.css">
+		<script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+		<script src="../static/javascript/lib/d3/d3.js"></script>
+		<script src="../static/javascript/hsvConverter.js"></script>
+		<script src="../static/javascript/dragselect.js"></script>
+	</head>
+	<body>
+		<div id="content_graph">
+		</div>
+
+		<script>
+			$SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+			var mappedX = {{ mappedX }};
+			var cl_idx = {{ cl_idx }};
+			var K = 10;
+			var Wtopk = [];
+			{% for arr in Wtopk %}
+				Wtopk.push({{arr|tojson}});
+			{% endfor %}
+
+
+			function randomColors(total) {
+				var i = 360 / (total - 1); // distribute the colors evenly on the hue range
+				var r = []; // hold the generated colors
+				if(total==1)
+					r.push(hsvToRgb(180,85,85));
+				else
+					for (var x=0; x<total; x++) {
+						r.push(hsvToRgb(i*x, 85, 85));
+						// you can also alternate the saturation and value for even more contrast between the colors
+					}
+				return r;
+			}
+
+
+			// 각 topic에 대한 좌표 초기화
+			function calcTopicCoord(mappedX, cl_idx){
+				var numberPerTopic = [];
+				var topicCoordinates = [];
+
+				for(var i=0;i<K;i++) {
+					numberPerTopic.push(0);
+					topicCoordinates.push([0,0]);
+				}
+				for(var i=0;i<mappedX.length;i++) {
+					topicIdx = cl_idx[i]-1;
+					numberPerTopic[topicIdx]+=1;
+					topicCoordinates[topicIdx][0] += mappedX[i][0];
+					topicCoordinates[topicIdx][1] += mappedX[i][1];
+				}
+				for(var i=0;i<K;i++) {
+					topicCoordinates[i][0]/=numberPerTopic[i];
+					topicCoordinates[i][1]/=numberPerTopic[i];
+				}
+				return topicCoordinates
+			}
+
+
+			// 점 그리기
+			function initPoint(svg_element, mappedX, topicCoordinates, Wtopk, width, height, distanceFactor){
+				svg_element.append('g')
+					.selectAll("circle")
+					.data(mappedX)
+					.enter().append("circle")
+					.attr('cx', function(d){ return d[0]*distanceFactor+width/2; })
+					.attr('cy', function(d){ return d[1]*distanceFactor+height/2; })
+					.attr("r", 2)
+					.style("fill",function(d,i){
+						var color = colors[cl_idx[i]-1];
+						return 'rgb('+color[0]+','+color[1]+','+color[2]+')';
+					})
+					.attr('fill-opacity',0.7)
+					
+				svg_element.append('g')
+					.selectAll('text')
+					.data(topicCoordinates)
+					.enter()
+					.append('text')
+					.attr('class','noselect')
+					.attr('x', function(d) {return d[0]*distanceFactor+width/2;})
+					.attr('y', function(d) {return d[1]*distanceFactor+height/2;})
+					.text(function(d,i) {
+						var topicWordString = i+'-';
+						Wtopk[i].forEach(function(word) {
+							topicWordString+=word+' ';
+						});
+						return topicWordString;
+					})
+					.attr('text-anchor','middle')
+					.attr('font-family','sans-serif')
+					.attr('font-size', '2px')
+					.attr('font-weight', 'bold')
+					.attr('fill', 'black');
+			}
+
+
+
+			function dragStart() {
+				var p = d3.mouse(this);
+				selectionRect.init(p[0], p[1]);
+				selectionRect.removePrevious();
+			}
+
+			function dragMove() {
+				var p = d3.mouse(this);
+				selectionRect.update(p[0], p[1]);
+			}
+
+			function dragEnd() {
+				var finalAttributes = selectionRect.getCurrentAttributes();
+				if(finalAttributes.x2 - finalAttributes.x1 > 1 && finalAttributes.y2 - finalAttributes.y1 > 1){
+					// range selected
+					d3.event.sourceEvent.preventDefault();			// 이건 뭐지
+					selectionRect.focus();
+
+					selectedItems = [];
+
+					mappedX.forEach(function(d,i){
+						circleCoord = [d[0]*distanceFactor+width/2,d[1]*distanceFactor+height/2];
+						if(circleCoord[0]>finalAttributes.x1 && circleCoord[0]<finalAttributes.x2) {
+							if(circleCoord[1]>finalAttributes.y1 && circleCoord[1]<finalAttributes.y2) {
+								selectedItems.push(i+1)
+							}
+						}
+					});
+					if(selectedItems.length>0){
+						console.log(selectedItems);
+						$.getJSON($SCRIPT_ROOT+'/get_subTopic', {
+							idx: JSON.stringify(selectedItems)
+						},function(data){
+							var mappedX_sub = data.mappedX_sub;
+							var width = selectionRect.element.attr('width');
+							var height = selectionRect.element.attr('height');
+							var subTopicCoordinates = calcTopicCoord(mappedX_sub,data.cl_idx_sub);
+							initPoint(selectionRect.element, mappedX_sub, subTopicCoordinates, data.Wtopk_sub, width, height)
+						});
+					}
+
+				} else {
+					// single point selected
+					selectionRect.remove();
+				}
+			}
+
+			
+			// zoom 이벤트
+			function zoomed() {
+				container.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
+			}
+			var zoom = d3.behavior.zoom()
+				.scaleExtent([0.1, 10])
+				.on("zoom", zoomed);
+			
+			// drag select event
+			var dragBehavior = d3.behavior.drag()
+				.on("drag", dragMove)
+				.on("dragstart", dragStart)
+				.on("dragend", dragEnd);
+
+			
+
+			var colors = randomColors(K);
+			var svg;
+			var container;
+
+			// svg 특성
+			var margin = {top: -5, right: -5, bottom: -5, left: -5},
+				width = $(window).width() - margin.left - margin.right,
+				height =$(window).height() - margin.top - margin.bottom;
+			var svg = d3.select("#content_graph").append("svg")
+				.attr("width", width + margin.left + margin.right)
+				.attr("height", height + margin.top + margin.bottom)
+			  .append("g")
+				.attr("transform", "translate(" + margin.left + "," + margin.right + ")")
+				.call(zoom)
+				.call(dragBehavior);
+
+			var rect = svg.append("rect")
+				.attr("width", width)
+				.attr("height", height)
+				.style("fill", "none")
+				.style("pointer-events", "all");
+
+			container = svg.append('g')
+			var topicCoordinates = calcTopicCoord(mappedX,cl_idx);
+			var distanceFactor = 3
+			initPoint(container, mappedX, topicCoordinates, Wtopk, width, height,distanceFactor);
+		</script>
+	</body>
+</html>

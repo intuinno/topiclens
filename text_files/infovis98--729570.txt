@@ -1,0 +1,14 @@
+Multi-faceted insight through interoperable visual information analysis paradigms.
+
+        To gain insight and understanding of complex information
+collections, users must be able to visualize and explore many facets of
+the information. The paper presents several novel visual methods from an
+information analyst's perspective. The authors present a sample
+scenario, using the various methods to gain a variety of insights from a
+large information collection. They conclude that no single paradigm or
+visual method is sufficient for many analytical tasks. Often a suite of
+integrated methods offers a better analytic environment in today's
+emerging culture of information overload and rapidly changing issues.
+They also conclude that the interactions among these visual paradigms
+are equally as important as, if not more important than, the paradigms
+themselves
