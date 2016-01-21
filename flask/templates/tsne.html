@@ -43,27 +43,32 @@
 			function calcTopicCoord(mappedX, cl_idx){
 				var numberPerTopic = [];
 				var topicCoordinates = [];
+				var K = Math.max.apply(null,cl_idx);
 
 				for(var i=0;i<K;i++) {
 					numberPerTopic.push(0);
 					topicCoordinates.push([0,0]);
 				}
+				
 				for(var i=0;i<mappedX.length;i++) {
 					topicIdx = cl_idx[i]-1;
 					numberPerTopic[topicIdx]+=1;
 					topicCoordinates[topicIdx][0] += mappedX[i][0];
 					topicCoordinates[topicIdx][1] += mappedX[i][1];
 				}
+				
 				for(var i=0;i<K;i++) {
 					topicCoordinates[i][0]/=numberPerTopic[i];
 					topicCoordinates[i][1]/=numberPerTopic[i];
 				}
+				
 				return topicCoordinates
 			}
 
 
 			// 점 그리기
 			function initPoint(svg_element, mappedX, topicCoordinates, Wtopk, width, height, distanceFactor){
+				console.log(topicCoordinates);
 				svg_element.append('g')
 					.selectAll("circle")
 					.data(mappedX)
@@ -130,7 +135,6 @@
 						}
 					});
 					if(selectedItems.length>0){
-						console.log(selectedItems);
 						$.getJSON($SCRIPT_ROOT+'/get_subTopic', {
 							idx: JSON.stringify(selectedItems)
 						},function(data){
@@ -138,7 +142,7 @@
 							var width = selectionRect.element.attr('width');
 							var height = selectionRect.element.attr('height');
 							var subTopicCoordinates = calcTopicCoord(mappedX_sub,data.cl_idx_sub);
-							initPoint(selectionRect.element, mappedX_sub, subTopicCoordinates, data.Wtopk_sub, width, height)
+							initPoint(selectionRect.element, mappedX_sub, subTopicCoordinates, data.Wtopk_sub, width, height,distanceFactor)
 						});
 					}
 
@@ -178,7 +182,7 @@
 				.attr("height", height + margin.top + margin.bottom)
 			  .append("g")
 				.attr("transform", "translate(" + margin.left + "," + margin.right + ")")
-				.call(zoom)
+				//.call(zoom)
 				.call(dragBehavior);
 
 			var rect = svg.append("rect")

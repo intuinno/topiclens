@@ -47,7 +47,6 @@ def get_subTopic():
 	idx = json.loads(request.args.get('idx'))
 
 	[mappedX_sub, cl_idx_sub, Wtopk_idx_sub] = eng.sub_topic_tsne(idx,nargout=3)
-
 	Wtopk_sub = []
 	for idxArray in Wtopk_idx_sub:
 		tempArray = []
@@ -57,7 +56,10 @@ def get_subTopic():
 
 	cl_idx_sub = cl_idx_sub[0]
 
-	return mappedX_sub,cl_idx_sub, Wtopk_sub
+	mappedX_sub = np.array(mappedX_sub).tolist()
+	cl_idx_sub = np.array(cl_idx_sub).tolist()
+
+	return json.dumps({'mappedX_sub':mappedX_sub, 'cl_idx_sub':cl_idx_sub, 'Wtopk_sub':Wtopk_sub})
 
 # keyword 입력받음
 @app.route('/')
@@ -71,4 +73,4 @@ def form():
 
 # Execute the main program
 if __name__ == '__main__':
-	app.run(host='0.0.0.0',port=5003)
+	app.run(host='0.0.0.0',port=5004)
