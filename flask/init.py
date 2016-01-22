@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from flask import Flask, request, g, render_template
+from flask.ext.triangle import Triangle
 from scipy import sparse, io
 import numpy as np
 from matlab import engine
@@ -8,7 +9,8 @@ import os, json
 
 
 # Configuration
-app = Flask(__name__)
+app = Flask(__name__, static_path='/static')
+Triangle(app)
 app.config['DEBUG'] = True
 app.config.from_object(__name__)
 app.config.from_envvar('FLASKR_SETTINGS', silent=True)

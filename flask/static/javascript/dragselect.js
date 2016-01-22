@@ -1,14 +1,13 @@
 var selectionRect = {
+	parentElement 	: null,
+	previousParentElement : null,
 	element			: null,
-	previousElement : null,
 	currentY		: 0,
 	currentX		: 0,
 	originX			: 0,
 	originY			: 0,
-	setElement: function(ele) {
-		this.previousElement = this.element;
-		this.element = ele;
-	},
+
+
 	getNewAttributes: function() {
 		var x = this.currentX<this.originX?this.currentX:this.originX;
 		var y = this.currentY<this.originY?this.currentY:this.originY;
@@ -35,7 +34,8 @@ var selectionRect = {
 		};
 	},
 	init: function(newX, newY) {
-		var rectElement = svg.append("rect")
+		var parentElement = svg.append("g")
+		var rectElement = parentElement.append("rect")
 			.attr({
 				rx      : 4,
 				ry      : 4,
@@ -45,7 +45,10 @@ var selectionRect = {
 				height  : 0
 			})
 			.classed("selection", true);
-		this.setElement(rectElement);
+		this.element = rectElement;
+		this.previousParentElement = this.parentElement;
+		this.parentElement = parentElement;
+
 		this.originX = newX;
 		this.originY = newY;
 		this.update(newX, newY);
@@ -58,7 +61,7 @@ var selectionRect = {
 	focus: function() {
 		this.element
 			.style("stroke", "#DE695B")
-			.style('fill-opacity', 0)
+			.style("fill", "white")
 			.style("stroke-width", "1");
 	},
 	remove: function() {
@@ -66,8 +69,8 @@ var selectionRect = {
 		this.element = null;
 	},
 	removePrevious: function() {
-		if(this.previousElement) {
-			this.previousElement.remove();
+		if(this.previousParentElement) {
+			this.previousParentElement.remove();
 		}
 	}
 };
