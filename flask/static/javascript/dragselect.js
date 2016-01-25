@@ -65,8 +65,8 @@ var selectionRect = {
 			.style("stroke-width", "1");
 	},
 	remove: function() {
-		this.element.remove();
-		this.element = null;
+		this.parentElement.remove();
+		this.parentElement = null;
 	},
 	removePrevious: function() {
 		if(this.previousParentElement) {
