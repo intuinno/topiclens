@@ -25,7 +25,7 @@ def before__first_request():
 	global Wtopk
 	global voca
 	eng = engine.start_matlab()
-	eng.cd(os.getcwd()+'\\..\\')
+	eng.cd(os.path.dirname(os.getcwd()))
 	[mappedX, cl_idx, Wtopk_idx,voca] = eng.main_topic_tsne(nargout=4)
 
 	Wtopk = []

@@ -9,7 +9,7 @@ fnames = cell(length(res)-2,1);
 res = res(3:end);
 
 for i=1:(length(res))
-    fid=fopen([dir_name '\\' res(i).name]);
+    fid=fopen([dir_name filesep res(i).name]);
     tmp_str= [];
     while 1
         tline = fgetl(fid);
