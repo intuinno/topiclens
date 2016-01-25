@@ -20,14 +20,14 @@ if ~exist('tmp1','dir')
     mkdir('tmp1');
 end
 
-delete('tmp1\\*.*');
+delete(['tmp1' filesep '*.*']);
 
 % run python function to generate a term-document matrix
 dos(sprintf('python txt2mtx_fast.py %s',out_fname));
 
 % importing dictionary and term-document matrix
-dict = import_dictionary('tmp1\\vocabulary.txt');
-tdm = import_tdm('tmp1\\tmp.mtx');
+dict = import_dictionary(['tmp1' filesep 'vocabulary.txt']);
+tdm = import_tdm(['tmp1' filesep 'tmp.mtx']);
 A = sparse(tdm(:,1),tdm(:,2),tdm(:,3),max(tdm(:,1)),max(tdm(:,2)));
 clear tdm;
 
