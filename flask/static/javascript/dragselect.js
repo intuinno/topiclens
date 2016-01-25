@@ -1,6 +1,5 @@
 var selectionRect = {
 	parentElement 	: null,
-	previousParentElement : null,
 	element			: null,
 	currentY		: 0,
 	currentX		: 0,
@@ -46,7 +45,6 @@ var selectionRect = {
 			})
 			.classed("selection", true);
 		this.element = rectElement;
-		this.previousParentElement = this.parentElement;
 		this.parentElement = parentElement;
 
 		this.originX = newX;
@@ -69,8 +67,13 @@ var selectionRect = {
 		this.parentElement = null;
 	},
 	removePrevious: function() {
-		if(this.previousParentElement) {
-			this.previousParentElement.remove();
+		if(this.parentElement) {
+			this.parentElement.remove();
+			this.parentElement = null;
 		}
+		this.currentX = 0;
+		this.currentY = 0;
+		this.originX = 0;
+		this.originY = 0;
 	}
 };
