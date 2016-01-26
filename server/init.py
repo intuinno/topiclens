@@ -6,14 +6,24 @@ from scipy import sparse, io
 import numpy as np
 from matlab import engine
 import os, json
-
+from flask.ext.cors import CORS
 
 # Configuration
 app = Flask(__name__, static_path='/static')
 Triangle(app)
+# CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
+
 app.config['DEBUG'] = True
 app.config.from_object(__name__)
 app.config.from_envvar('FLASKR_SETTINGS', silent=True)
+
+# @app.after_request
+# def after_request(response):
+#   response.headers.add('Access-Control-Allow-Origin', '*')
+#   response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+#   response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE')
+#   return response
 
 
 # Routing
@@ -43,6 +53,7 @@ def teardown_request(exception):
 
 
 @app.route('/get_subTopic')
+# @cross_origin()
 def get_subTopic():
 	global eng
 	global voca
