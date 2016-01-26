@@ -100,8 +100,9 @@
 
 			function dragStart() {
 				var p = d3.mouse(this);
+				selectionRect.removePrevious();
 				selectionRect.init(p[0], p[1]);
-				// selectionRect.removePrevious();
+				
 			}
 
 			function dragMove() {
