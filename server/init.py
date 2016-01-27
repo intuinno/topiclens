@@ -34,6 +34,8 @@ def before__first_request():
 	global cl_idx
 	global Wtopk
 	global voca
+
+	print 'Starting matlab'
 	eng = engine.start_matlab()
 	eng.cd(os.path.dirname(os.getcwd()))
 	[mappedX, cl_idx, Wtopk_idx,voca] = eng.main_topic(nargout=4)
@@ -46,6 +48,7 @@ def before__first_request():
 		Wtopk.append(tempArray)
 
 	cl_idx = cl_idx[0]
+	print 'Server Ready'
 
 @app.teardown_request
 def teardown_request(exception):
