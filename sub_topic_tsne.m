@@ -8,7 +8,7 @@ addpath('./library/discnmf');
 addpath('./library/tSNE_matlab');
 
 %% importing term-doc matrix
-in_txt_dir = 'text_files';
+%in_txt_dir = 'text_files';
 out_fname = 'out.txt';
 
 is_stemming = 1;
@@ -23,6 +23,12 @@ end
 delete(['tmp1' filesep '*.*']);
 
 % run python function to generate a term-document matrix
+load('vis_paper_ver201508.mat');
+fid = fopen('out.txt', 'w');
+for i=1:size(PaperTitle,1)
+    fprintf(fid, '%s %s\n', PaperTitle{i}, Abstract{i});  
+end
+fclose(fid);
 dos(sprintf('python txt2mtx_fast.py %s',out_fname));
 
 % importing dictionary and term-document matrix
