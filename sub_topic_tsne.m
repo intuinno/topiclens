@@ -14,7 +14,7 @@ out_fname = 'out.txt';
 is_stemming = 1;
 
 % merge multiple text files in a particular directory to a single file
-[raw_txt,fnames] = merge_to_single_text(in_txt_dir,out_fname);
+%[raw_txt,fnames] = merge_to_single_text(in_txt_dir,out_fname);
 
 if ~exist('tmp1','dir')
     mkdir('tmp1');
@@ -23,6 +23,12 @@ end
 delete(['tmp1' filesep '*.*']);
 
 % run python function to generate a term-document matrix
+load('vis_paper_ver201508.mat');
+fid = fopen('out.txt', 'w');
+for i=1:size(PaperTitle,1)
+    fprintf(fid, '%s %s\n', PaperTitle{i}, Abstract{i});  
+end
+fclose(fid);
 dos(sprintf('python txt2mtx_fast.py %s',out_fname));
 
 % importing dictionary and term-document matrix
