@@ -11,7 +11,7 @@ from flask.ext.cors import CORS
 # Configuration
 app = Flask(__name__, static_path='/static')
 Triangle(app)
-# CORS(app)
+CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
 
 app.config['DEBUG'] = True
@@ -60,6 +60,9 @@ def get_subTopic():
 	idx = json.loads(request.args.get('idx'))
 
 	[mappedX_sub, cl_idx_sub, Wtopk_idx_sub] = eng.sub_topic_tsne(idx,nargout=3)
+	
+	print mappedX_sub
+
 	Wtopk_sub = []
 	for idxArray in Wtopk_idx_sub:
 		tempArray = []

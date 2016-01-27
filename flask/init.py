@@ -45,6 +45,8 @@ def get_subTopic():
 	global voca
 	idx = json.loads(request.args.get('idx'))
 
+	print idx
+
 	[mappedX_sub, cl_idx_sub, Wtopk_idx_sub] = eng.sub_topic_tsne(idx,nargout=3)
 	Wtopk_sub = []
 	for idxArray in Wtopk_idx_sub:

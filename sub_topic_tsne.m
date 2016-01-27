@@ -74,7 +74,7 @@ dict = dict(idxs);
 
 
 idx;
-idx = cell2mat(idx);
+% idx = cell2mat(idx);
 A_sub = A(:,idx);
 % no of topics
 k_sub = min([floor(length(idx)/10) 10]);
