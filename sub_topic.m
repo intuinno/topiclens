@@ -1,4 +1,5 @@
-function [mappedX, cl_idx, Wtopk_idx, dict] = main_topic_tsne()
+%% running standard nmf of subset
+function [mappedX_sub, cl_idx_sub, Wtopk_idx_sub] = sub_topic(idx)
 
 addpath('./library/nmf');     
 addpath('./library/ramkis');
@@ -9,6 +10,7 @@ addpath('./library/tSNE_matlab');
 %% importing term-doc matrix
 in_txt_dir = 'text_files';
 out_fname = 'out.txt';
+
 is_stemming = 1;
 
 % merge multiple text files in a particular directory to a single file
@@ -71,41 +73,45 @@ A = A(idxs,:);
 dict = dict(idxs);
 
 
-%% running standard nmf
+idx;
+% idx = cell2mat(idx);
+A_sub = A(:,idx);
 % no of topics
-k = 10 ;
+k_sub = min([floor(length(idx)/10) 10]);
 % no of top keywords
-topk =  5;
+topk_sub = 5;
 
 % normalization
-A_norm = bsxfun(@rdivide,A,sqrt(sum(A.^2)));  
+A_norm_sub = bsxfun(@rdivide,A_sub,sqrt(sum(A_sub.^2)));  
 
 % choosing one among different preprocessings
-target_A = A;     % replaced by below code (9/10) <- original
+target_A_sub = A_norm_sub;     % replaced by below code (9/10) <- original
 % target_A = A_norm;
 
 %%
 % target_A = A_idf;
-[tree, splits, is_leaf, clusters, timings, Ws, priorities, W, H] = hier8_neat(target_A, k);
+size(target_A_sub)
+[tree_sub, splits_sub, is_leaf_sub, clusters_sub, timings_sub, Ws_sub, priorities_sub, W_sub, H_sub] = hier8_neat(target_A_sub, k_sub);
 
 %%
 % displaying top keywords for each topic
-[Wtopk,Htopk,DocTopk,Wtopk_idx] = parsenmf(W,H,dict,topk);
+[Wtopk_sub,Htopk_sub,DocTopk_sub,Wtopk_idx_sub] = parsenmf(W_sub,H_sub,dict,topk_sub);
 
-Wtopk_idx = Wtopk_idx';
-[~,cl_idx] = max(H);
-mappedX = 'undefined';
+Wtopk_idx_sub = Wtopk_idx_sub';
+[~,cl_idx_sub] = max(H_sub);
+Wlen=size(Wtopk_sub,2);
+
+mappedX_sub = 'undefined';
 
 %% t-sne visualization
-no_dims = 2;
-initial_dims = 50;
-perplexity = 30;
+% Run t-SNE
+% no_dims=2;
+% initial_dims_sub=min([30, size(A_sub,2)]);
+% shrink_factor = .3;
+% perplexity = 30;
+% mappedX_sub = tsne_sup(target_A_sub', cl_idx_sub, shrink_factor, no_dims, initial_dims_sub, perplexity); 
 % Run t?SNE
 % mappedX = tsne(target_A', cl_idx, no_dims, initial_dims, perplexity);
-
-mappedX = tsne_sup(target_A', cl_idx, .7, no_dims, initial_dims, perplexity);
-% Run t?SNE
-%mappedX = tsne(target_A', cl_idx, no_dims, initial_dims, perplexity);
+%mappedX_sub = tsne(target_A_sub', cl_idx_sub, no_dims, initial_dims, perplexity);
 
 end
-

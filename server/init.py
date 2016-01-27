@@ -36,7 +36,7 @@ def before__first_request():
 	global voca
 	eng = engine.start_matlab()
 	eng.cd(os.path.dirname(os.getcwd()))
-	[mappedX, cl_idx, Wtopk_idx,voca] = eng.main_topic_tsne(nargout=4)
+	[mappedX, cl_idx, Wtopk_idx,voca] = eng.main_topic(nargout=4)
 
 	Wtopk = []
 	for idxArray in Wtopk_idx:
@@ -51,10 +51,33 @@ def before__first_request():
 def teardown_request(exception):
 	print('Teardown arose!'.format(exception))
 
-
 @app.route('/get_subTopic')
-# @cross_origin()
 def get_subTopic():
+	global eng
+	global voca
+	idx = json.loads(request.args.get('idx'))
+
+	[mappedX_sub, cl_idx_sub, Wtopk_idx_sub] = eng.sub_topic(idx,nargout=3)
+	
+	print mappedX_sub
+
+	Wtopk_sub = []
+	for idxArray in Wtopk_idx_sub:
+		tempArray = []
+		for idx in idxArray:
+			tempArray.append(voca[int(idx)-1])
+		Wtopk_sub.append(tempArray)
+
+	cl_idx_sub = cl_idx_sub[0]
+
+	# mappedX_sub = np.array(mappedX_sub).tolist()
+	cl_idx_sub = np.array(cl_idx_sub).tolist()
+
+	return json.dumps({'mappedX_sub':mappedX_sub, 'cl_idx_sub':cl_idx_sub, 'Wtopk_sub':Wtopk_sub})
+
+
+@app.route('/get_subTopic_tsne')
+def get_subTopic_tsne():
 	global eng
 	global voca
 	idx = json.loads(request.args.get('idx'))

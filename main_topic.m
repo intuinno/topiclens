@@ -97,15 +97,15 @@ Wtopk_idx = Wtopk_idx';
 mappedX = 'undefined';
 
 %% t-sne visualization
-no_dims = 2;
-initial_dims = 50;
-perplexity = 30;
+% no_dims = 2;
+% initial_dims = 50;
+% perplexity = 30;
 % Run t?SNE
 % mappedX = tsne(target_A', cl_idx, no_dims, initial_dims, perplexity);
 
-mappedX = tsne_sup(target_A', cl_idx, .7, no_dims, initial_dims, perplexity);
+% mappedX = tsne_sup(target_A', cl_idx, .7, no_dims, initial_dims, perplexity);
 % Run t?SNE
-%mappedX = tsne(target_A', cl_idx, no_dims, initial_dims, perplexity);
+% mappedX = tsne(target_A', cl_idx, no_dims, initial_dims, perplexity);
 
 end
 
