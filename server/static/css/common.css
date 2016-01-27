@@ -1,0 +1,23 @@
+
+.text-box {
+	width: 100%;
+	white-space: pre-wrap;
+	margin: 0px 0px 0px 0px;
+	padding: 0px;
+	overflow: auto;
+	font-family: arial, Helvetica, sans-serif;
+	font-size: 13px;
+	background-color: #FFFFFB;
+	border: 2px ridge #99CCFF;
+	z-index: 5
+}
+.axis line {
+  fill: none;
+  stroke: #ddd;
+  shape-rendering: crispEdges;
+  vector-effect: non-scaling-stroke;
+}
+.noselect {
+	pointer-events: none;
+}
+
