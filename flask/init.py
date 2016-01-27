@@ -37,10 +37,6 @@ def before__first_request():
 
 	cl_idx = cl_idx[0]
 
-@app.teardown_request
-def teardown_request(exception):
-	print('Teardown arose!'.format(exception))
-
 
 @app.route('/get_subTopic')
 def get_subTopic():
@@ -75,4 +71,4 @@ def form():
 
 # Execute the main program
 if __name__ == '__main__':
-	app.run(host='0.0.0.0',port=5004)
+	app.run(host='0.0.0.0',port=5005)
