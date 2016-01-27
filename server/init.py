@@ -27,7 +27,7 @@ app.config.from_envvar('FLASKR_SETTINGS', silent=True)
 
 
 # Routing
-@app.before_first_request
+# @app.before_first_request
 def before__first_request():
 	global eng
 	global mappedX
@@ -109,6 +109,7 @@ def form():
 	print "rendering..."
 	return render_template('tsne.html', mappedX=mappedX, cl_idx=cl_idx, Wtopk= Wtopk)
 
+before__first_request()
 
 # Execute the main program
 if __name__ == '__main__':
