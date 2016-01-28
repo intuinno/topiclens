@@ -57,8 +57,8 @@ def before__first_request():
 	cl_idx = cl_idx[0]
 	print 'Server Ready'
 
-	distanceMatrix = distanceMatrix[0:500,0:500].tolist()
-	cl_idx = cl_idx[0:500]
+	distanceMatrix = np.round(distanceMatrix,decimals=4).tolist()
+	cl_idx = cl_idx
 
 
 @app.teardown_request
@@ -124,7 +124,7 @@ def form():
 	global distanceMatrix
 
 	return render_template('tsne.html', cl_idx=cl_idx, Wtopk= Wtopk, distanceMatrix=distanceMatrix)
-
+ 
 before__first_request()
 
 # Execute the main program
