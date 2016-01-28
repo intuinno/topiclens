@@ -30,15 +30,20 @@ app.config.from_envvar('FLASKR_SETTINGS', silent=True)
 
 
 # Routing
-@app.before_first_request
+# @app.before_first_request
 def before__first_request():
 	global eng
 	global mappedX
 	global cl_idx
 	global Wtopk
 	global voca
+<<<<<<< HEAD
 	global distanceMatrix
 
+=======
+
+	print 'Starting matlab'
+>>>>>>> 487b9394e21b335950fd73657178240d5d25db80
 	eng = engine.start_matlab()
 	eng.cd(os.path.dirname(os.getcwd()))
 	[mappedX, cl_idx, Wtopk_idx,voca] = eng.main_topic(nargout=4)
@@ -53,6 +58,7 @@ def before__first_request():
 		Wtopk.append(tempArray)
 
 	cl_idx = cl_idx[0]
+	print 'Server Ready'
 
 	distanceMatrix = distanceMatrix[0:500,0:500].tolist()
 	cl_idx = cl_idx[0:500]
@@ -122,6 +128,7 @@ def form():
 
 	return render_template('tsne.html', cl_idx=cl_idx, Wtopk= Wtopk, distanceMatrix=distanceMatrix)
 
+before__first_request()
 
 # Execute the main program
 if __name__ == '__main__':
