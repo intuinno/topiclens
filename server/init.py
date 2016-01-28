@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from werkzeug.contrib.profiler import ProfilerMiddleware
 from flask import Flask, request, g, render_template
 from flask.ext.triangle import Triangle
 from scipy import sparse, io
@@ -21,6 +22,9 @@ app.config['DEBUG'] = True
 app.config.from_object(__name__)
 app.config.from_envvar('FLASKR_SETTINGS', silent=True)
 
+
+app.config['PROFILE'] = True
+app.wsgi_app = ProfilerMiddleware(app.wsgi_app, restrictions=[10])
 # @app.after_request
 # def after_request(response):
 #   response.headers.add('Access-Control-Allow-Origin', '*')
