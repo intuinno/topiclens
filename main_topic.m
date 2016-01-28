@@ -68,6 +68,8 @@ end
 idxs = setdiff(1:size(A,1),idxs);
 
 A = A(idxs,:);
+
+
 dict = dict(idxs);
 
 
