@@ -37,13 +37,10 @@ def before__first_request():
 	global cl_idx
 	global Wtopk
 	global voca
-<<<<<<< HEAD
 	global distanceMatrix
 
-=======
 
 	print 'Starting matlab'
->>>>>>> 487b9394e21b335950fd73657178240d5d25db80
 	eng = engine.start_matlab()
 	eng.cd(os.path.dirname(os.getcwd()))
 	[mappedX, cl_idx, Wtopk_idx,voca] = eng.main_topic(nargout=4)
