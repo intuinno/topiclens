@@ -7,7 +7,7 @@ from scipy import sparse, io
 from sklearn.metrics.pairwise import pairwise_distances
 import numpy as np
 from matlab import engine
-import os, json
+import os, json, time
 from flask.ext.cors import CORS
 from jinja2 import Environment
 
@@ -33,37 +33,8 @@ app.wsgi_app = ProfilerMiddleware(app.wsgi_app, restrictions=[10])
 #   return response
 
 
-# Routing
-# @app.before_first_request
-def before__first_request():
-	global eng
-	global mappedX
-	global cl_idx
-	global Wtopk
-	global voca
-	global distanceMatrix
 
-
-	print 'Starting matlab'
-	eng = engine.start_matlab()
-	eng.cd(os.path.dirname(os.getcwd()))
-	[mappedX, cl_idx, Wtopk_idx,voca] = eng.main_topic(nargout=4)
-
-	distanceMatrix = io.loadmat('./../tdm2.mat')['DD']
-
-	Wtopk = []
-	for idxArray in Wtopk_idx:
-		tempArray = []
-		for idx in idxArray:
-			tempArray.append(voca[int(idx)-1])
-		Wtopk.append(tempArray)
-
-	cl_idx = cl_idx[0]
-
-
-	sameTopicWeight = 0.96
-	differentTopicWeight = 1.04
-
+def supervisedTSNE(distanceMatrix, cl_idx, sameTopicWeight=0.9, differentTopicWeight=1.1):
 	n = distanceMatrix.shape[0]
 	for i in xrange(n):
 		i_topic = cl_idx[i]
@@ -78,7 +49,49 @@ def before__first_request():
 
 	distanceMatrix = np.round(distanceMatrix,decimals=4)
 
-	print 'Server Ready'
+
+# Routing
+# @app.before_first_request
+def before__first_request_():
+	global eng
+	global mappedX
+	global cl_idx
+	global Wtopk
+	global voca
+	global distanceMatrix
+
+
+	tic = time.time()
+	print 'Starting matlab - ',
+	eng = engine.start_matlab()
+	eng.cd(os.path.dirname(os.getcwd()))
+	print "%.4f" % (time.time()-tic)
+
+	tic = time.time()
+	print "Get data - ",
+	[mappedX, cl_idx, Wtopk_idx,voca] = eng.main_topic(nargout=4)
+	distanceMatrix = io.loadmat('./../tdm2.mat')['DD']
+	print "%.4f" % (time.time()-tic)
+
+
+	tic = time.time()
+	print "Calculate data - ",
+
+	Wtopk = []
+	for idxArray in Wtopk_idx:
+		tempArray = []
+		for idx in idxArray:
+			tempArray.append(voca[int(idx)-1])
+		Wtopk.append(tempArray)
+
+	cl_idx = cl_idx[0]
+
+
+	sameTopicWeight = 0.8
+	differentTopicWeight = 1.15
+	supervisedTSNE(distanceMatrix, cl_idx, sameTopicWeight=sameTopicWeight, differentTopicWeight=differentTopicWeight)
+
+	print "%.4f" % (time.time()-tic)
 	
 
 	cl_idx = cl_idx[0:1000]
@@ -150,8 +163,8 @@ def form():
 
 	return render_template('tsne.html', cl_idx=cl_idx, Wtopk= Wtopk, distanceMatrix=distanceMatrix)
  
-before__first_request()
 
 # Execute the main program
 if __name__ == '__main__':
+	before__first_request_()
 	app.run(host='0.0.0.0',port=5004)
