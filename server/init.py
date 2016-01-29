@@ -59,9 +59,25 @@ def before__first_request():
 		Wtopk.append(tempArray)
 
 	cl_idx = cl_idx[0]
-	print 'Server Ready'
+
+
+	sameTopicWeight = 0.96
+	differentTopicWeight = 1.04
+	for i in xrange(n):
+		i_topic = cl_idx[i]
+		for j in xrange(n):
+			if i==j:
+				continue
+			elif i_topic==cl_idx[j]:
+				distanceMatrix[i,j]*=sameTopicWeight
+			else:
+				distanceMatrix[i,j]*=differentTopicWeight
+		distanceMatrix[i,:] /= distanceMatrix[i,:].max()
 
 	distanceMatrix = np.round(distanceMatrix,decimals=4)
+	
+	print 'Server Ready'
+	
 
 	cl_idx = cl_idx[0:1000]
 	distanceMatrix = distanceMatrix[0:1000,0:1000]
