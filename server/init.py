@@ -8,7 +8,7 @@ from sklearn.metrics.pairwise import pairwise_distances
 import numpy as np
 from matlab import engine
 import os, json
-from flask.ext.cors import ConfigParser
+from flask.ext.cors import CORS
 from jinja2 import Environment
 
 
