@@ -8,12 +8,12 @@ from sklearn.metrics.pairwise import pairwise_distances
 import numpy as np
 from matlab import engine
 import os, json
-from flask.ext.cors import CORS
+from flask.ext.cors import ConfigParser
 from jinja2 import Environment
 
 
 # Configuration
-app = Flask(__name__, static_path='/static')
+app = Flask(__name__, static_path='/static')	
 Triangle(app)
 CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
@@ -49,7 +49,7 @@ def before__first_request():
 	eng.cd(os.path.dirname(os.getcwd()))
 	[mappedX, cl_idx, Wtopk_idx,voca] = eng.main_topic(nargout=4)
 
-	distanceMatrix = io.loadmat('./../tdm2.mat')['DD']#.tolist()
+	distanceMatrix = io.loadmat('./../tdm2.mat')['DD']
 
 	Wtopk = []
 	for idxArray in Wtopk_idx:
@@ -61,9 +61,12 @@ def before__first_request():
 	cl_idx = cl_idx[0]
 	print 'Server Ready'
 
-	distanceMatrix = np.round(distanceMatrix,decimals=4).tolist()
-	cl_idx = cl_idx
+	distanceMatrix = np.round(distanceMatrix,decimals=4)
 
+	cl_idx = cl_idx[0:1000]
+	distanceMatrix = distanceMatrix[0:1000,0:1000]
+
+	distanceMatrix = distanceMatrix.tolist()
 
 @app.teardown_request
 def teardown_request(exception):
