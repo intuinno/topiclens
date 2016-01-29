@@ -63,6 +63,8 @@ def before__first_request():
 
 	sameTopicWeight = 0.96
 	differentTopicWeight = 1.04
+
+	n = distanceMatrix.shape[0]
 	for i in xrange(n):
 		i_topic = cl_idx[i]
 		for j in xrange(n):
@@ -75,7 +77,7 @@ def before__first_request():
 		distanceMatrix[i,:] /= distanceMatrix[i,:].max()
 
 	distanceMatrix = np.round(distanceMatrix,decimals=4)
-	
+
 	print 'Server Ready'
 	
 
