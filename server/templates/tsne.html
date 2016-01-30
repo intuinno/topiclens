@@ -84,7 +84,7 @@
 					.attr('x', function(d) {return d[0];})
 					.attr('y', function(d) {return d[1];})
 					.text(function(d,i) {
-						var topicWordString = i+'-';
+						var topicWordString = '';
 						Wtopk[i].forEach(function(word) {
 							topicWordString+=word+' ';
 						});
@@ -243,7 +243,7 @@
 			var container;
 
 			// svg attribute
-			var margin = {top: 5, right: 5, bottom: 5, left: 5},
+			var margin = {top: -5, right: -5, bottom: -5, left: -5},
 				width = $(window).width() - margin.left - margin.right,
 				height =$(window).height() - margin.top - margin.bottom;
 			var svg = d3.select("#content_graph").append("svg")
