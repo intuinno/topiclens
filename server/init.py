@@ -47,7 +47,7 @@ def supervisedTSNE(distanceMatrix, cl_idx, sameTopicWeight=0.9, differentTopicWe
 				distanceMatrix[i,j]*=differentTopicWeight
 		distanceMatrix[i,:] /= distanceMatrix[i,:].max()
 
-	distanceMatrix = np.round(distanceMatrix,decimals=4)
+	return np.round(distanceMatrix,decimals=4)
 
 
 # Routing
@@ -89,7 +89,8 @@ def before__first_request_():
 
 	sameTopicWeight = 0.8
 	differentTopicWeight = 1.15
-	supervisedTSNE(distanceMatrix, cl_idx, sameTopicWeight=sameTopicWeight, differentTopicWeight=differentTopicWeight)
+	distanceMatrix = supervisedTSNE(distanceMatrix, cl_idx,
+		sameTopicWeight=sameTopicWeight, differentTopicWeight=differentTopicWeight)
 
 	print "%.4f" % (time.time()-tic)
 	
