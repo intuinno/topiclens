@@ -59,6 +59,7 @@ def before__first_request_():
 	global Wtopk
 	global voca
 	global distanceMatrix
+	global distanceMatrix_main
 
 
 	tic = time.time()
@@ -87,18 +88,18 @@ def before__first_request_():
 	cl_idx = cl_idx[0]
 
 
-	sameTopicWeight = 0.8
-	differentTopicWeight = 1.15
-	distanceMatrix = supervisedTSNE(distanceMatrix, cl_idx,
-		sameTopicWeight=sameTopicWeight, differentTopicWeight=differentTopicWeight)
-
-	print "%.4f" % (time.time()-tic)
-	
-
 	cl_idx = cl_idx[0:1000]
 	distanceMatrix = distanceMatrix[0:1000,0:1000]
 
-	distanceMatrix = distanceMatrix.tolist()
+
+	sameTopicWeight = 0.8
+	differentTopicWeight = 1.15
+	distanceMatrix_main = supervisedTSNE(distanceMatrix, cl_idx,
+		sameTopicWeight=sameTopicWeight, differentTopicWeight=differentTopicWeight)
+
+	print "%.4f" % (time.time()-tic)
+
+	distanceMatrix_main = distanceMatrix_main.tolist()
 
 @app.teardown_request
 def teardown_request(exception):
@@ -109,25 +110,34 @@ def teardown_request(exception):
 def get_subTopic():
 	global eng
 	global voca
+	global distanceMatrix
+
 	idx = json.loads(request.args.get('idx'))
 
 	[mappedX_sub, cl_idx_sub, Wtopk_idx_sub] = eng.sub_topic(idx,nargout=3)
 
-	print mappedX_sub
-
 	Wtopk_sub = []
 	for idxArray in Wtopk_idx_sub:
 		tempArray = []
-		for idx in idxArray:
-			tempArray.append(voca[int(idx)-1])
+		for topicIdx in idxArray:
+			tempArray.append(voca[int(topicIdx)-1])
 		Wtopk_sub.append(tempArray)
 
 	cl_idx_sub = cl_idx_sub[0]
-
-	# mappedX_sub = np.array(mappedX_sub).tolist()
 	cl_idx_sub = np.array(cl_idx_sub).tolist()
 
-	return json.dumps({'mappedX_sub':mappedX_sub, 'cl_idx_sub':cl_idx_sub, 'Wtopk_sub':Wtopk_sub})
+
+	distanceMatrix_sub = distanceMatrix[idx,:][:,idx]
+
+	sameTopicWeight = 0.8
+	differentTopicWeight = 1.15
+	distanceMatrix_sub = supervisedTSNE(distanceMatrix_sub, cl_idx,
+		sameTopicWeight=sameTopicWeight, differentTopicWeight=differentTopicWeight)
+	distanceMatrix_sub = distanceMatrix_sub.tolist()
+
+
+
+	return json.dumps({'distanceMatrix':distanceMatrix_sub, 'cl_idx_sub':cl_idx_sub, 'Wtopk_sub':Wtopk_sub})
 
 
 @app.route('/get_subTopic_tsne')
@@ -157,12 +167,11 @@ def get_subTopic_tsne():
 # keyword 입력받음
 @app.route('/')
 def form():
-	global mappedX
 	global cl_idx
 	global Wtopk
-	global distanceMatrix
+	global distanceMatrix_main
 
-	return render_template('tsne.html', cl_idx=cl_idx, Wtopk= Wtopk, distanceMatrix=distanceMatrix)
+	return render_template('tsne.html', cl_idx=cl_idx, Wtopk= Wtopk, distanceMatrix=distanceMatrix_main)
  
 
 # Execute the main program

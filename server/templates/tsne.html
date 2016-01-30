@@ -101,6 +101,7 @@
 
 			function dragStart() {
 				var p = d3.mouse(this);
+				subStepAnimation = null;
 				selectionRect.removePrevious();
 				selectionRect.init(p[0], p[1]);
 				
@@ -113,7 +114,9 @@
 
 			function dragEnd() {
 				var finalAttributes = selectionRect.getCurrentAttributes();
-				if(finalAttributes.x2 - finalAttributes.x1 > 1 && finalAttributes.y2 - finalAttributes.y1 > 1){
+				var width = finalAttributes.x2 - finalAttributes.x1,
+					height = finalAttributes.y2 - finalAttributes.y1;
+				if(width > 0 && height > 0){
 					// range selected
 					d3.event.sourceEvent.preventDefault();			// 이건 뭐지
 					selectionRect.focus();
@@ -132,40 +135,25 @@
 						$.getJSON($SCRIPT_ROOT+'/get_subTopic', {
 							idx: JSON.stringify(selectedItems)
 						},function(data){
-							var mappedX_sub = data.mappedX_sub;
+							var distanceMatrix_sub = data.distanceMatrix;
 							var subCenterX = (selectionRect.currentX+selectionRect.originX)/2;
 							var subCenterY = (selectionRect.currentY+selectionRect.originY)/2;
 
-							// for rescale mappedX_sub
-							var minX=minY=1e10,
-								maxX=maxY=-1e10;
-							mappedX_sub.forEach(function(d){
-								if(d[0]>maxX) maxX=d[0];
-								else if(d[0]<minX) minX = d[0];
+							
+							var subTsne = new tsnejs.tSNE(opt); // create a tSNE instance
+							subTsne.initDataDist(distanceMatrix_sub);
 
-								if(d[1]>maxY) maxY=d[1];
-								else if(d[1]<minY) minY = d[1];
-							});
-							var rangeX = maxX-minX,
-								rangeY = maxY-minY;
+							subTsne.step();
+							var mappedX_sub = subTsne.getSolution();
 
-							var subWidth = selectionRect.element.attr('width'),
-								subHeight = selectionRect.element.attr('height');
-							var displayMul;
-							if(width>height) displayMul=subHeight;
-							else displayMul = subWidth;
+							var topicCoordinates = calcTopicCoord(mappedX_sub,cl_idx);
+							var circleSize = 5,
+								fontSize = 12;
+							initPoint(selectionRect.parentElement, mappedX_sub, cl_idx, topicCoordinates, Wtopk,circleSize,fontSize);
 
-							for(var i=0; i<mappedX_sub.length;i++){
-								mappedX_sub[i][0] = mappedX_sub[i][0]/rangeX*displayMul*displayRatio + subCenterX;
-								mappedX_sub[i][1] = mappedX_sub[i][1]/rangeY*displayMul*displayRatio + subCenterY;
-							}
-
-
-							var subTopicCoordinates = calcTopicCoord(mappedX_sub,data.cl_idx_sub);
-							var boxDiagonalRatio = Math.sqrt((subWidth*subWidth+subHeight*subHeight)/(width*width+height*height));
-							var subCircleSize = Math.max(circleSize*boxDiagonalRatio,5),
-								subFontSize = Math.max(fontSize*boxDiagonalRatio,8);
-							initPoint(selectionRect.parentElement, mappedX_sub, data.cl_idx_sub, subTopicCoordinates, data.Wtopk_sub, subCircleSize, subFontSize);
+							subStepAnimation = setInterval(function(){
+								updatePoint(selectionRect.parentElement,subTsne,cl_idx,width,height, subCenterX, subCenterY);
+							}, 2);
 						});
 					}
 
@@ -177,7 +165,7 @@
 
 
 
-			function rescale(mappedX,width,height) {
+			function rescale(mappedX,width,height, centerX, centerY) {
 				// rescale mappedX
 				var minX=minY = 1e10,
 					maxX=maxY = -1e10;
@@ -198,8 +186,8 @@
 				else displayMul=width;
 
 				for(var i=0; i<mappedX.length;i++){
-					mappedX[i][0] = mappedX[i][0]/rangeX*displayMul*displayRatio + width/2;
-					mappedX[i][1] = mappedX[i][1]/rangeY*displayMul*displayRatio + height/2;
+					mappedX[i][0] = mappedX[i][0]/rangeX*displayMul*displayRatio + centerX;
+					mappedX[i][1] = mappedX[i][1]/rangeY*displayMul*displayRatio + centerY;
 				}
 
 				return mappedX
@@ -207,9 +195,9 @@
 			}
 
 
-			function updatePoint(container,tsne,cl_idx,width,height){
+			function updatePoint(container,tsne,cl_idx,width,height, centerX, centerY){
 				tsne.step();
-				Y = rescale(tsne.getSolution(),width,height);
+				Y = rescale(tsne.getSolution(),width,height, centerX, centerY);
 				topicCoordinates = calcTopicCoord(Y,cl_idx);
 
 				container.selectAll('circle')
@@ -249,18 +237,13 @@
 			{% endfor %}
 
 
-			// initialize data. Here we have 3 points and some example pairwise dissimilarities
-			var opt = {epsilon: 500}; // epsilon is learning rate (10 = default)
-			var tsne = new tsnejs.tSNE(opt); // create a tSNE instance
-			tsne.initDataDist(distanceMatrix);
-
 
 			var colors = randomColors(K);
 			var svg;
 			var container;
 
 			// svg attribute
-			var margin = {top: -5, right: -5, bottom: -5, left: -5},
+			var margin = {top: 5, right: 5, bottom: 5, left: 5},
 				width = $(window).width() - margin.left - margin.right,
 				height =$(window).height() - margin.top - margin.bottom;
 			var svg = d3.select("#content_graph").append("svg")
@@ -278,6 +261,12 @@
 				.style("pointer-events", "all");
 
 
+
+			// initialize data. Here we have 3 points and some example pairwise dissimilarities
+			var opt = {epsilon: 500}; // epsilon is learning rate (10 = default)
+			var tsne = new tsnejs.tSNE(opt); // create a tSNE instance
+			tsne.initDataDist(distanceMatrix);
+
 			tsne.step();
 			var mappedX = tsne.getSolution();
 
@@ -287,7 +276,8 @@
 				fontSize = 12;
 			initPoint(container, mappedX, cl_idx, topicCoordinates, Wtopk,circleSize,fontSize);
 
-			var stepAnimation = setInterval(function(){ updatePoint(container,tsne,cl_idx,width,height); }, 2);
+			var stepAnimation = setInterval(function(){ updatePoint(container,tsne,cl_idx,width,height, width/2, height/2); }, 2);
+			var subStepAnimation;
 
 		</script>
 	</body>
