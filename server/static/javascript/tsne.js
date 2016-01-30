@@ -258,7 +258,7 @@ var tsnejs = tsnejs || { REVISION: 'ALPHA' };
           this.gains[i][d] = newgain; // store for next turn
 
           // compute momentum step direction
-          var momval = this.iter < 250 ? 0.5 : 0.8;
+          var momval = this.iter < 500 ? 0.5 : 0.8;
           var newsid = momval * sid - this.epsilon * newgain * grad[i][d];
           this.ystep[i][d] = newsid; // remember the step we took
 
