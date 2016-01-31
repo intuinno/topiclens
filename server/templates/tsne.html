@@ -101,8 +101,8 @@
 
 			function dragStart() {
 				var p = d3.mouse(this);
-				subStepAnimation = null;
-				selectionRect.removePrevious();
+				clearInterval(subStepAnimation);
+				selectionRect.removePrevious();              ///  여기 고치기!
 				selectionRect.init(p[0], p[1]);
 				
 			}
@@ -136,6 +136,7 @@
 							idx: JSON.stringify(selectedItems)
 						},function(data){
 							var distanceMatrix_sub = data.distanceMatrix;
+							var cl_idx_sub = data.cl_idx_sub;
 							var subCenterX = (selectionRect.currentX+selectionRect.originX)/2;
 							var subCenterY = (selectionRect.currentY+selectionRect.originY)/2;
 
@@ -146,13 +147,13 @@
 							subTsne.step();
 							var mappedX_sub = subTsne.getSolution();
 
-							var topicCoordinates = calcTopicCoord(mappedX_sub,cl_idx);
+							var subTopicCoordinates = calcTopicCoord(mappedX_sub,cl_idx_sub);
 							var circleSize = 5,
 								fontSize = 12;
-							initPoint(selectionRect.parentElement, mappedX_sub, cl_idx, topicCoordinates, Wtopk,circleSize,fontSize);
+							initPoint(selectionRect.parentElement, mappedX_sub, cl_idx_sub, subTopicCoordinates, Wtopk,circleSize,fontSize);
 
 							subStepAnimation = setInterval(function(){
-								updatePoint(selectionRect.parentElement,subTsne,cl_idx,width,height, subCenterX, subCenterY);
+								updatePoint(selectionRect.parentElement,subTsne,cl_idx_sub,width,height, subCenterX, subCenterY);
 							}, 2);
 						});
 					}
@@ -278,7 +279,6 @@
 
 			var stepAnimation = setInterval(function(){ updatePoint(container,tsne,cl_idx,width,height, width/2, height/2); }, 2);
 			var subStepAnimation;
-
 		</script>
 	</body>
 </html>
