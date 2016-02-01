@@ -37,7 +37,6 @@
 			function calcTopicCoord(mappedX, cl_idx){
 				var numberPerTopic = [];
 				var topicCoordinates = [];
-				var K = Math.max.apply(null,cl_idx);
 
 				for(var i=0;i<K;i++) {
 					numberPerTopic.push(0);
@@ -116,6 +115,7 @@
 				var finalAttributes = selectionRect.getCurrentAttributes();
 				var width = finalAttributes.x2 - finalAttributes.x1,
 					height = finalAttributes.y2 - finalAttributes.y1;
+
 				if(width > 0 && height > 0){
 					// range selected
 					d3.event.sourceEvent.preventDefault();			// 이건 뭐지
@@ -127,11 +127,13 @@
 						circleCoord = [d[0],d[1]];
 						if(circleCoord[0]>finalAttributes.x1 && circleCoord[0]<finalAttributes.x2) {
 							if(circleCoord[1]>finalAttributes.y1 && circleCoord[1]<finalAttributes.y2) {
-								selectedItems.push(i+1)
+								selectedItems.push(i+1);
 							}
 						}
 					});
 					if(selectedItems.length>0){
+
+
 						$.getJSON($SCRIPT_ROOT+'/get_subTopic', {
 							idx: JSON.stringify(selectedItems)
 						},function(data){
@@ -140,7 +142,7 @@
 							var subCenterX = (selectionRect.currentX+selectionRect.originX)/2;
 							var subCenterY = (selectionRect.currentY+selectionRect.originY)/2;
 
-							
+
 							var subTsne = new tsnejs.tSNE(opt); // create a tSNE instance
 							subTsne.initDataDist(distanceMatrix_sub);
 
@@ -153,7 +155,13 @@
 							initPoint(selectionRect.parentElement, mappedX_sub, cl_idx_sub, subTopicCoordinates, Wtopk,circleSize,fontSize);
 
 							subStepAnimation = setInterval(function(){
-								updatePoint(selectionRect.parentElement,subTsne,cl_idx_sub,width,height, subCenterX, subCenterY);
+								if(subLimitedClock<limitedClock) {
+									updatePoint(selectionRect.parentElement,subTsne,cl_idx_sub,width,height, subCenterX, subCenterY);
+									subLimitedClock+=1;
+								} else {
+									subLimitedClock=0;
+									clearInterval(subStepAnimation);
+								}
 							}, 2);
 						});
 					}
@@ -168,8 +176,8 @@
 
 			function rescale(mappedX,width,height, centerX, centerY) {
 				// rescale mappedX
-				var minX=minY = 1e10,
-					maxX=maxY = -1e10;
+				var minX=minY = 1e20,
+					maxX=maxY = -1e20;
 
 				mappedX.forEach(function(d){
 					if(d[0]>maxX) maxX=d[0];
@@ -230,8 +238,8 @@
 
 			
 			var cl_idx = {{ cl_idx }};
+			var K = Math.max.apply(null,cl_idx);
 			var distanceMatrix = {{ distanceMatrix }};
-			var K = 10;
 			var Wtopk = [];
 			{% for arr in Wtopk %}
 				Wtopk.push({{arr|tojson}});
@@ -277,7 +285,18 @@
 				fontSize = 12;
 			initPoint(container, mappedX, cl_idx, topicCoordinates, Wtopk,circleSize,fontSize);
 
-			var stepAnimation = setInterval(function(){ updatePoint(container,tsne,cl_idx,width,height, width/2, height/2); }, 2);
+			var limitedClock = 1000;
+			var mainLimitedClock = 0;
+			var stepAnimation = setInterval(function(){
+				if(mainLimitedClock<limitedClock){
+					updatePoint(container,tsne,cl_idx,width,height, width/2, height/2);
+					mainLimitedClock+=1;
+				} else {
+					mainLimitedClock=0;
+					clearInterval(stepAnimation);
+				}},2);
+
+			var subLimitedClock = 0;
 			var subStepAnimation;
 		</script>
 	</body>
