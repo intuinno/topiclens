@@ -22,13 +22,13 @@
 			function randomColors(total) {
 				var i = 360 / (total - 1); // distribute the colors evenly on the hue range
 				var r = []; // hold the generated colors
-				if(total==1)
-					r.push(hsvToRgb(180,85,85));
-				else
+				if(total==1) r.push(hsvToRgb(180,85,85));
+				else {
 					for (var x=0; x<total; x++) {
 						r.push(hsvToRgb(i*x, 85, 85));
 						// you can also alternate the saturation and value for even more contrast between the colors
 					}
+				}
 				return r;
 			}
 
@@ -132,8 +132,6 @@
 						}
 					});
 					if(selectedItems.length>0){
-
-
 						$.getJSON($SCRIPT_ROOT+'/get_subTopic', {
 							idx: JSON.stringify(selectedItems)
 						},function(data){
@@ -142,11 +140,10 @@
 							var subCenterX = (selectionRect.currentX+selectionRect.originX)/2;
 							var subCenterY = (selectionRect.currentY+selectionRect.originY)/2;
 
-
 							var subTsne = new tsnejs.tSNE(opt); // create a tSNE instance
 							subTsne.initDataDist(distanceMatrix_sub);
-
 							subTsne.step();
+
 							var mappedX_sub = subTsne.getSolution();
 
 							var subTopicCoordinates = calcTopicCoord(mappedX_sub,cl_idx_sub);
@@ -165,17 +162,13 @@
 							}, 2);
 						});
 					}
-
-				} else {
-					// single point selected
+				} else { // single point selected
 					selectionRect.remove();
 				}
 			}
 
 
-
 			function rescale(mappedX,width,height, centerX, centerY) {
-				// rescale mappedX
 				var minX=minY = 1e20,
 					maxX=maxY = -1e20;
 
@@ -200,7 +193,6 @@
 				}
 
 				return mappedX
-
 			}
 
 
@@ -221,7 +213,6 @@
 			}
 
 			
-			// zoom 이벤트
 			function zoomed() {
 				container.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
 			}
@@ -244,7 +235,6 @@
 			{% for arr in Wtopk %}
 				Wtopk.push({{arr|tojson}});
 			{% endfor %}
-
 
 
 			var colors = randomColors(K);
@@ -294,10 +284,17 @@
 				} else {
 					mainLimitedClock=0;
 					clearInterval(stepAnimation);
-				}},2);
+				}
+			},2);
 
 			var subLimitedClock = 0;
 			var subStepAnimation;
+
+			$(window).on('resize', function(){
+				var win = $(this);
+				width = win.width();
+				height = win.height();
+			})
 		</script>
 	</body>
 </html>
