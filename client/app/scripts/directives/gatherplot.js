@@ -643,7 +643,7 @@
                                     return +d.filenumber;
                                 });
 
-                                $http.get('http://0.0.0.0:5004/get_subTopic', {
+                                $http.get('http://topiclens.org:8000/api/get_subTopic', {
                                     params: {
                                         idx: JSON.stringify(selectedItems)
                                     }
