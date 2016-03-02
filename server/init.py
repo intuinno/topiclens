@@ -7,6 +7,7 @@ import numpy as np
 from matlab import engine
 import os, json
 from flask.ext.cors import CORS
+import pdb
 
 # Configuration
 app = Flask(__name__, static_path='/static')
@@ -60,9 +61,12 @@ def get_subTopic():
 	global voca
 	idx = json.loads(request.args.get('idx'))
 
+	# pdb.set_trace()
+
 	[mappedX_sub, cl_idx_sub, Wtopk_idx_sub] = eng.sub_topic(idx,nargout=3)
 	
 	print mappedX_sub
+
 
 	Wtopk_sub = []
 	for idxArray in Wtopk_idx_sub:
