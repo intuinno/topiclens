@@ -81,6 +81,9 @@ end
 A_sub = A(:,idx);
 % no of topics
 k_sub = min([floor(length(idx)/10) 10]);
+if (k_sub<2) 
+    k_sub = 2;
+end
 % no of top keywords
 topk_sub = 5;
 
