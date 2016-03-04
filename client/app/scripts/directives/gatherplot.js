@@ -41,6 +41,8 @@
                             var tsne_animation;
                             var Y;
 
+                            var xRange, yRange;
+
 
 
                             var width = 1040;
@@ -1814,6 +1816,8 @@
                                     scope.context.xDomain = zoom.x().domain();
                                     scope.context.yDomain = zoom.y().domain();
 
+
+
                                     nodeGroup.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
                                     //nodeGroup.attr("transform", "translate(" + d3.event.translate + ")");
 
@@ -1849,27 +1853,27 @@
 
                                     d3.transition().duration(700).tween("zoom", function() {
 
-                                        var range = getExtentConsideringXY(scope.xdim, scope.ydim);
+                                        // var range = getExtentConsideringXY(scope.xdim, scope.ydim);
 
-                                        var xRange = range.xRange;
-                                        var yRange = range.yRange;
+                                        // var xRange = range.xRange;
+                                        // var yRange = range.yRange;
 
 
-                                        if (scope.config.isGather === 'gather') {
+                                        // if (scope.config.isGather === 'gather') {
 
-                                            var typeOfXYDim = findTypeOfXYDim();
+                                        //     var typeOfXYDim = findTypeOfXYDim();
 
-                                            if (typeOfXYDim === 'XNomYOrd') {
+                                        //     if (typeOfXYDim === 'XNomYOrd') {
 
-                                                var yRange = getExtentFromCalculatedPointsForBinnedGather(scope.ydim);
+                                        //         var yRange = getExtentFromCalculatedPointsForBinnedGather(scope.ydim);
 
-                                            } else if (typeOfXYDim === 'XOrdYNom') {
+                                        //     } else if (typeOfXYDim === 'XOrdYNom') {
 
-                                                var xRange = getExtentFromCalculatedPointsForBinnedGather(scope.xdim);
+                                        //         var xRange = getExtentFromCalculatedPointsForBinnedGather(scope.xdim);
 
-                                            }
+                                        //     }
 
-                                        }
+                                        // }
 
                                         var ix = d3.interpolate(xScale.domain(), xRange),
                                             iy = d3.interpolate(yScale.domain(), yRange);
@@ -2290,8 +2294,8 @@
 
                                 var range = getExtentConsideringXY(scope.xdim, scope.ydim);
 
-                                var xRange = range.xRange;
-                                var yRange = range.yRange;
+                                xRange = range.xRange;
+                                yRange = range.yRange;
 
 
 
