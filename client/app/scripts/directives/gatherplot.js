@@ -1202,18 +1202,20 @@
                                     });
                             };
 
+                            var reverseTransform = function(coor, transfactor, scalefactor) {
+
+                                return (coor + transfactor)*scalefactor;
+                            };
+
 
 
                             var getLensData = function(lensInfo) {
-                                lensInfo.centerX -= scope.context.translate[0];
-                                lensInfo.centerY -= scope.context.translate[1];
-                                lensInfo.width *= scope.context.scale;
-                                lensInfo.height *= scope.context.scale;
+
                                 var itemsOnLens = scope.data.filter(function(d) {
 
-                                    if (xMap(d) < lensInfo.centerX + lensInfo.width / 2 && xMap(d) > lensInfo.centerX - lensInfo.width / 2) {
+                                    if (xMap(d) < reverseTransform(lensInfo.centerX + lensInfo.width / 2, scope.context.translate[0], scope.context.scale) && xMap(d) > reverseTransform(lensInfo.centerX - lensInfo.width / 2, scope.context.translate[0], scope.context.scale)) {
 
-                                        if (yMap(d) < lensInfo.centerY + lensInfo.height / 2 && yMap(d) > lensInfo.centerY - lensInfo.height / 2) {
+                                        if (yMap(d) < reverseTransform(lensInfo.centerY + lensInfo.height / 2, scope.context.translate[1], scope.context.scale) && yMap(d) > reverseTransform(lensInfo.centerY - lensInfo.height / 2, scope.context.translate[1], scope.context.scale)) {
 
                                             return d;
                                         }
@@ -1369,7 +1371,7 @@
 
                                 var xPos, yPos;
 
-                                var lensInfo = {};
+                                // var lensInfo = {};
 
                                 d3.select(this)
                                     .attr("x", xPos = Math.max(initialHistLensWidth / 2, Math.min(width - initialHistLensWidth / 2, d3.event.x)) - initialHistLensWidth / 2)
@@ -1382,6 +1384,29 @@
                                 lensInfo.type = 'hist';
                                 lensInfo.width = initialHistLensWidth;
                                 lensInfo.height = initialHistLensHeight;
+
+
+                                redrawLensHist(lensInfo);
+
+                            };
+
+                            var dragendHistLens = function() {
+
+                                // var xPos, yPos;
+
+                                // var lensInfo = {};
+
+                                // d3.select(this)
+                                //     .attr("x", xPos = Math.max(initialHistLensWidth / 2, Math.min(width - initialHistLensWidth / 2, d3.event.x)) - initialHistLensWidth / 2)
+                                //     .attr("y", yPos = Math.max(initialHistLensHeight / 2, Math.min(height - initialHistLensHeight / 2, d3.event.y)) - initialHistLensHeight / 2);
+
+                                // // labelDiv.text(xPos);
+
+                                // lensInfo.centerX = xPos + initialHistLensWidth / 2;
+                                // lensInfo.centerY = yPos + initialHistLensHeight / 2;
+                                // lensInfo.type = 'hist';
+                                // lensInfo.width = initialHistLensWidth;
+                                // lensInfo.height = initialHistLensHeight;
 
 
                                 redrawLensHist(lensInfo);
@@ -1487,7 +1512,8 @@
                                     .on("drag", dragmoveHistLens)
                                     .on("dragstart", function() {
                                         d3.event.sourceEvent.stopPropagation(); // silence other listeners
-                                    });
+                                    })
+                                    .on("dragend", dragendHistLens);
 
                                 nodeGroup.append("rect")
                                     .attr("class", "lens")

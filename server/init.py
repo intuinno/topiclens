@@ -9,6 +9,7 @@ import numpy as np
 from matlab import engine
 import os, json, time
 from flask.ext.cors import CORS
+import pdb
 from jinja2 import Environment
 
 
@@ -114,7 +115,10 @@ def get_subTopic():
 
 	idx = json.loads(request.args.get('idx'))
 
+	# pdb.set_trace()
+
 	[mappedX_sub, cl_idx_sub, Wtopk_idx_sub] = eng.sub_topic(idx,nargout=3)
+
 
 	Wtopk_sub = []
 	for idxArray in Wtopk_idx_sub:
