@@ -1132,7 +1132,8 @@
 
                             var reverseTransform = function(coor, transfactor, scalefactor) {
 
-                                return (coor + transfactor)*scalefactor;
+                                // return (coor + transfactor)*scalefactor;
+                                return coor;
                             };
 
 
