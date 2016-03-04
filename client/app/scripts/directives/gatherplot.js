@@ -36,10 +36,12 @@
                             }
 
 
-                            var opt = {epsilon: 20};
+                            var opt = { epsilon: 20 };
                             var tsne = new tsnejs.tSNE(opt);
                             var tsne_animation;
                             var Y;
+
+                            var xRange, yRange;
 
 
 
@@ -651,31 +653,31 @@
 
 
                             var rescale = function(mappedX, width, height) {
-                                var maxX=-1e20,
-                                    maxY=-1e20,
-                                    minX=1e20,
-                                    minY=1e20,
+                                var maxX = -1e20,
+                                    maxY = -1e20,
+                                    minX = 1e20,
+                                    minY = 1e20,
                                     displayRatio = 1;
 
-                                for(var i=0;i<mappedX.length;i++) {
-                                    if(maxX<mappedX[i][0]) maxX = mappedX[i][0];
-                                    if(minX>mappedX[i][0]) minX = mappedX[i][0];
-                                    if(maxY<mappedX[i][1]) maxY = mappedX[i][1];
-                                    if(minY>mappedX[i][1]) minY = mappedX[i][1];
+                                for (var i = 0; i < mappedX.length; i++) {
+                                    if (maxX < mappedX[i][0]) maxX = mappedX[i][0];
+                                    if (minX > mappedX[i][0]) minX = mappedX[i][0];
+                                    if (maxY < mappedX[i][1]) maxY = mappedX[i][1];
+                                    if (minY > mappedX[i][1]) minY = mappedX[i][1];
                                 }
-                                
-                                var mappedX_tmp = [],
-                                    rangeX = maxX-minX,
-                                    rangeY = maxY-minY;
-                                var rescaleX = width/rangeX*displayRatio,
-                                    rescaleY = height/rangeY*displayRatio;
 
-                                for(var i=0; i<mappedX.length;i++){
-                                    mappedX_tmp.push([mappedX[i][0]*rescaleX, mappedX[i][1]*rescaleY]);
+                                var mappedX_tmp = [],
+                                    rangeX = maxX - minX,
+                                    rangeY = maxY - minY;
+                                var rescaleX = width / rangeX * displayRatio,
+                                    rescaleY = height / rangeY * displayRatio;
+
+                                for (var i = 0; i < mappedX.length; i++) {
+                                    mappedX_tmp.push([mappedX[i][0] * rescaleX, mappedX[i][1] * rescaleY]);
                                 }
 
                                 return mappedX_tmp;
-                            }   
+                            }
 
 
 
@@ -685,42 +687,42 @@
                                 });
 
                                 $http.get('http://davian.korea.ac.kr:5004/get_subTopic', {
-                                    params: {
-                                        idx: JSON.stringify(selectedItems)
-                                    }
-                                }).success(function(data) {
+                                        params: {
+                                            idx: JSON.stringify(selectedItems)
+                                        }
+                                    }).success(function(data) {
 
-                                    items.forEach(function(d, i) {
-                                        d.subtopic = data.cl_idx_sub[i];
-                                    });
+                                        items.forEach(function(d, i) {
+                                            d.subtopic = data.cl_idx_sub[i];
+                                        });
 
-                                    tsne.initDataDist(data.distanceMatrix);
-                                    
-                                    for(var i=0; i<100;i++) tsne.step();
+                                        tsne.initDataDist(data.distanceMatrix);
 
-                                    tsne_animation = setInterval(function(){
-                                        for(var i=0; i<10; i++) tsne.step();
+                                        for (var i = 0; i < 100; i++) tsne.step();
 
-                                        Y = rescale(tsne.getSolution(),lensInfo.width,lensInfo.height);
+                                        tsne_animation = setInterval(function() {
+                                            for (var i = 0; i < 10; i++) tsne.step();
 
-                                        calculatePositionUsingSubClusterForLensTopic(items, lensInfo);
+                                            Y = rescale(tsne.getSolution(), lensInfo.width, lensInfo.height);
 
-                                        drawLensItems(items, lensInfo);
+                                            calculatePositionUsingSubClusterForLensTopic(items, lensInfo);
 
-                                    }, 200);
-                                    
+                                            drawLensItems(items, lensInfo);
+
+                                        }, 200);
+
                                         //calculatePositionUsingSubClusterForLensTopic(items, lensInfo);
                                         //console.log(items);
                                         //drawLensItems(items, lensInfo);
 
-                                })
-                                .error(function(error) {
-                                    $log.log(error);
-                                });
+                                    })
+                                    .error(function(error) {
+                                        $log.log(error);
+                                    });
 
                                 // handleOffsetRectLens(items, box, size);
 
-                            };         
+                            };
 
 
                             var calculatePositionUsingSubClusterForLensTopic = function(items, lensInfo) {
@@ -753,7 +755,7 @@
                                 nestedLensItems.forEach(function(d) {
                                     handleOffsetHistLens2(d.values);
                                 });
-                                
+
                                 nestedLensItems.forEach(function(d, i) {
                                     d.values.forEach(function(d) {
                                         d.lensX = lensInfo.centerX;
@@ -761,7 +763,7 @@
                                     });
                                 });
 
-                                for(var i=0;i<items.length;i++) {
+                                for (var i = 0; i < items.length; i++) {
                                     items[i].lensX += Y[i][0];
                                     items[i].lensY += Y[i][1];
                                 }
@@ -837,7 +839,7 @@
 
 
                             var handleOffsetHistLens2 = function(cluster) {
-                                var size=3;
+                                var size = 3;
                                 cluster.forEach(function(d, i, j) {
 
                                     d.nodeWidthLens = size;
@@ -1104,7 +1106,7 @@
 
                                 //Update
                                 //Transition from previous place to new place
-                                
+
                                 lensItems.transition()
                                     //.duration(500)
                                     .attr("width", function(d) {
@@ -1120,15 +1122,15 @@
                                     .attr("y", function(d) {
                                         return d.lensY;
                                     })
-                                    .attr('fill-opacity',0.8)
-                                    
-                                    .attr("transform", function(d, i) {
+                                    .attr('fill-opacity', 0.8)
 
-                                        // if (d.cancer== "Cancer") {
-                                        //     console.log(height);
-                                        // }
-                                        return "translate(" + (d.XOffsetLens) + "," + (-(d.YOffsetLens)) + ") ";
-                                    });
+                                .attr("transform", function(d, i) {
+
+                                    // if (d.cancer== "Cancer") {
+                                    //     console.log(height);
+                                    // }
+                                    return "translate(" + (d.XOffsetLens) + "," + (-(d.YOffsetLens)) + ") ";
+                                });
 
 
                                 //Enter
@@ -1139,8 +1141,10 @@
                                         'lensItems': true,
                                         'dot': false
                                     })
-                                    .attr("y", function(d){ return yMap(d); })
-                                    .attr("x", function(d){ return xMap(d); })
+                                    .attr("y", function(d) {
+                                        return yMap(d); })
+                                    .attr("x", function(d) {
+                                        return xMap(d); })
                                     .attr("width", function(d) {
                                         // console.log(initialSquareLenth);
                                         return +d.nodeWidth;
@@ -1195,8 +1199,10 @@
                                     .attr("height", function(d) {
                                         return +d.nodeHeight;
                                     })
-                                    .attr("y", function(d){ return yMap(d); })
-                                    .attr("x", function(d){ return xMap(d); })
+                                    .attr("y", function(d) {
+                                        return yMap(d); })
+                                    .attr("x", function(d) {
+                                        return xMap(d); })
                                     .attr("transform", function(d, i) {
                                         return "translate(" + (d.XOffset) + "," + (-(d.YOffset)) + ") ";
                                     });
@@ -1767,34 +1773,34 @@
                                     .on("zoom", zoomed);
 
                                 var panning = d3.behavior.zoom()
-                                    .scaleExtent([1,1])
+                                    .scaleExtent([1, 1])
                                     .x(xScale)
                                     .y(yScale)
                                     .on("zoom", zoomed);
 
-                                svgGroup.call(panning);
-                            var dragmoveRectLens = function() {
+                                svgGroup.call(zoom);
+                                var dragmoveRectLens = function() {
 
-                                var xPos, yPos;
+                                    var xPos, yPos;
 
-                                var lensInfo = {};
+                                    var lensInfo = {};
 
-                                d3.select(this)
-                                    .attr("x", xPos = Math.max(initialHistLensWidth / 2, Math.min(width - initialHistLensWidth / 2, d3.event.x)) - initialHistLensWidth / 2)
-                                    .attr("y", yPos = Math.max(initialHistLensHeight / 2, Math.min(height - initialHistLensHeight / 2, d3.event.y)) - initialHistLensHeight / 2);
+                                    d3.select(this)
+                                        .attr("x", xPos = Math.max(initialHistLensWidth / 2, Math.min(width - initialHistLensWidth / 2, d3.event.x)) - initialHistLensWidth / 2)
+                                        .attr("y", yPos = Math.max(initialHistLensHeight / 2, Math.min(height - initialHistLensHeight / 2, d3.event.y)) - initialHistLensHeight / 2);
 
-                                // labelDiv.text(xPos);
+                                    // labelDiv.text(xPos);
 
-                                lensInfo.centerX = xPos + initialHistLensWidth / 2;
-                                lensInfo.centerY = yPos + initialHistLensHeight / 2;
-                                lensInfo.type = 'hist';
-                                lensInfo.width = initialHistLensWidth;
-                                lensInfo.height = initialHistLensHeight;
+                                    lensInfo.centerX = xPos + initialHistLensWidth / 2;
+                                    lensInfo.centerY = yPos + initialHistLensHeight / 2;
+                                    lensInfo.type = 'hist';
+                                    lensInfo.width = initialHistLensWidth;
+                                    lensInfo.height = initialHistLensHeight;
 
 
-                                // redrawLensTopic(lensInfo);
+                                    // redrawLensTopic(lensInfo);
 
-                            };
+                                };
 
 
                                 function zoomed() {
@@ -1813,6 +1819,26 @@
                                     scope.context.scale = d3.event.scale;
                                     scope.context.xDomain = zoom.x().domain();
                                     scope.context.yDomain = zoom.y().domain();
+
+                                    var range = getExtentConsideringXY(scope.xdim, scope.ydim);
+
+                                    xRange = range.xRange;
+                                    yRange = range.yRange;
+
+                                    var xScaleForNodes = d3.scale.linear().range([0, width]);
+                                    xScaleForNodes.domain(xRange);
+
+                                    xMap = function(d) {
+                                        return xScaleForNodes(xValue(d));
+                                    };
+
+                                    var yScaleForNodes = d3.scale.linear().range([height, 0]);
+                                    yScaleForNodes.domain(yRange);
+                                    yMap = function(d) {
+                                        return yScaleForNodes(yValue(d));
+                                    };
+
+
 
                                     nodeGroup.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
                                     //nodeGroup.attr("transform", "translate(" + d3.event.translate + ")");
@@ -2290,8 +2316,8 @@
 
                                 var range = getExtentConsideringXY(scope.xdim, scope.ydim);
 
-                                var xRange = range.xRange;
-                                var yRange = range.yRange;
+                                xRange = range.xRange;
+                                yRange = range.yRange;
 
 
 
