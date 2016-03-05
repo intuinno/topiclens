@@ -9,12 +9,9 @@ import numpy as np
 from matlab import engine
 import os, json, time
 from flask.ext.cors import CORS
-<<<<<<< HEAD
 import pdb
-=======
 from jinja2 import Environment
 
->>>>>>> c37a76bf13edf4513426f553caa87766f8dbabd5
 
 # Configuration
 app = Flask(__name__, static_path='/static')	
@@ -49,7 +46,7 @@ def supervisedTSNE(distanceMatrix, cl_idx, sameTopicWeight=0.9, differentTopicWe
 				distanceMatrix[i,j]*=sameTopicWeight
 			else:
 				distanceMatrix[i,j]*=differentTopicWeight
-		distanceMatrix[i,:] /= distanceMatrix[i,:].max()
+		#distanceMatrix[i,:] /= distanceMatrix[i,:].max()
 
 	return np.round(distanceMatrix,decimals=4)
 
@@ -72,11 +69,22 @@ def before__first_request_():
 	eng.cd(os.path.dirname(os.getcwd()))
 	print "%.4f" % (time.time()-tic)
 
+	#tic = time.time()
+	##print "Get data - ",
+	#[mappedX, cl_idx, Wtopk_idx,voca] = eng.main_topic(nargout=4)
+	#print "%.4f" % (time.time()-tic)
+
 	tic = time.time()
-	print "Get data - ",
-	[mappedX, cl_idx, Wtopk_idx,voca] = eng.main_topic(nargout=4)
-	distanceMatrix = io.loadmat('./../tdm2.mat')['DD']
+	eng.main_topic2(nargout=0)
+
+	mappedX_ = eng.workspace['mappedX']
+	cl_idx_ = eng.workspace['cl_idx']
+	Wtopk_idx_ = eng.workspace['Wtopk_idx']
+	voca_ = eng.workspace['dict']
 	print "%.4f" % (time.time()-tic)
+	
+	distanceMatrix = io.loadmat('./../tdm2.mat')['DD']
+	
 
 
 	tic = time.time()
@@ -90,6 +98,11 @@ def before__first_request_():
 		Wtopk.append(tempArray)
 
 	cl_idx = cl_idx[0]
+
+
+	cl_idx = cl_idx
+	distanceMatrix = distanceMatrix
+
 
 	sameTopicWeight = 0.8
 	differentTopicWeight = 1.15
@@ -128,12 +141,14 @@ def get_subTopic():
 	cl_idx_sub = cl_idx_sub[0]
 	cl_idx_sub = np.array(cl_idx_sub).tolist()
 
-	idx = [i-1 for i in idx] 
+
+	print distanceMatrix.shape
+	
 	distanceMatrix_sub = distanceMatrix[idx,:][:,idx]
 
-	sameTopicWeight = 0.8
-	differentTopicWeight = 1.15
-	distanceMatrix_sub = supervisedTSNE(distanceMatrix_sub, cl_idx,
+	sameTopicWeight = 1
+	differentTopicWeight = 1
+	distanceMatrix_sub = supervisedTSNE(distanceMatrix_sub, cl_idx_sub,
 		sameTopicWeight=sameTopicWeight, differentTopicWeight=differentTopicWeight)
 	distanceMatrix_sub = distanceMatrix_sub.tolist()
 
