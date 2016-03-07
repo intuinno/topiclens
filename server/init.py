@@ -127,6 +127,7 @@ def get_subTopic():
 	global distanceMatrix
 
 	idx = json.loads(request.args.get('idx'))
+	idx = [i+1 for i in idx]
 
 	# pdb.set_trace()
 
