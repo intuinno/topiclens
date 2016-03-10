@@ -40,6 +40,8 @@
                             var tsne = new tsnejs.tSNE(opt);
                             var tsne_animation;
                             var Y;
+                            var subCluster;
+                            var subText;
 
                             var xRange, yRange;
 
@@ -586,7 +588,6 @@
 
                                 renderData = data;
 
-
                                 reloadDataToSVG();
 
                                 identifyAndUpdateDimDataType();
@@ -657,7 +658,7 @@
                                     maxY = -1e20,
                                     minX = 1e20,
                                     minY = 1e20,
-                                    displayRatio = 1;
+                                    displayRatio = 0.85;
 
                                 for (var i = 0; i < mappedX.length; i++) {
                                     if (maxX < mappedX[i][0]) maxX = mappedX[i][0];
@@ -691,12 +692,21 @@
                                             idx: JSON.stringify(selectedItems)
                                         }
                                     }).success(function(data) {
-
                                         items.forEach(function(d, i) {
                                             d.subtopic = data.cl_idx_sub[i];
                                         });
+                                        
+                                        subCluster = new Array(data.Wtopk_sub.length);
+                                        for(var i=0;i<subCluster.length;i++) { 
+                                            subCluster[i] = {};
+                                            subCluster[i].X = 0;
+                                            subCluster[i].Y = 0;
+                                            subCluster[i].num = 0;
+                                            subCluster[i].keywords = data.Wtopk_sub[i];
+                                        }
 
                                         tsne.initDataDist(data.distanceMatrix);
+
 
                                         for (var i = 0; i < 100; i++) tsne.step();
 
@@ -706,9 +716,46 @@
                                             Y = rescale(tsne.getSolution(), lensInfo.width, lensInfo.height);
 
                                             calculatePositionUsingSubClusterForLensTopic(items, lensInfo);
-
+                                             
                                             drawLensItems(items, lensInfo);
+                                            
+                                            nodeGroup.select("g,subTopic").remove();
+                                            subText = nodeGroup.append("g").attr("class","subTopic");
 
+
+                                            for(var i=0;i<subCluster.length;i++) { 
+                                                subCluster[i].X = 0;
+                                                subCluster[i].Y = 0;
+                                                subCluster[i].num = 0;
+                                            }
+                                            
+                                            for(var i=0;i<items.length;i++) {
+                                                var clusterIndex = parseInt(items[i].subtopic)-1;
+                                                subCluster[clusterIndex].X += items[i].lensX;
+                                                subCluster[clusterIndex].Y += items[i].lensY;
+                                                subCluster[clusterIndex].num += 1;
+                                            }
+                                            
+                                            for(var i=0;i<subCluster.length;i++) {
+                                                var num = subCluster[i].num;
+                                                subCluster[i].X/=num;
+                                                subCluster[i].Y/=num;
+                                            }
+
+                                            subText.selectAll("text").remove();
+                                            subText.selectAll("text")
+                                                .data(subCluster).enter()
+                                                .append("text")
+                                                .attr('x', function(d) { return d.X; })
+                                                .attr('y', function(d) { return d.Y; })
+                                                .style("fill", "black")
+                                                .text(function(d) {
+                                                    return d.keywords.join(' ');
+                                                })
+                                                .attr('font-family','sans-serif')
+                                                .attr('text-anchor','middle')
+                                                .style('font-size', '10px');
+                                            
                                         }, 200);
 
                                         //calculatePositionUsingSubClusterForLensTopic(items, lensInfo);
@@ -1093,7 +1140,6 @@
                             }
 
                             var drawLensItems = function(itemsOnLens, lensInfo) {
-
                                 nodeGroup.selectAll(".dot")
                                     .data(itemsOnLens, function(d) {
                                         return d.id;
@@ -1104,13 +1150,14 @@
                                         return d.id;
                                     });
 
+
                                 //Update
                                 //Transition from previous place to new place
+
 
                                 lensItems.transition()
                                     //.duration(500)
                                     .attr("width", function(d) {
-                                        // console.log(initialSquareLenth);
                                         return +d.nodeWidthLens;
                                     })
                                     .attr("height", function(d) {
@@ -1141,7 +1188,7 @@
                                         'lensItems': true,
                                         'dot': false
                                     })
-                                    .attr("y", function(d) {
+                                    .attr("y", function(d,i) { 
                                         return yMap(d); })
                                     .attr("x", function(d) {
                                         return xMap(d); })
@@ -1160,6 +1207,8 @@
                                     })
 
                                 .style("fill", function(d) {
+                                        // 여기 고치자!!!!!!!!
+                                        // 그리고 밑에 exit 돌아올 때 원래 색으로 해주기!!
                                         return color(d[scope.config.colorDim]);
                                     })
                                     .transition()
@@ -1181,7 +1230,7 @@
                                         return "translate(" + (d.XOffsetLens) + "," + (-(d.YOffsetLens)) + ") ";
                                     });
 
-
+                            
                                 //Exit
                                 //Transition from previous place to original place
                                 //remove circle
@@ -3720,6 +3769,7 @@
 
                                 nodeGroup.attr("transform", "translate(0,0) rotate(0 80 660)");
 
+                                var clusterInfo = {};
 
                                 nodeGroup.selectAll(".dot")
                                     .data(scope.data, function(d) {
@@ -3730,7 +3780,28 @@
                                     })
                                     .transition()
                                     .duration(1500)
-                                    .attr("x", xMap)
+                                    .attr("x", function(d) {
+                                        var clusterIndex = d.cluster
+                                        if(clusterInfo[clusterIndex]==undefined) {
+                                            clusterInfo[clusterIndex] = {};
+                                            clusterInfo[clusterIndex].index = clusterIndex;
+                                            clusterInfo[clusterIndex].num = 1;
+                                            clusterInfo[clusterIndex].X = parseFloat(d.X);
+                                            clusterInfo[clusterIndex].Y = parseFloat(d.Y);
+                                            clusterInfo[clusterIndex].keywords = [
+                                                d['cluster top keyword 1'],
+                                                d['cluster top keyword 2'],
+                                                d['cluster top keyword 3'],
+                                                d['cluster top keyword 4'],
+                                                d['cluster top keyword 5']
+                                            ];
+                                        } else {
+                                            clusterInfo[clusterIndex].num += 1;
+                                            clusterInfo[clusterIndex].X += parseFloat(d.X);
+                                            clusterInfo[clusterIndex].Y += parseFloat(d.Y);
+                                        }
+                                        return xMap(d);
+                                    })
                                     .attr("y", yMap)
                                     .attr("width", function(d) {
                                         // console.log(initialSquareLenth);
@@ -3752,6 +3823,26 @@
                                         // }
                                         return "translate(" + (d.XOffset) + "," + (-(d.YOffset)) + ") ";
                                     });
+
+
+                                clusterInfo = $.map(clusterInfo, function(d,i) { return [d]; });
+                                for(var i=0;i<clusterInfo.length;i++) {
+                                    var num = clusterInfo[i].num;
+                                    clusterInfo[i].X/=num;
+                                    clusterInfo[i].Y/=num;
+                                }
+                                
+                                nodeGroup.selectAll(".text")
+                                    .data(clusterInfo).enter()
+                                    .append("text")
+                                    .attr('x', xMap)
+                                    .attr('y', yMap)
+                                    .style("fill", "black")
+                                    .text(function(d){
+                                        return d.keywords.join(' ');
+                                    })
+                                    .attr('font-family','sans-serif')
+                                    .attr('text-anchor','middle');
 
                             };
 
