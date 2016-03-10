@@ -77,10 +77,10 @@ def before__first_request_():
 	tic = time.time()
 	eng.main_topic2(nargout=0)
 
-	mappedX_ = eng.workspace['mappedX']
-	cl_idx_ = eng.workspace['cl_idx']
-	Wtopk_idx_ = eng.workspace['Wtopk_idx']
-	voca_ = eng.workspace['dict']
+	mappedX = eng.workspace['mappedX']
+	cl_idx = eng.workspace['cl_idx']
+	Wtopk_idx = eng.workspace['Wtopk_idx']
+	voca = eng.workspace['dict']
 	print "%.4f" % (time.time()-tic)
 	
 	distanceMatrix = io.loadmat('./../tdm2.mat')['DD']
@@ -127,12 +127,11 @@ def get_subTopic():
 	global distanceMatrix
 
 	idx = json.loads(request.args.get('idx'))
-	idx = [i+1 for i in idx]
 
 	# pdb.set_trace()
 
 	[mappedX_sub, cl_idx_sub, Wtopk_idx_sub] = eng.sub_topic(idx,nargout=3)
-
+	idx = [i-1 for i in idx]
 
 	Wtopk_sub = []
 	for idxArray in Wtopk_idx_sub:

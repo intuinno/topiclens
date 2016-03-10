@@ -51,7 +51,7 @@
                             var height = 820;
                             var outerWidth = width + 2 * margin;
                             var outerHeight = height + 2 * margin;
-                            var colorNominal = d3.scale.category10();
+                            var colorNominal = d3.scale.category20();
                             var color;
                             var colorScaleForHeatMap = d3.scale.linear()
                                 .range(["#98c8fd", "08306b"])
@@ -314,6 +314,7 @@
                                         .data(scope.data)
                                         .enter().append("rect")
                                         .attr("class", "dot")
+                                        .attr('fill-opacity',0.8)
                                         .on("mouseover", function(d) {
 
                                             tooltip.transition()
@@ -654,10 +655,10 @@
 
 
                             var rescale = function(mappedX, width, height) {
-                                var maxX = -1e20,
-                                    maxY = -1e20,
-                                    minX = 1e20,
-                                    minY = 1e20,
+                                var maxX = -1e30,
+                                    maxY = -1e30,
+                                    minX = 1e30,
+                                    minY = 1e30,
                                     displayRatio = 0.85;
 
                                 for (var i = 0; i < mappedX.length; i++) {
@@ -693,7 +694,7 @@
                                         }
                                     }).success(function(data) {
                                         items.forEach(function(d, i) {
-                                            d.subtopic = data.cl_idx_sub[i];
+                                            d.subtopic = data.cl_idx_sub[i]-1;
                                         });
                                         
                                         subCluster = new Array(data.Wtopk_sub.length);
@@ -702,14 +703,14 @@
                                             subCluster[i].X = 0;
                                             subCluster[i].Y = 0;
                                             subCluster[i].num = 0;
-                                            subCluster[i].keywords = data.Wtopk_sub[i];
+                                            subCluster[i].keywords = data.Wtopk_sub[i].slice(0,3);
                                         }
 
                                         tsne.initDataDist(data.distanceMatrix);
 
-                                        for (var i = 0; i < 100; i++) tsne.step();
+                                        for (var i = 0; i < 200; i++) tsne.step();
 
-                                        var intervalNum = 30;
+                                        var intervalNum = 200;
                                         tsne_animation = setInterval(function() {
                                             for (var i = 0; i < 10; i++) tsne.step();
 
@@ -728,7 +729,7 @@
                                             }
                                             
                                             for(var i=0;i<items.length;i++) {
-                                                var clusterIndex = parseInt(items[i].subtopic)-1;
+                                                var clusterIndex = parseInt(items[i].subtopic);
                                                 subCluster[clusterIndex].X += items[i].lensX;
                                                 subCluster[clusterIndex].Y += items[i].lensY;
                                                 subCluster[clusterIndex].num += 1;
@@ -752,7 +753,7 @@
                                                 })
                                                 .attr('font-family','sans-serif')
                                                 .attr('text-anchor','middle')
-                                                .style('font-size', '10px');
+                                                .style('font-size', '7px');
                                             
 
                                             intervalNum-=1;
@@ -1187,7 +1188,6 @@
                                     .attr("x", function(d) {
                                         return xMap(d); })
                                     .attr("width", function(d) {
-                                        // console.log(initialSquareLenth);
                                         return +d.nodeWidth;
                                     })
                                     .attr("height", function(d) {
@@ -1200,10 +1200,9 @@
                                         return scope.round ? +5 : 0;
                                     })
 
-                                .style("fill", function(d) {
-                                        // 여기 고치자!!!!!!!!
-                                        // 그리고 밑에 exit 돌아올 때 원래 색으로 해주기!!
-                                        return color(d[scope.config.colorDim]);
+                                    .style("fill", function(d) {
+                                        return color(d.subtopic)
+                                        //return color(d[scope.config.colorDim]);
                                     })
                                     .transition()
                                     .duration(500)
@@ -1248,6 +1247,9 @@
                                         return xMap(d); })
                                     .attr("transform", function(d, i) {
                                         return "translate(" + (d.XOffset) + "," + (-(d.YOffset)) + ") ";
+                                    })
+                                    .style('fill', function(d) {
+                                        return color(d[scope.config.colorDim]-1);
                                     });
                             };
 
@@ -3770,7 +3772,7 @@
                                         return +d.id;
                                     })
                                     .style("fill", function(d) {
-                                        return color(d[scope.config.colorDim]);
+                                        return color(d[scope.config.colorDim]-1);
                                     })
                                     .transition()
                                     .duration(1500)
