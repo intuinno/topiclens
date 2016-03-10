@@ -707,21 +707,19 @@
 
                                         tsne.initDataDist(data.distanceMatrix);
 
-
                                         for (var i = 0; i < 100; i++) tsne.step();
 
+                                        var intervalNum = 30;
                                         tsne_animation = setInterval(function() {
                                             for (var i = 0; i < 10; i++) tsne.step();
 
                                             Y = rescale(tsne.getSolution(), lensInfo.width, lensInfo.height);
 
                                             calculatePositionUsingSubClusterForLensTopic(items, lensInfo);
-                                             
                                             drawLensItems(items, lensInfo);
                                             
                                             nodeGroup.select("g,subTopic").remove();
                                             subText = nodeGroup.append("g").attr("class","subTopic");
-
 
                                             for(var i=0;i<subCluster.length;i++) { 
                                                 subCluster[i].X = 0;
@@ -756,24 +754,20 @@
                                                 .attr('text-anchor','middle')
                                                 .style('font-size', '10px');
                                             
+
+                                            intervalNum-=1;
+                                            if(intervalNum==0) clearInterval(tsne_animation);
                                         }, 200);
-
-                                        //calculatePositionUsingSubClusterForLensTopic(items, lensInfo);
-                                        //console.log(items);
-                                        //drawLensItems(items, lensInfo);
-
                                     })
                                     .error(function(error) {
                                         $log.log(error);
                                     });
 
                                 // handleOffsetRectLens(items, box, size);
-
                             };
 
 
                             var calculatePositionUsingSubClusterForLensTopic = function(items, lensInfo) {
-
                                 var nestedLensItems = d3.nest()
                                     .key(function(d) {
                                         return d.subtopic;
