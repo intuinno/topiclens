@@ -37,7 +37,7 @@
 
 
                             var opt = { epsilon: 20 };
-                            var tsne = new tsnejs.tSNE(opt);
+                            var tsne = new subtsnejs.subtSNE(opt);
                             var tsne_animation;
                             var Y;
                             var subCluster;
@@ -655,27 +655,27 @@
 
 
                             var rescale = function(mappedX, width, height) {
-                                var maxX = -1e30,
-                                    maxY = -1e30,
-                                    minX = 1e30,
-                                    minY = 1e30,
-                                    displayRatio = 0.85;
+                                var maxX = -1e32,
+                                    maxY = -1e32,
+                                    minX = 1e32,
+                                    minY = 1e32,
+                                    displayRatio = 0.8;
 
                                 for (var i = 0; i < mappedX.length; i++) {
                                     if (maxX < mappedX[i][0]) maxX = mappedX[i][0];
-                                    if (minX > mappedX[i][0]) minX = mappedX[i][0];
+                                    else if (minX > mappedX[i][0]) minX = mappedX[i][0];
                                     if (maxY < mappedX[i][1]) maxY = mappedX[i][1];
-                                    if (minY > mappedX[i][1]) minY = mappedX[i][1];
+                                    else if (minY > mappedX[i][1]) minY = mappedX[i][1];
                                 }
 
                                 var mappedX_tmp = [],
                                     rangeX = maxX - minX,
                                     rangeY = maxY - minY;
-                                var rescaleX = width / rangeX * displayRatio,
-                                    rescaleY = height / rangeY * displayRatio;
+                                var rescaleX = (width/rangeX) * displayRatio,
+                                    rescaleY = (height/rangeY) * displayRatio;
 
                                 for (var i = 0; i < mappedX.length; i++) {
-                                    mappedX_tmp.push([mappedX[i][0] * rescaleX, mappedX[i][1] * rescaleY]);
+                                    mappedX_tmp.push([mappedX[i][0]*rescaleX, mappedX[i][1]*rescaleY]);
                                 }
 
                                 return mappedX_tmp;
@@ -693,27 +693,71 @@
                                             idx: JSON.stringify(selectedItems)
                                         }
                                     }).success(function(data) {
+                                        var cl_idx_sub = [];
+                                        for(var i=0;i<data.cl_idx_sub.length;i++) cl_idx_sub.push(data.cl_idx_sub[i]-1);
+
                                         items.forEach(function(d, i) {
-                                            d.subtopic = data.cl_idx_sub[i]-1;
+                                            d.subtopic = cl_idx_sub[i];
                                         });
                                         
-                                        subCluster = new Array(data.Wtopk_sub.length);
+                                        var sub_k = data.Wtopk_sub.length;
+
+                                        subCluster = new Array(sub_k);
                                         for(var i=0;i<subCluster.length;i++) { 
                                             subCluster[i] = {};
-                                            subCluster[i].X = 0;
-                                            subCluster[i].Y = 0;
-                                            subCluster[i].num = 0;
                                             subCluster[i].keywords = data.Wtopk_sub[i].slice(0,3);
                                         }
+                                        
 
-                                        tsne.initDataDist(data.distanceMatrix);
+                                        var distanceMatrix_sub = data.distanceMatrix
+                                        var coord = [];
+                                        var totalData = scope.data;
+                                        for(var i=0;i<totalData.length;i++) {
+                                            coord.push([parseFloat(totalData[i].X), parseFloat(totalData[i].Y)]);
+                                        }
+                                        
+                                        ////////////////////////////////////////////
+                                        var N = selectedItems.length;
+                                        
+                                        // average distance of the matrix
+                                        var totalsum = 0;
+                                        for (var i=0; i<N; i++){
+                                            for (var j=0; j<N; j++){
+                                                totalsum += distanceMatrix_sub[i][j];
+                                            }
+                                        }
+                                        var avg=totalsum/(N*N/2);
+                                        
+                                        //calculate the centroid coordinate
+                                        var ctrary = [];
+                                        for(var i=0;i<sub_k;i++) {
+                                            ctrary.push([0,0]);
+                                        }
+                                        var topicNum = new Array(sub_k);
+                                        for(var i=0;i<sub_k;i++) topicNum[i]=0;
 
-                                        for (var i = 0; i < 200; i++) tsne.step();
+                                        for(var i=0;i<selectedItems.length;i++) {
+                                            var topicIndex = cl_idx_sub[i];
+                                            ctrary[topicIndex][0] += coord[selectedItems[i]][0];
+                                            ctrary[topicIndex][1] += coord[selectedItems[i]][1];
+                                            topicNum[topicIndex] += 1;
+                                        }
+                                        for(var i=0;i<sub_k;i++) {
+                                            ctrary[i][0]/=topicNum[i];
+                                            ctrary[i][1]/=topicNum[i];
+                                        }
 
-                                        var intervalNum = 200;
+                                        ////////////////////////////////////////////
+                                        
+
+                                        tsne.initDataDist(distanceMatrix_sub,avg);
+
+                                        for (var i = 0; i < 200; i++) tsne.step(sub_k,cl_idx_sub,ctrary);
+
+                                        var intervalNum = 300;
                                         tsne_animation = setInterval(function() {
-                                            for (var i = 0; i < 10; i++) tsne.step();
-
+                                            for (var i = 0; i < 10; i++) tsne.step(sub_k,cl_idx_sub,ctrary);
+                                            //console.log(tsne.getSolution());
                                             Y = rescale(tsne.getSolution(), lensInfo.width, lensInfo.height);
 
                                             calculatePositionUsingSubClusterForLensTopic(items, lensInfo);
@@ -1201,7 +1245,7 @@
                                     })
 
                                     .style("fill", function(d) {
-                                        return color(d.subtopic)
+                                        return color(d.subtopic+9)
                                         //return color(d[scope.config.colorDim]);
                                     })
                                     .transition()
