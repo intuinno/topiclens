@@ -94,10 +94,140 @@ A_norm_sub = bsxfun(@rdivide,A_sub,sqrt(sum(A_sub.^2)));
 target_A_sub = A_norm_sub;     % replaced by below code (9/10) <- original
 % target_A = A_norm;
 
-%%
-% target_A = A_idf;
-size(target_A_sub)
-[tree_sub, splits_sub, is_leaf_sub, clusters_sub, timings_sub, Ws_sub, priorities_sub, W_sub, H_sub] = hier8_neat(target_A_sub, k_sub);
+%% hier8_neat1 (initial run)
+cnt = 0;
+if(cnt == 0)
+    if ~exist('params', 'var')
+        trial_allowance = 3;
+        unbalanced = 0.1;
+        vec_norm = 2.0;
+        normW = true;
+        anls_alg = @anls_entry_rank2_precompute;
+        tol = 1e-4;
+        maxiter = 10000;
+    else
+        if isfield(params, 'trial_allowance')
+            trial_allowance = params.trial_allowance;
+        else
+            trial_allowance = 3;
+        end
+        if isfield(params, 'unbalanced')
+            unbalanced = params.unbalanced;
+        else
+            unbalanced = 0.1;
+        end
+        if isfield(params, 'vec_norm')
+            vec_norm = params.vec_norm;
+        else
+            vec_norm = 2.0;
+        end
+        if isfield(params, 'normW')
+            normW = params.normW;
+        else
+            normW = true;
+        end
+        if isfield(params, 'anls_alg')
+            anls_alg = params.anls_alg;
+        else
+            anls_alg = @anls_entry_rank2_precompute;
+        end
+        if isfield(params, 'tol')
+            tol = params.tol;
+        else
+            tol = 1e-4;
+        end
+        if isfield(params, 'maxiter')
+            maxiter = params.maxiter;
+        else
+            maxiter = 10000;
+        end
+    end
+
+    params = [];
+    params.vec_norm = vec_norm;
+    params.normW = normW;
+    params.anls_alg = anls_alg;
+    params.tol = tol;
+    params.maxiter = maxiter;
+
+    [m, n] = size(X);
+
+    cluster_idx=unique(cl_idx(idx));                    %
+    sub_k=length(cluster_idx);                          % number of cluster selected
+    ctrary = zeros(size(target_A_sub,1),sub_k);         %
+    timings_sub = zeros(1, k_sub-sub_k);                
+    clusters_sub = cell(1, 2*(k_sub-sub_k));
+    Ws_sub = cell(1, 2*(k_sub-sub_k));
+    W_buffer = cell(1, 2*(k_sub-sub_k));
+    H_buffer = cell(1, 2*(k_sub-sub_k));
+    priorities_sub = zeros(1, 2*(k_sub-sub_k));
+    is_leaf_sub = -1 * ones(1, 2*(k_sub-sub_k));
+    tree_sub = zeros(2, 2*(k_sub-sub_k));
+    splits_sub = -1 * ones(1, k_sub-sub_k);
+    min_priority = 1e308;
+
+
+    for i=1:sub_k
+        subidx = find(cl_idx(idx)==cluster_idx(i));
+        ctrary(:,i) = mean(target_A_sub(:, subidx),2);
+        Ws_sub{i} = ctrary(:,i);
+        is_leaf_sub(i) = 1;
+        [~, W_buffer_one, H_buffer_one, priority_one]...
+            = trial_split(trial_allowance, unbalanced, min_priority, target_A_sub, subidx, Ws_sub{i}, params);
+        clusters_sub{i} = subidx;
+        W_buffer{i} = W_buffer_one;
+        H_buffer{i} = H_buffer_one;
+        priorities_sub(i) = priority_one;
+    end
+    cnt = 1;
+    result_used = sub_k;
+end
+%% hier8_neat2 (run interatively)
+for i = 1:k_sub-sub_k
+    leaves = find(is_leaf_sub == 1);
+    temp_priority = priorities_sub(leaves);
+    min_priority = min(temp_priority(temp_priority > 0));
+    [max_priority, split_node] = max(temp_priority);
+    
+    if max_priority < 0
+        fprintf('Cannot generate all %d leaf clusters_sub\n', k);
+        return;
+    end
+    split_node = leaves(split_node);
+    is_leaf_sub(split_node) = 0;
+    W_sub = W_buffer{split_node};
+    H_sub = H_buffer{split_node};
+    split_subset = clusters_sub{split_node};
+    new_nodes = [result_used+1 result_used+2];
+    tree_sub(1, split_node) = new_nodes(1);
+    tree_sub(2, split_node) = new_nodes(2);
+    
+    result_used = result_used + 2;
+    [max_val, cluster_subset] = max(H_sub);
+    clusters_sub{new_nodes(1)} = split_subset(cluster_subset == 1);
+    clusters_sub{new_nodes(2)} = split_subset(cluster_subset == 2);
+    Ws_sub{new_nodes(1)} = W_sub(:, 1);
+    Ws_sub{new_nodes(2)} = W_sub(:, 2);
+    splits_sub(i) = split_node;
+    is_leaf_sub(new_nodes) = 1;
+    
+    subset = clusters_sub{new_nodes(1)};
+    [subset, W_buffer_one, H_buffer_one, priority_one] = trial_split(trial_allowance, unbalanced, min_priority, target_A_sub, subset, W_sub(:, 1), params);
+    clusters_sub{new_nodes(1)} = subset;
+    W_buffer{new_nodes(1)} = W_buffer_one;
+    H_buffer{new_nodes(1)} = H_buffer_one;
+    priorities_sub(new_nodes(1)) = priority_one;
+    
+    subset = clusters_sub{new_nodes(2)};
+    [subset, W_buffer_one, H_buffer_one, priority_one] = trial_split(trial_allowance, unbalanced, min_priority, target_A_sub, subset, W_sub(:, 2), params);
+    clusters_sub{new_nodes(2)} = subset;
+    W_buffer{new_nodes(2)} = W_buffer_one;
+    H_buffer{new_nodes(2)} = H_buffer_one;
+    priorities_sub(new_nodes(2)) = priority_one;
+    
+    W_sub = cell2mat(Ws_sub(find(is_leaf_sub)));
+    [H_sub,temp,suc_H,numChol_H,numEq_H] = nnlsm_blockpivot(W_sub'*W_sub,W_sub'*target_A_sub,1,rand(i+sub_k,size(target_A_sub,2)));
+end
 
 %%
 % displaying top keywords for each topic
@@ -105,7 +235,6 @@ size(target_A_sub)
 
 Wtopk_idx_sub = Wtopk_idx_sub';
 [~,cl_idx_sub] = max(H_sub);
-Wlen=size(Wtopk_sub,2);
 
 mappedX_sub = 'undefined';
 
