@@ -237,7 +237,7 @@
                 };
                 $scope.loadedCommentText = '';
                 $scope.loadedData = 'cars';
-                $scope.nomaConfig.SVGAspectRatio = 1.4;
+                $scope.nomaConfig.SVGAspectRatio = 2;
                 $scope.onlyNumbers = /^\d+$/;
 
                 $scope.isComment = true;
@@ -370,11 +370,11 @@
                             // $scope.nomaConfig.dims.splice(index, 1);
 
 
-                            $scope.nomaConfig.xDim = null;
-                            $scope.nomaConfig.yDim = null;
-                            $scope.nomaConfig.colorDim = null;
+                            $scope.nomaConfig.xDim = 'X';
+                            $scope.nomaConfig.yDim = 'Y';
+                            $scope.nomaConfig.colorDim = 'cluster';
 
-                            $scope.nomaConfig.isGather = 'gather';
+                            $scope.nomaConfig.isGather = 'scatter';
                             $scope.nomaConfig.relativeMode = 'absolute';
 
                         }

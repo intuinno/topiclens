@@ -35,23 +35,11 @@
                                 maxDotSize = 5;
                             }
 
-
-                            var opt = { epsilon: 20 };
-                            var tsne = new subtsnejs.subtSNE(opt);
-                            var tsne_animation;
-                            var Y;
-                            var subCluster;
-                            var subText;
-
-                            var xRange, yRange;
-
-
-
                             var width = 1040;
                             var height = 820;
                             var outerWidth = width + 2 * margin;
                             var outerHeight = height + 2 * margin;
-                            var colorNominal = d3.scale.category20();
+                            var colorNominal = d3.scale.category10();
                             var color;
                             var colorScaleForHeatMap = d3.scale.linear()
                                 .range(["#98c8fd", "08306b"])
@@ -99,9 +87,6 @@
 
                             var brush = d3.svg.brush();
                             var shiftKey;
-
-
-                            var lensInfo = {};
                             // dimsum = {};
 
 
@@ -314,7 +299,6 @@
                                         .data(scope.data)
                                         .enter().append("rect")
                                         .attr("class", "dot")
-                                        .attr('fill-opacity',0.8)
                                         .on("mouseover", function(d) {
 
                                             tooltip.transition()
@@ -589,6 +573,7 @@
 
                                 renderData = data;
 
+
                                 reloadDataToSVG();
 
                                 identifyAndUpdateDimDataType();
@@ -652,167 +637,41 @@
 
                             };
 
-
-
-                            var rescale = function(mappedX, width, height) {
-                                var maxX = -1e32,
-                                    maxY = -1e32,
-                                    minX = 1e32,
-                                    minY = 1e32,
-                                    displayRatio = 0.8;
-
-                                for (var i = 0; i < mappedX.length; i++) {
-                                    if (maxX < mappedX[i][0]) maxX = mappedX[i][0];
-                                    else if (minX > mappedX[i][0]) minX = mappedX[i][0];
-                                    if (maxY < mappedX[i][1]) maxY = mappedX[i][1];
-                                    else if (minY > mappedX[i][1]) minY = mappedX[i][1];
-                                }
-
-                                var mappedX_tmp = [],
-                                    rangeX = maxX - minX,
-                                    rangeY = maxY - minY;
-                                var rescaleX = (width/rangeX) * displayRatio,
-                                    rescaleY = (height/rangeY) * displayRatio;
-
-                                for (var i = 0; i < mappedX.length; i++) {
-                                    mappedX_tmp.push([mappedX[i][0]*rescaleX, mappedX[i][1]*rescaleY]);
-                                }
-
-                                return mappedX_tmp;
-                            }
-
-
-
                             var calculatePositionForLensTopic = function(items, lensInfo) {
+
                                 var selectedItems = items.map(function(d) {
                                     return +d.filenumber;
                                 });
 
                                 $http.get('http://davian.korea.ac.kr:5004/get_subTopic', {
-                                        params: {
-                                            idx: JSON.stringify(selectedItems)
-                                        }
-                                    }).success(function(data) {
-                                        var cl_idx_sub = [];
-                                        for(var i=0;i<data.cl_idx_sub.length;i++) cl_idx_sub.push(data.cl_idx_sub[i]-1);
+                                    params: {
+                                        idx: JSON.stringify(selectedItems)
+                                    }
+                                }).success(function(data) {
 
-                                        items.forEach(function(d, i) {
-                                            d.subtopic = cl_idx_sub[i];
-                                        });
-                                        
-                                        var sub_k = data.Wtopk_sub.length;
+                                    console.log(items);
 
-                                        subCluster = new Array(sub_k);
-                                        for(var i=0;i<subCluster.length;i++) { 
-                                            subCluster[i] = {};
-                                            subCluster[i].keywords = data.Wtopk_sub[i].slice(0,3);
-                                        }
-                                        
+                                    $log.log(data);
 
-                                        var distanceMatrix_sub = data.distanceMatrix
-                                        var coord = [];
-                                        var totalData = scope.data;
-                                        for(var i=0;i<totalData.length;i++) {
-                                            coord.push([parseFloat(totalData[i].X), parseFloat(totalData[i].Y)]);
-                                        }
-                                        
-                                        ////////////////////////////////////////////
-                                        var N = selectedItems.length;
-                                        
-                                        // average distance of the matrix
-                                        var totalsum = 0;
-                                        for (var i=0; i<N; i++){
-                                            for (var j=0; j<N; j++){
-                                                totalsum += distanceMatrix_sub[i][j];
-                                            }
-                                        }
-                                        var avg=totalsum/(N*N/2);
-                                        
-                                        //calculate the centroid coordinate
-                                        var ctrary = [];
-                                        for(var i=0;i<sub_k;i++) {
-                                            ctrary.push([0,0]);
-                                        }
-                                        var topicNum = new Array(sub_k);
-                                        for(var i=0;i<sub_k;i++) topicNum[i]=0;
-
-                                        for(var i=0;i<selectedItems.length;i++) {
-                                            var topicIndex = cl_idx_sub[i];
-                                            ctrary[topicIndex][0] += coord[selectedItems[i]][0];
-                                            ctrary[topicIndex][1] += coord[selectedItems[i]][1];
-                                            topicNum[topicIndex] += 1;
-                                        }
-                                        for(var i=0;i<sub_k;i++) {
-                                            ctrary[i][0]/=topicNum[i];
-                                            ctrary[i][1]/=topicNum[i];
-                                        }
-
-                                        ////////////////////////////////////////////
-                                        
-
-                                        tsne.initDataDist(distanceMatrix_sub,avg);
-
-                                        for (var i = 0; i < 200; i++) tsne.step(sub_k,cl_idx_sub,ctrary);
-
-                                        var intervalNum = 300;
-                                        tsne_animation = setInterval(function() {
-                                            for (var i = 0; i < 10; i++) tsne.step(sub_k,cl_idx_sub,ctrary);
-                                            //console.log(tsne.getSolution());
-                                            Y = rescale(tsne.getSolution(), lensInfo.width, lensInfo.height);
-
-                                            calculatePositionUsingSubClusterForLensTopic(items, lensInfo);
-                                            drawLensItems(items, lensInfo);
-                                            
-                                            nodeGroup.select("g,subTopic").remove();
-                                            subText = nodeGroup.append("g").attr("class","subTopic");
-
-                                            for(var i=0;i<subCluster.length;i++) { 
-                                                subCluster[i].X = 0;
-                                                subCluster[i].Y = 0;
-                                                subCluster[i].num = 0;
-                                            }
-                                            
-                                            for(var i=0;i<items.length;i++) {
-                                                var clusterIndex = parseInt(items[i].subtopic);
-                                                subCluster[clusterIndex].X += items[i].lensX;
-                                                subCluster[clusterIndex].Y += items[i].lensY;
-                                                subCluster[clusterIndex].num += 1;
-                                            }
-                                            
-                                            for(var i=0;i<subCluster.length;i++) {
-                                                var num = subCluster[i].num;
-                                                subCluster[i].X/=num;
-                                                subCluster[i].Y/=num;
-                                            }
-
-                                            subText.selectAll("text").remove();
-                                            subText.selectAll("text")
-                                                .data(subCluster).enter()
-                                                .append("text")
-                                                .attr('x', function(d) { return d.X; })
-                                                .attr('y', function(d) { return d.Y; })
-                                                .style("fill", "black")
-                                                .text(function(d) {
-                                                    return d.keywords.join(' ');
-                                                })
-                                                .attr('font-family','sans-serif')
-                                                .attr('text-anchor','middle')
-                                                .style('font-size', '7px');
-                                            
-
-                                            intervalNum-=1;
-                                            if(intervalNum==0) clearInterval(tsne_animation);
-                                        }, 200);
-                                    })
-                                    .error(function(error) {
-                                        $log.log(error);
+                                    items.forEach(function(d, i) {
+                                        d.subtopic = data.cl_idx_sub[i];
                                     });
 
+                                    calculatePositionUsingSubClusterForLensTopic(items, lensInfo);
+
+                                    drawLensItems(items, lensInfo);
+
+                                }).
+                                error(function(error) {
+                                    $log.log(error);
+                                });
+
                                 // handleOffsetRectLens(items, box, size);
+
                             };
 
-
                             var calculatePositionUsingSubClusterForLensTopic = function(items, lensInfo) {
+
                                 var nestedLensItems = d3.nest()
                                     .key(function(d) {
                                         return d.subtopic;
@@ -823,7 +682,7 @@
                                     })
                                     .entries(items);
 
-                                /*
+
                                 assignClusterIDOfNodesInOneKeyNestedItems(nestedLensItems);
 
                                 var box = getLensClusterSize(nestedLensItems.length, lensInfo);
@@ -836,23 +695,21 @@
 
                                     size = maxDotSize;
                                 }
-                                */
 
                                 nestedLensItems.forEach(function(d) {
-                                    handleOffsetHistLens2(d.values);
+                                    handleOffsetHistLens(d.values, box, size);
                                 });
 
                                 nestedLensItems.forEach(function(d, i) {
+
                                     d.values.forEach(function(d) {
-                                        d.lensX = lensInfo.centerX;
+                                        d.lensX = lensInfo.centerX - lensInfo.width / 2 + (0.5 + i) * box.widthOfBox;
                                         d.lensY = lensInfo.centerY;
                                     });
                                 });
 
-                                for (var i = 0; i < items.length; i++) {
-                                    items[i].lensX += Y[i][0];
-                                    items[i].lensY += Y[i][1];
-                                }
+
+
                             };
 
 
@@ -920,21 +777,6 @@
 
                                     handleOffsetHistLensVertically(cluster, box, size);
                                 }
-
-                            };
-
-
-                            var handleOffsetHistLens2 = function(cluster) {
-                                var size = 3;
-                                cluster.forEach(function(d, i, j) {
-
-                                    d.nodeWidthLens = size;
-                                    d.nodeHeightLens = size;
-
-                                    d.YOffsetLens = 0;
-                                    d.XOffsetLens = 0;
-
-                                });
 
                             };
 
@@ -1179,6 +1021,9 @@
                             }
 
                             var drawLensItems = function(itemsOnLens, lensInfo) {
+
+
+
                                 nodeGroup.selectAll(".dot")
                                     .data(itemsOnLens, function(d) {
                                         return d.id;
@@ -1189,14 +1034,12 @@
                                         return d.id;
                                     });
 
-
                                 //Update
                                 //Transition from previous place to new place
-
-
                                 lensItems.transition()
-                                    //.duration(500)
+                                    .duration(500)
                                     .attr("width", function(d) {
+                                        // console.log(initialSquareLenth);
                                         return +d.nodeWidthLens;
                                     })
                                     .attr("height", function(d) {
@@ -1208,16 +1051,13 @@
                                     .attr("y", function(d) {
                                         return d.lensY;
                                     })
-                                    .attr('fill-opacity', 0.8)
+                                    .attr("transform", function(d, i) {
 
-                                .attr("transform", function(d, i) {
-
-                                    // if (d.cancer== "Cancer") {
-                                    //     console.log(height);
-                                    // }
-                                    return "translate(" + (d.XOffsetLens) + "," + (-(d.YOffsetLens)) + ") ";
-                                });
-
+                                        // if (d.cancer== "Cancer") {
+                                        //     console.log(height);
+                                        // }
+                                        return "translate(" + (d.XOffsetLens) + "," + (-(d.YOffsetLens)) + ") ";
+                                    });
 
                                 //Enter
                                 //Append new circle
@@ -1227,11 +1067,10 @@
                                         'lensItems': true,
                                         'dot': false
                                     })
-                                    .attr("y", function(d,i) { 
-                                        return yMap(d); })
-                                    .attr("x", function(d) {
-                                        return xMap(d); })
+                                    .attr("y", yMap)
+                                    .attr("x", xMap)
                                     .attr("width", function(d) {
+                                        // console.log(initialSquareLenth);
                                         return +d.nodeWidth;
                                     })
                                     .attr("height", function(d) {
@@ -1244,9 +1083,8 @@
                                         return scope.round ? +5 : 0;
                                     })
 
-                                    .style("fill", function(d) {
-                                        return color(d.subtopic+9)
-                                        //return color(d[scope.config.colorDim]);
+                                .style("fill", function(d) {
+                                        return color(d[scope.config.colorDim]);
                                     })
                                     .transition()
                                     .duration(500)
@@ -1267,7 +1105,7 @@
                                         return "translate(" + (d.XOffsetLens) + "," + (-(d.YOffsetLens)) + ") ";
                                     });
 
-                            
+
                                 //Exit
                                 //Transition from previous place to original place
                                 //remove circle
@@ -1285,27 +1123,23 @@
                                     .attr("height", function(d) {
                                         return +d.nodeHeight;
                                     })
-                                    .attr("y", function(d) {
-                                        return yMap(d); })
-                                    .attr("x", function(d) {
-                                        return xMap(d); })
+                                    .attr("y", yMap)
+                                    .attr("x", xMap)
                                     .attr("transform", function(d, i) {
                                         return "translate(" + (d.XOffset) + "," + (-(d.YOffset)) + ") ";
-                                    })
-                                    .style('fill', function(d) {
-                                        return color(d[scope.config.colorDim]-1);
                                     });
                             };
 
                             var reverseTransform = function(coor, transfactor, scalefactor) {
 
-                                // return (coor + transfactor)*scalefactor;
-                                return coor;
+                                return (coor + transfactor)*scalefactor;
                             };
 
 
 
                             var getLensData = function(lensInfo) {
+
+                                lensInfo
 
                                 var itemsOnLens = scope.data.filter(function(d) {
 
@@ -1332,7 +1166,7 @@
                                     });
                                 }
 
-                                //console.log(itemsOnLens);
+                                console.log(itemsOnLens);
 
 
                                 return itemsOnLens;
@@ -1558,8 +1392,6 @@
                                 var drag = d3.behavior.drag()
                                     .on("drag", dragmoveTopicLens)
                                     .on("dragstart", function() {
-                                        clearInterval(tsne_animation);
-                                        tsne_animation = null;
                                         d3.event.sourceEvent.stopPropagation(); // silence other listeners
                                     })
                                     .on("dragend", dragendTopicLens);
@@ -1861,35 +1693,8 @@
                                     .scaleExtent([1, 100])
                                     .on("zoom", zoomed);
 
-                                var panning = d3.behavior.zoom()
-                                    .scaleExtent([1, 1])
-                                    .x(xScale)
-                                    .y(yScale)
-                                    .on("zoom", zoomed);
-
                                 svgGroup.call(zoom);
-                                var dragmoveRectLens = function() {
 
-                                    var xPos, yPos;
-
-                                    var lensInfo = {};
-
-                                    d3.select(this)
-                                        .attr("x", xPos = Math.max(initialHistLensWidth / 2, Math.min(width - initialHistLensWidth / 2, d3.event.x)) - initialHistLensWidth / 2)
-                                        .attr("y", yPos = Math.max(initialHistLensHeight / 2, Math.min(height - initialHistLensHeight / 2, d3.event.y)) - initialHistLensHeight / 2);
-
-                                    // labelDiv.text(xPos);
-
-                                    lensInfo.centerX = xPos + initialHistLensWidth / 2;
-                                    lensInfo.centerY = yPos + initialHistLensHeight / 2;
-                                    lensInfo.type = 'hist';
-                                    lensInfo.width = initialHistLensWidth;
-                                    lensInfo.height = initialHistLensHeight;
-
-
-                                    // redrawLensTopic(lensInfo);
-
-                                };
 
 
                                 function zoomed() {
@@ -1909,28 +1714,9 @@
                                     scope.context.xDomain = zoom.x().domain();
                                     scope.context.yDomain = zoom.y().domain();
 
-                                    var range = getExtentConsideringXY(scope.xdim, scope.ydim);
-
-                                    xRange = range.xRange;
-                                    yRange = range.yRange;
-
-                                    var xScaleForNodes = d3.scale.linear().range([0, width]);
-                                    xScaleForNodes.domain(xRange);
-
-                                    xMap = function(d) {
-                                        return xScaleForNodes(xValue(d));
-                                    };
-
-                                    var yScaleForNodes = d3.scale.linear().range([height, 0]);
-                                    yScaleForNodes.domain(yRange);
-                                    yMap = function(d) {
-                                        return yScaleForNodes(yValue(d));
-                                    };
-
-
-
                                     nodeGroup.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
-                                    //nodeGroup.attr("transform", "translate(" + d3.event.translate + ")");
+
+
 
                                 }
 
@@ -2405,8 +2191,8 @@
 
                                 var range = getExtentConsideringXY(scope.xdim, scope.ydim);
 
-                                xRange = range.xRange;
-                                yRange = range.yRange;
+                                var xRange = range.xRange;
+                                var yRange = range.yRange;
 
 
 
@@ -2939,7 +2725,7 @@
                                     var binKey = +dimSetting[dimNameClosure].binnedData[d.id];
                                     if (!dimSetting[dimNameClosure].keyValue[binKey]) {
 
-                                        //console.log(binKey);
+                                        console.log(binKey);
                                     }
 
                                     var positionWithBinKey = dimSetting[dimNameClosure].keyValue[binKey].calculatedPosition;
@@ -3809,39 +3595,17 @@
 
                                 nodeGroup.attr("transform", "translate(0,0) rotate(0 80 660)");
 
-                                var clusterInfo = {};
 
                                 nodeGroup.selectAll(".dot")
                                     .data(scope.data, function(d) {
                                         return +d.id;
                                     })
                                     .style("fill", function(d) {
-                                        return color(d[scope.config.colorDim]-1);
+                                        return color(d[scope.config.colorDim]);
                                     })
                                     .transition()
                                     .duration(1500)
-                                    .attr("x", function(d) {
-                                        var clusterIndex = d.cluster
-                                        if(clusterInfo[clusterIndex]==undefined) {
-                                            clusterInfo[clusterIndex] = {};
-                                            clusterInfo[clusterIndex].index = clusterIndex;
-                                            clusterInfo[clusterIndex].num = 1;
-                                            clusterInfo[clusterIndex].X = parseFloat(d.X);
-                                            clusterInfo[clusterIndex].Y = parseFloat(d.Y);
-                                            clusterInfo[clusterIndex].keywords = [
-                                                d['cluster top keyword 1'],
-                                                d['cluster top keyword 2'],
-                                                d['cluster top keyword 3'],
-                                                d['cluster top keyword 4'],
-                                                d['cluster top keyword 5']
-                                            ];
-                                        } else {
-                                            clusterInfo[clusterIndex].num += 1;
-                                            clusterInfo[clusterIndex].X += parseFloat(d.X);
-                                            clusterInfo[clusterIndex].Y += parseFloat(d.Y);
-                                        }
-                                        return xMap(d);
-                                    })
+                                    .attr("x", xMap)
                                     .attr("y", yMap)
                                     .attr("width", function(d) {
                                         // console.log(initialSquareLenth);
@@ -3863,26 +3627,6 @@
                                         // }
                                         return "translate(" + (d.XOffset) + "," + (-(d.YOffset)) + ") ";
                                     });
-
-
-                                clusterInfo = $.map(clusterInfo, function(d,i) { return [d]; });
-                                for(var i=0;i<clusterInfo.length;i++) {
-                                    var num = clusterInfo[i].num;
-                                    clusterInfo[i].X/=num;
-                                    clusterInfo[i].Y/=num;
-                                }
-                                
-                                nodeGroup.selectAll(".text")
-                                    .data(clusterInfo).enter()
-                                    .append("text")
-                                    .attr('x', xMap)
-                                    .attr('y', yMap)
-                                    .style("fill", "black")
-                                    .text(function(d){
-                                        return d.keywords.join(' ');
-                                    })
-                                    .attr('font-family','sans-serif')
-                                    .attr('text-anchor','middle');
 
                             };
 
@@ -4559,7 +4303,7 @@
 
                                         })
                                         .on("click", function(d, i) {
-                                            //console.log(d);
+                                            console.log(d);
                                             // toggleMinimizeCluster(scope.xdim, i);
                                             toggleMaximizeCluster(scope.xdim, i)
                                         });

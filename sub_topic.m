@@ -80,7 +80,7 @@ end
 
 A_sub = A(:,idx);
 % no of topics
-k_sub = min([floor(length(idx)/10) 10]);
+k_sub = min([floor(length(idx)/20) 5]);
 if (k_sub<2) 
     k_sub = 2;
 end

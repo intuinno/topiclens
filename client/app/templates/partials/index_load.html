@@ -8,9 +8,9 @@
 
 <div class="container-fluid">
     <div class="row">
-        <div class="col-md-7">
+        <div>
             <h5>
-                    <div ng-class="{tryMe: isPlotSelectFocused}" focus-me="isPlotSelectFocused" popover="Try me!" popover-trigger="focus" popover-placement="right">
+<!--                    <div ng-class="{tryMe: isPlotSelectFocused}" focus-me="isPlotSelectFocused" popover="Try me!" popover-trigger="focus" popover-placement="right">
                         <div class="btn-group">
 
                                 <button type="button" class="btn btn-default active" ng-model="nomaConfig.isGather" btn-radio="'scatter'">Scatter</button>
@@ -21,18 +21,16 @@
 
                         </div>
                     </div>
-                        <alert class="chart-instruction" ng-show="isPlotSelectFocused" close="isPlotSelectFocused=false">
+    -->                    <alert class="chart-instruction" ng-show="isPlotSelectFocused" close="isPlotSelectFocused=false">
                             Try these buttons.</alert>
 
                     <div class="btn-group" ng-show="isScatter">
 
                                 <button type="button" class="btn btn-default active" ng-model="nomaConfig.lens" btn-radio="'noLens'">No Lens</button>
 
-                                <button type="button" class="btn btn-default" ng-model="nomaConfig.lens" btn-radio="'rectLens'">Rect Lens</button>
 
                                 <button type="button" class="btn btn-default" ng-model="nomaConfig.lens" btn-radio="'histLens'">Histogram Lens</button>
 
-                                <button type="button" class="btn btn-default" ng-model="nomaConfig.lens" btn-radio="'pieLens'"> Pie Lens</button>
 
                     </div>
             </h5>
@@ -109,8 +107,9 @@
 
         </div>
 
-
-        <div class="col-md-5">
+</div>
+<div class="row">
+        <div >
 
             <div class="cmt-form">
                 <div ng-hide="signedIn">
