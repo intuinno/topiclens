@@ -166,7 +166,7 @@ def get_subTopic_tsne():
 	global voca
 	idx = json.loads(request.args.get('idx'))
 
-	[mappedX_sub, cl_idx_sub, Wtopk_idx_sub] = eng.sub_topic_tsne(idx,nargout=3)
+	[mappedX_sub, cl_idx_sub, Wtopk_idx_sub] = eng.sub_topic(idx,cl_idx,nargout=3)
 
 	print mappedX_sub
 
