@@ -1,5 +1,5 @@
 %% running standard nmf of subset
-function [mappedX_sub, cl_idx_sub, Wtopk_idx_sub] = sub_topic_tsne(idx)
+function [mappedX_sub, cl_idx_sub, Wtopk_idx_sub] = sub_topic(idx, cl_idx)
 
 addpath('./library/nmf');     
 addpath('./library/ramkis');
@@ -79,6 +79,10 @@ if iscell(idx)
 end
 
 A_sub = A(:,idx);
+cluster_idx=unique(cl_idx(idx));
+disp(cluster_idx);
+sub_k=length(cluster_idx);
+disp(sub_k);
 % no of topics
 k_sub = min([floor(length(idx)/20) 5]);
 if (k_sub<2) 
@@ -150,7 +154,7 @@ if(cnt == 0)
     params.tol = tol;
     params.maxiter = maxiter;
 
-    [m, n] = size(X);
+    [m, n] = size(target_A_sub);
 
     cluster_idx=unique(cl_idx(idx));                    %
     sub_k=length(cluster_idx);                          % number of cluster selected
