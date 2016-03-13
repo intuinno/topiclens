@@ -100,11 +100,11 @@ def before__first_request_():
 	cl_idx = cl_idx[0]
 
 
-	cl_idx = cl_idx
-	distanceMatrix = distanceMatrix
+	# cl_idx = cl_idx
+	# distanceMatrix = distanceMatrix
 
-	cl_idx = cl_idx
-	distanceMatrix = distanceMatrix
+	# cl_idx = cl_idx
+	# distanceMatrix = distanceMatrix
 
 	sameTopicWeight = 0.9
 	differentTopicWeight = 1.1
@@ -129,8 +129,16 @@ def get_subTopic():
 	idx = json.loads(request.args.get('idx'))
 
 	# pdb.set_trace()
+	eng.workspace['idx'] = idx
+	# [mappedX_sub, cl_idx_sub, Wtopk_idx_sub] = eng.sub_topic(idx,cl_idx,nargout=3)
+	eng.sub_topic(nargout=0)
+	mappedXP_sub = eng.workspace['mappedX_sub']
+	cl_idx_sub = eng.workspace['cl_idx_sub']
+	Wtopk_idx_sub = eng.workspace['Wtopk_idx_sub']
+	k_sub = eng.workspace['k_sub'] # number of topics that will be shown
+	
 
-	[mappedX_sub, cl_idx_sub, Wtopk_idx_sub] = eng.sub_topic(idx,nargout=3)
+
 	idx = [i-1 for i in idx]
 
 	Wtopk_sub = []
@@ -166,7 +174,11 @@ def get_subTopic_tsne():
 	global voca
 	idx = json.loads(request.args.get('idx'))
 
-	[mappedX_sub, cl_idx_sub, Wtopk_idx_sub] = eng.sub_topic(idx,cl_idx,nargout=3)
+	eng.sub_topic(nargout=0)
+	mappedXP_sub = eng.workspace['mappedX_sub']
+	cl_idx_sub = eng.workspace['cl_idx_sub']
+	Wtopk_idx_sub = eng.workspace['Wtopk_idx_sub']
+	k_sub = eng.workspace['k_sub'] # number of topics that will be shown
 
 	print mappedX_sub
 
