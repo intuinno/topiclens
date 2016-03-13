@@ -168,6 +168,10 @@ def get_subTopic():
 	return json.dumps({'distanceMatrix':distanceMatrix_sub, 'cl_idx_sub':cl_idx_sub, 'Wtopk_sub':Wtopk_sub})
 
 
+
+
+#########################
+# not used in gather plot
 @app.route('/get_subTopic_tsne')
 def get_subTopic_tsne():
 	global eng
