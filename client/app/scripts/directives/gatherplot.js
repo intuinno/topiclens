@@ -35,7 +35,7 @@
                                 maxDotSize = 5;
                             }
 
-
+                            var socket = io.connect('http://davian.korea.ac.kr:5004/subtopic');
                             var opt = { epsilon: 20 };
                             var tsne = new subtsnejs.subtSNE(opt);
                             var tsne_animation;
@@ -688,11 +688,16 @@
                                     return +d.filenumber;
                                 });
 
-                                $http.get('http://davian.korea.ac.kr:5004/get_subTopic', {
-                                        params: {
-                                            idx: JSON.stringify(selectedItems)
-                                        }
-                                    }).success(function(data) {
+                                //$http.get('http://davian.korea.ac.kr:5004/get_subTopic', {
+                                //        params: {
+                                //            idx: JSON.stringify(selectedItems)
+                                //        }
+                                //    }).success(function(data) {
+                                
+                                socket.on('result data', function(data) {
+                                        console.log('success');
+                                        console.log(data);
+                                        clearInterval(tsne_animation);
                                         var cl_idx_sub = [];
                                         for(var i=0;i<data.cl_idx_sub.length;i++) cl_idx_sub.push(data.cl_idx_sub[i]-1);
 
@@ -754,7 +759,7 @@
 
                                         for (var i = 0; i < 200; i++) tsne.step(sub_k,cl_idx_sub,ctrary);
 
-                                        var intervalNum = 300;
+                                        var intervalNum = 200;
                                         tsne_animation = setInterval(function() {
                                             for (var i = 0; i < 10; i++) tsne.step(sub_k,cl_idx_sub,ctrary);
                                             //console.log(tsne.getSolution());
@@ -802,11 +807,17 @@
 
                                             intervalNum-=1;
                                             if(intervalNum==0) clearInterval(tsne_animation);
-                                        }, 200);
-                                    })
-                                    .error(function(error) {
-                                        $log.log(error);
+                                        }, 50);
+                                        console.log(111)
                                     });
+
+                                    socket.emit('get_subTopic',{'idx':selectedItems});
+
+
+                                    //})
+                                    //.error(function(error) {
+                                    //    $log.log(error);
+                                    //});
 
                                 // handleOffsetRectLens(items, box, size);
                             };

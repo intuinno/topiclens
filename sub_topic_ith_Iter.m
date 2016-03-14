@@ -41,3 +41,11 @@ priorities_sub(new_nodes(2)) = priority_one;
 
 W_sub = cell2mat(Ws_sub(find(is_leaf_sub)));
 [H_sub,temp,suc_H,numChol_H,numEq_H] = nnlsm_blockpivot(W_sub'*W_sub,W_sub'*target_A_sub,1,rand(i+sub_k,size(target_A_sub,2)));
+
+
+
+%%%%%%%%%% after one iteration %%%%%%%%%
+[Wtopk_sub,Htopk_sub,DocTopk_sub,Wtopk_idx_sub] = parsenmf(W_sub,H_sub,dict,topk_sub);
+
+Wtopk_idx_sub = Wtopk_idx_sub';
+[~,cl_idx_sub] = max(H_sub);

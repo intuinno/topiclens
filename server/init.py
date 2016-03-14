@@ -3,6 +3,7 @@
 from werkzeug.contrib.profiler import ProfilerMiddleware
 from flask import Flask, request, g, render_template
 from flask.ext.triangle import Triangle
+from flask.ext.socketio import SocketIO, emit
 from scipy import sparse, io
 from sklearn.metrics.pairwise import pairwise_distances
 import numpy as np
@@ -26,6 +27,7 @@ app.config.from_envvar('FLASKR_SETTINGS', silent=True)
 
 app.config['PROFILE'] = True
 app.wsgi_app = ProfilerMiddleware(app.wsgi_app, restrictions=[10])
+socketio = SocketIO(app)
 # @app.after_request
 # def after_request(response):
 #   response.headers.add('Access-Control-Allow-Origin', '*')
@@ -152,8 +154,6 @@ def get_subTopic():
 	cl_idx_sub = np.array(cl_idx_sub).tolist()
 
 
-	print distanceMatrix.shape
-	
 	distanceMatrix_sub = distanceMatrix[idx,:][:,idx]
 
 	sameTopicWeight = 0.8
@@ -166,6 +166,64 @@ def get_subTopic():
 
 
 	return json.dumps({'distanceMatrix':distanceMatrix_sub, 'cl_idx_sub':cl_idx_sub, 'Wtopk_sub':Wtopk_sub})
+
+
+
+###### socket test code
+@socketio.on('connect', namespace='/subtopic')
+def connect():
+	print "connected"
+	emit("server connected")
+
+@socketio.on('disconnect', namespace='/subtopic')
+def disconnect():
+	print "disconnected"
+
+@socketio.on('get_subTopic', namespace='/subtopic')
+def get_subTopic_(message):
+	global eng
+	global voca
+	global distanceMatrix
+	
+	idx = message['idx']
+
+	sameTopicWeight = 0.8
+	differentTopicWeight = 1.2
+	
+	eng.workspace['idx'] = idx
+	
+	eng.sub_topic(nargout=0)
+	sub_k = int(eng.workspace['k_sub'])
+
+	idx = [i-1 for i in idx]
+	distanceMatrix_sub = distanceMatrix[idx,:][:,idx]
+
+	for i in xrange(1,sub_k+1):
+		print i
+		eng.workspace['i'] = i
+		eng.sub_topic_ith_Iter(nargout=0)
+
+		cl_idx_sub = eng.workspace['cl_idx_sub']
+		Wtopk_idx_sub = eng.workspace['Wtopk_idx_sub']
+		# k_sub = eng.workspace['k_sub'] # number of topics that will be shown
+
+		Wtopk_sub = []
+		for idxArray in Wtopk_idx_sub:
+			tempArray = []
+			for topicIdx in idxArray:
+				tempArray.append(voca[int(topicIdx)-1])
+			Wtopk_sub.append(tempArray)
+
+		cl_idx_sub = cl_idx_sub[0]
+		cl_idx_sub = np.array(cl_idx_sub).tolist()
+
+		distanceMatrix_sub_ = supervisedTSNE(distanceMatrix_sub, cl_idx_sub,
+			sameTopicWeight=sameTopicWeight, differentTopicWeight=differentTopicWeight)
+		distanceMatrix_sub_ = distanceMatrix_sub.tolist()
+
+		emit('result data', {'distanceMatrix':distanceMatrix_sub_, 'cl_idx_sub':cl_idx_sub, 'Wtopk_sub':Wtopk_sub})
+		time.sleep(4)
+	#return json.dumps({'distanceMatrix':distanceMatrix_sub, 'cl_idx_sub':cl_idx_sub, 'Wtopk_sub':Wtopk_sub})
 
 
 
@@ -213,4 +271,4 @@ def form():
 # Execute the main program
 if __name__ == '__main__':
 	before__first_request_()
-	app.run(host='0.0.0.0',port=5004)
+	socketio.run(app,host='0.0.0.0',port=5004, debug=True)
