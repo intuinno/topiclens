@@ -744,8 +744,8 @@
 
                                         for(var i=0;i<selectedItems.length;i++) {
                                             var topicIndex = cl_idx_sub[i];
-                                            ctrary[topicIndex][0] += coord[selectedItems[i]][0];
-                                            ctrary[topicIndex][1] += coord[selectedItems[i]][1];
+                                            ctrary[topicIndex][0] += coord[selectedItems[i]-1][0];
+                                            ctrary[topicIndex][1] += coord[selectedItems[i]-1][1];
                                             topicNum[topicIndex] += 1;
                                         }
                                         for(var i=0;i<sub_k;i++) {
