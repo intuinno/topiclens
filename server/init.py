@@ -222,7 +222,7 @@ def get_subTopic_(message):
 		distanceMatrix_sub_ = distanceMatrix_sub.tolist()
 
 		emit('result data', {'distanceMatrix':distanceMatrix_sub_, 'cl_idx_sub':cl_idx_sub, 'Wtopk_sub':Wtopk_sub})
-		time.sleep(4)
+		# time.sleep(4)
 	#return json.dumps({'distanceMatrix':distanceMatrix_sub, 'cl_idx_sub':cl_idx_sub, 'Wtopk_sub':Wtopk_sub})
 
 

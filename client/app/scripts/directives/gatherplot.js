@@ -723,8 +723,9 @@
                                         
                                         ////////////////////////////////////////////
                                         var N = selectedItems.length;
-                                        
-                                        // average distance of the matrix
+                                        console.log(distanceMatrix_sub);
+                                        console.log(N);
+                                        // average distance of the matrix                                        
                                         var totalsum = 0;
                                         for (var i=0; i<N; i++){
                                             for (var j=0; j<N; j++){
@@ -751,7 +752,30 @@
                                             ctrary[i][0]/=topicNum[i];
                                             ctrary[i][1]/=topicNum[i];
                                         }
+                                        var sum1 = 0.0;
+                                        var sum2 = 0.0;
+                                        for(var i=0; i<sub_k;i++){
+                                            sum1 += ctrary[i][0]
+                                            sum2 += ctrary[i][1]
+                                        }
+                                        var mean1 = sum1/sub_k;
+                                        var mean2 = sum2/sub_k;
 
+                                        var var1 = 0.0;
+                                        var var2 = 0.0;
+                                        for(var i=0; i<sub_k;i++){
+                                            var1 += Math.pow((ctrary[i][0]-mean1),2);
+                                            var2 += Math.pow((ctrary[i][1]-mean2),2);
+                                        }
+                                        var1 = var1/sub_k;
+                                        var2 = var2/sub_k;
+                                        var std1 = Math.sqrt(var1);
+                                        var std2 = Math.sqrt(var2);
+
+                                        for(var i=0; i<sub_k;i++){
+                                            ctrary[i][0] = (ctrary[i][0]-mean1)/std1;
+                                            ctrary[i][1] = (ctrary[i][1]-mean2)/std2;
+                                        }
                                         ////////////////////////////////////////////
                                         
 
@@ -808,7 +832,7 @@
                                             intervalNum-=1;
                                             if(intervalNum==0) clearInterval(tsne_animation);
                                         }, 50);
-                                        console.log(111)
+                                        //console.log(111)
                                     });
 
                                     socket.emit('get_subTopic',{'idx':selectedItems});
@@ -3814,6 +3838,7 @@
                             };
 
                             var writeNodesInSVG = function() {
+                                nodeGroup.selectAll("text").remove();
                                 // debugger;
 
                                 // nodeGroup.attr("transform", "translate(" + margin + "," + margin + ") rotate(0 80 660)");
