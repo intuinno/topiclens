@@ -3,11 +3,11 @@ var subtsnejs = subtsnejs || { REVISION: 'ALPHA' };
 
 (function(global) {
   "use strict";
-
   // utility function
   var assert = function(condition, message) {
     if (!condition) { throw message || "Assertion failed"; }
   }
+
 
   // syntax sugar
   var getopt = function(opt, field, defaultval) {
@@ -38,7 +38,7 @@ var subtsnejs = subtsnejs || { REVISION: 'ALPHA' };
 
   // return random normal number
   var randn = function(mu, std){ return mu+gaussRandom()*std; }
-
+  
   // utilitity that creates contiguous vector of zeros of size n
   var zeros = function(n) {
     if(typeof(n)==='undefined' || isNaN(n)) { return []; }
@@ -71,14 +71,19 @@ var subtsnejs = subtsnejs || { REVISION: 'ALPHA' };
     return x;
   }
 
-  var Create2DArray = function(rows) {
-  var arr = [];
-    for (var i=0;i<rows;i++) {
-       arr[i] = [];
+  var randn2dForY = function(n,d) {
+    var x = [];
+    for(var i=0;i<n;i++) {
+      var xhere = [];
+      for(var j=0;j<d;j++) { 
+          // xhere.push(randn(0.0, 1e-4)); 
+          xhere.push(2*Math.random()-1); 
+          
+      }
+      x.push(xhere);
     }
-    return arr;
+    return x;
   }
-
 
   // compute L2 distance between two vectors
   var L2 = function(x1, x2) {
@@ -96,7 +101,7 @@ var subtsnejs = subtsnejs || { REVISION: 'ALPHA' };
     var idx=[];
     var yidx = [];
     var currentIndex = n, temporaryValue, randomIndex;
-    for (var i=0; i<n-1; i++){
+    for (var i=0; i<n; i++){
       yidx.push(i);
     }
         // While there remain elements to shuffle...
@@ -157,6 +162,9 @@ var subtsnejs = subtsnejs || { REVISION: 'ALPHA' };
         var psum = 0.0;
         for(var j=0;j<N;j++) {
           var pj = Math.exp(- D[i*N+j] * beta);
+          // if (isNaN(pj)) {
+          //   console.log("NaN");
+          // }
           if(i===j) { pj = 0; } // we dont care about diagonals
           prow[j] = pj;
           psum += pj;
@@ -166,6 +174,9 @@ var subtsnejs = subtsnejs || { REVISION: 'ALPHA' };
         for(var j=0;j<N;j++) {
           var pj = prow[j] / psum;
           prow[j] = pj;
+          // if (isNaN(pj)) {
+          //   console.log("NaN");
+          // }
           if(pj > 1e-7) Hhere -= pj * Math.log(pj);
         }
 
@@ -199,12 +210,16 @@ var subtsnejs = subtsnejs || { REVISION: 'ALPHA' };
     // symmetrize P and normalize it to sum to 1 over all ij
     var Pout = zeros(N * N);
     var N2 = N*2;
-    for(var i=0;i<N;i++) {
-      for(var j=0;j<N;j++) {
+    for(var i=0;i<N-1;i++) {
+      for(var j=0;j<N-1;j++) {
         Pout[i*N+j] = Math.max((P[i*N+j] + P[j*N+i])/N2, 1e-100);
       }
     }
-
+    var M = N-1;
+    for(var i=0; i<N; i++){
+      Pout[i*(M+1)+M] = Math.max((P[i*(M+1)+M] + P[i*(M+1)+M])/N2, 1e-100);        
+      Pout[(M*M+M)+i]=Pout[i*(M+1)+M];
+    }    
     return Pout;
   }
 
@@ -216,12 +231,12 @@ var subtsnejs = subtsnejs || { REVISION: 'ALPHA' };
     this.perplexity = getopt(opt, "perplexity", 30); // effective number of nearest neighbors
     this.dim = getopt(opt, "dim", 2); // by default 2-D tSNE
     this.epsilon = getopt(opt, "epsilon", 10); // learning rate
-    this.LM = getopt(opt, "LM", 100); //number of landmark
+    this.LM = getopt(opt, "LM", 10); //number of landmark
     this.iter = 0;
   }
 
   subtSNE.prototype = {
-
+    
     // this function takes a set of high-dimensional points
     // and creates matrix P from them using gaussian kernel
     initDataRaw: function(X) {
@@ -277,16 +292,6 @@ var subtsnejs = subtsnejs || { REVISION: 'ALPHA' };
 
     // return pointer to current solution
     getSolution: function() {
-      // var newY = [];
-      // var temp=[];
-      // var N=this.N;
-      // for(var i=0; i<N-1; i++){
-      //   temp.push(this.Y[i][0]);
-      //   temp.push(this.Y[i][1]);
-      //   newY.push(temp);
-      //   temp=[];
-      // }
-      // return newY;
       return this.Y;
     },
 
@@ -294,7 +299,15 @@ var subtsnejs = subtsnejs || { REVISION: 'ALPHA' };
     step: function(sub_k, cl_idx_sub, ctrary) {
       this.iter += 1;
       var N = this.N;
+      if (isNaN(this.Y[0][0])) {
+        console.log("NaN");
+      }
+      var tempY = this.Y;
       var cg = this.costGrad(this.Y, sub_k, cl_idx_sub, ctrary); // evaluate gradient
+      if (isNaN(cg.cost)) {
+        console.log("NaN");
+        this.costGrad(tempY, sub_k, cl_idx_sub, ctrary);   
+      }
       var cost = cg.cost;
       var grad = cg.grad;
 
@@ -318,7 +331,6 @@ var subtsnejs = subtsnejs || { REVISION: 'ALPHA' };
 
           // step!
           this.Y[i][d] += newsid; 
-
           ymean[d] += this.Y[i][d]; // accumulate mean so that we can center later
         }
       }
@@ -330,6 +342,30 @@ var subtsnejs = subtsnejs || { REVISION: 'ALPHA' };
         }
       }
 
+      var sum1 = 0.0;
+      var sum2 = 0.0;
+      for(var i=0; i<N;i++){
+        sum1 += this.Y[i][0]
+        sum2 += this.Y[i][1]
+      }
+      var mean1 = sum1/N;
+      var mean2 = sum2/N;
+
+      var var1 = 0.0;
+      var var2 = 0.0;
+      for(var i=0; i<N;i++){
+        var1 += Math.pow((this.Y[i][0]-mean1),2);
+        var2 += Math.pow((this.Y[i][1]-mean2),2);
+      }
+      var1 = var1/N;
+      var2 = var2/N;
+      var std1 = Math.sqrt(var1);
+      var std2 = Math.sqrt(var2);
+
+      for(var i=0; i<N;i++){
+        this.Y[i][0] = (this.Y[i][0]-mean1)/std1;
+        this.Y[i][1] = (this.Y[i][1]-mean2)/std2;
+      }
       //if(this.iter%100===0) console.log('iter ' + this.iter + ', cost: ' + cost);
       return cost; // return current cost
     },
@@ -371,14 +407,14 @@ var subtsnejs = subtsnejs || { REVISION: 'ALPHA' };
       // compute current Q distribution, unnormalized first
       var Qu = zeros((N+1)*(N+1));
       var qsum = 0.0;
+      var landmark = this.landmark; 
+      var dsum = 0.0; 
+      var tmp_idx_for_i = 0;
 
-      var tmp_idx_for_i = 1;
-      var landmark = this.landmark;  
       for(var i=0;i<N;i++) {
         var tmp_idx_for_j = tmp_idx_for_i;
         for(var j=i+1;j<N;j++) {
-          if ((tmp_idx_for_i<=m && landmark[tmp_idx_for_i]==i) || (tmp_idx_for_j<=m && landmark[tmp_idx_for_j]==j)){
-            var dsum = 0.0;
+          if ((tmp_idx_for_i<m && landmark[tmp_idx_for_i]==i) || (tmp_idx_for_j<m && landmark[tmp_idx_for_j]==j)){
             var dhere1 = Y[i][0] - Y[j][0];
             var dhere2 = Y[i][1] - Y[j][1];
             dsum = dhere1 * dhere1 + dhere2 * dhere2;
@@ -389,15 +425,15 @@ var subtsnejs = subtsnejs || { REVISION: 'ALPHA' };
             tmp_idx_for_j = tmp_idx_for_j + 1;
           }
         }
-        for (var k=1; k<sub_k+1; k++){
+
+        for (var k=0; k<sub_k; k++){
           if(cl_idx_sub[i] == k){
-            var dhere1 = Y[i][0] - ctrary[k-1][0];
-            var dhere2 = Y[i][1] - ctrary[k-1][1];
+            var dhere1 = Y[i][0] - ctrary[k][0];
+            var dhere2 = Y[i][1] - ctrary[k][1];
             dsum = dhere1 * dhere1 + dhere2 * dhere2;
             var qu = 1.0 / (1.0 + dsum); // Student t-distribution
             Qu[i*(N+1)+N] = qu;
-            Qu[(N*N+N)+i] = qu;
-            Qu[(N+1)*(N+1)-1] = 0;
+            Qu[(N*N+N)+i] = qu;  
             qsum += 2 * qu;
           }
         }
@@ -405,32 +441,35 @@ var subtsnejs = subtsnejs || { REVISION: 'ALPHA' };
           tmp_idx_for_i = tmp_idx_for_i + 1;
         }
       }
-      //console.log(sub_k);
-      Qu = [].concat.apply([], Qu);
-      //console.log(Qu);
+      Qu[(N+1)*(N+1)-1] = 0;
+
       // normalize Q distribution to sum to 1
       var NN = (N+1)*(N+1);
       var Q = zeros(NN);
       for(var q=0;q<NN;q++) { Q[q] = Math.max(Qu[q] / qsum, 1e-100); }
+      //console.log(qsum);
+      //console.log(P.length);
       var cost = 0.0;
       var grad = [];
       for(var i=0;i<N;i++) {
         var gsum = new Array(dim); // init grad for point i
         for(var d=0;d<dim;d++) { gsum[d] = 0.0; }
-        var tmp_idx_for_j = 1;  
+        var tmp_idx_for_j = 0;  
         for(var j=0;j<N;j++) {
-          if (tmp_idx_for_j <= m && landmark[tmp_idx_for_j]==j){
+          if (tmp_idx_for_j < m && landmark[tmp_idx_for_j]==j){
             cost += - P[i*(N+1)+j] * Math.log(Q[i*(N+1)+j]); // accumulate cost (the non-constant portion at least...)
             var premult = 4 * (pmul * P[i*(N+1)+j] - Q[i*(N+1)+j]) * Qu[i*(N+1)+j];
             gsum[0] += premult * (Y[i][0] - Y[j][0]);
             gsum[1] += premult * (Y[i][1] - Y[j][1]);
+            tmp_idx_for_j = tmp_idx_for_j+1;
           }
         }
-        for(var k=1; k<sub_k+1; k++){
+        for(var k=0; k<sub_k; k++){
           if(cl_idx_sub[i] == k){
+            cost += - P[i*(N+1)+N] * Math.log(Q[i*(N+1)+N]);
             var premult = 4 * (pmul * P[i*(N+1)+N] - Q[i*(N+1)+N]) * Qu[i*(N+1)+N];
-            gsum[0] += premult * (Y[i][0] - ctrary[k-1][0]);
-            gsum[1] += premult * (Y[i][1] - ctrary[k-1][1]);  
+            gsum[0] += premult * (Y[i][0] - ctrary[k][0]);
+            gsum[1] += premult * (Y[i][1] - ctrary[k][1]);  
           }
         }
         grad.push(gsum);
