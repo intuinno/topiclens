@@ -46,7 +46,6 @@ W_sub = cell2mat(Ws_sub(find(is_leaf_sub)));
 
 %%%%%%%%%% after one iteration %%%%%%%%%
 [Wtopk_sub,Htopk_sub,DocTopk_sub,Wtopk_idx_sub] = parsenmf(W_sub,H_sub,dict,topk_sub);
-size(Wtopk_idx_sub)
 
 for i= 1:3
     for j=1: size(Wtopk_idx_sub,2)
