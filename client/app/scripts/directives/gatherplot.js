@@ -685,6 +685,7 @@
 
                             var calculatePositionForLensTopic = function(items, lensInfo) {
                                 var selectedItems = items.map(function(d) {
+                                    Y = undefined
                                     return +d.filenumber;
                                 });
 
@@ -725,6 +726,10 @@
                                         var N = selectedItems.length;
                                         console.log(distanceMatrix_sub);
                                         console.log(N);
+                                        if (N != distanceMatrix_sub.length){
+                                            console.log("error");
+                                            return ;    
+                                        }
                                         // average distance of the matrix                                        
                                         var totalsum = 0;
                                         for (var i=0; i<N; i++){
@@ -744,6 +749,10 @@
 
                                         for(var i=0;i<selectedItems.length;i++) {
                                             var topicIndex = cl_idx_sub[i];
+                                            if (coord[selectedItems[i]]===undefined){
+                                                console.log("error");
+                                            }
+                                            selectedItems[i] = selectedItems[i] -1;
                                             ctrary[topicIndex][0] += coord[selectedItems[i]-1][0];
                                             ctrary[topicIndex][1] += coord[selectedItems[i]-1][1];
                                             topicNum[topicIndex] += 1;
@@ -778,8 +787,12 @@
                                         }
                                         ////////////////////////////////////////////
                                         
-
-                                        tsne.initDataDist(distanceMatrix_sub,avg);
+                                        if (typeof(Y) === "undefined"){
+                                            tsne.initDataDist(distanceMatrix_sub,avg);                                            
+                                        } else {
+                                            tsne.noninitDataDist(distanceMatrix_sub,avg,Y);
+                                           console.log(Y.length);
+                                        }
 
                                         for (var i = 0; i < 200; i++) tsne.step(sub_k,cl_idx_sub,ctrary);
 
