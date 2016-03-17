@@ -280,6 +280,36 @@ var subtsnejs = subtsnejs || { REVISION: 'ALPHA' };
       //console.log(avg);
     },
 
+    noninitDataDist: function(D, avg, Y) {
+      var N = D.length;
+      assert(N > 0, " X is empty? You must have some data!");
+      // convert D to a (fast) typed array version
+      var dists = zeros((N+1) * (N+1)); // allocate contiguous array
+      for(var i=0;i<N;i++) {
+        for(var j=i+1;j<N;j++) {
+          var d = D[i][j];
+          dists[i*(N+1)+j] = d;
+          dists[j*(N+1)+i] = d;
+        }
+      }
+      for(var i=0; i<N; i++){
+      //add C, C's size = (1, N)
+        dists[i*(N+1)+N]=0.5*avg;
+        dists[(N*N+N)+i]=0.5*avg;
+      }
+      dists[(N+1)*(N+1)-1]=0;
+      // N=N+1;
+      this.P = d2p(dists, this.perplexity, 1e-4);
+      this.N = N;
+      this.gains = randn2d(this.N, this.dim, 1.0); // step gains to accelerate progress in unchanging directions
+      this.ystep = randn2d(this.N, this.dim, 0.0); // momentum accumulator
+      this.iter = 0;
+      this.landmark = selectlm(this.N, this.LM);
+      this.Y = Y // refresh this
+      //console.log(N);
+      //console.log(dists);
+      //console.log(avg);
+    },
     // (re)initializes the solution to random
     initSolution: function() {
       // generate random solution to t-SNE
@@ -415,6 +445,9 @@ var subtsnejs = subtsnejs || { REVISION: 'ALPHA' };
         var tmp_idx_for_j = tmp_idx_for_i;
         for(var j=i+1;j<N;j++) {
           if ((tmp_idx_for_i<m && landmark[tmp_idx_for_i]==i) || (tmp_idx_for_j<m && landmark[tmp_idx_for_j]==j)){
+            if(Y[j]===undefined){
+              console.log("error");
+            }
             var dhere1 = Y[i][0] - Y[j][0];
             var dhere2 = Y[i][1] - Y[j][1];
             dsum = dhere1 * dhere1 + dhere2 * dhere2;
