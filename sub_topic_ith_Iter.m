@@ -47,5 +47,29 @@ W_sub = cell2mat(Ws_sub(find(is_leaf_sub)));
 %%%%%%%%%% after one iteration %%%%%%%%%
 [Wtopk_sub,Htopk_sub,DocTopk_sub,Wtopk_idx_sub] = parsenmf(W_sub,H_sub,dict,topk_sub);
 
+for i= 1:3
+    for j= 1: size(Wtopk_idx_sub,2)
+        tmp = Wtopk_idx_sub(i,j);
+        if (sum(sum(tmp == Wtopk_idx_sub(1:3,:))) >= 3)            
+            for k = 1:size(Wtopk_idx_sub,1)-1
+                Wtopk_idx_sub(k,j) = Wtopk_idx_sub(k+1,j);
+            end
+            Wtopk_idx_sub(size(Wtopk_idx_sub,1),j) = tmp;
+        end
+    end
+end
+
 Wtopk_idx_sub = Wtopk_idx_sub';
+
 [~,cl_idx_sub] = max(H_sub);
+
+
+
+
+
+
+
+
+
+
+
