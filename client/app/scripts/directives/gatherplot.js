@@ -682,10 +682,50 @@
                             }
 
 
+                            var mixTopicColor = function(items,main_k,sub_k,subCluster) {
+                                var originalTopicNum = [];
+                                var originalTopicColor = [];
+                                var subTopicColor = [];
 
+                                for(var i=0;i<main_k;i++) {
+                                    var mainColor = color(i);
+                                    originalTopicColor.push([   // r,g,b to integer
+                                        parseInt(mainColor.slice(1,3), 16),
+                                        parseInt(mainColor.slice(3,5), 16), 
+                                        parseInt(mainColor.slice(5,7), 16)
+                                    ]);
+                                }
+                                for(var i=0;i<sub_k;i++) {
+                                    var originalTopicNum_sub = [];
+                                    for(var j=0;j<main_k;j++)  {
+                                        originalTopicNum_sub.push(0);
+                                    }
+                                    originalTopicNum.push(originalTopicNum_sub);
+                                }
+                                for(var i=0;i<items.length;i++) {
+                                    originalTopicNum[items[i].subtopic][parseInt(items[i].cluster)-1]+=1;
+                                }
+                                for(var i=0;i<sub_k;i++) {
+                                    var r=0,g=0,b=0;
+                                    for(var j=0;j<main_k;j++) {
+                                        r += originalTopicNum[i][j]*originalTopicColor[j][0];
+                                        g += originalTopicNum[i][j]*originalTopicColor[j][1];
+                                        b += originalTopicNum[i][j]*originalTopicColor[j][2];
+                                    }
+                                    var original_ith_topic_num = originalTopicNum[i].reduce(function(a,b) { return a+b; });
+                                    r = Math.floor(r/original_ith_topic_num);
+                                    g = Math.floor(g/original_ith_topic_num);
+                                    b = Math.floor(b/original_ith_topic_num);
+                                    subTopicColor.push('#'+r.toString(16)+g.toString(16)+b.toString(16));
+                                }
+                                for(var i=0;i<items.length;i++) items[i].subColor = subTopicColor[items[i].subtopic];
+                                for(var i=0;i<sub_k;i++) subCluster[i].subColor = subTopicColor[i];
+
+
+                            }
                             var calculatePositionForLensTopic = function(items, lensInfo) {
+                                Y = undefined;
                                 var selectedItems = items.map(function(d) {
-                                    Y = undefined
                                     return +d.filenumber;
                                 });
 
@@ -696,8 +736,6 @@
                                 //    }).success(function(data) {
                                 
                                 socket.on('result data', function(data) {
-                                        console.log('success');
-                                        console.log(data);
                                         clearInterval(tsne_animation);
                                         var cl_idx_sub = [];
                                         for(var i=0;i<data.cl_idx_sub.length;i++) cl_idx_sub.push(data.cl_idx_sub[i]-1);
@@ -708,6 +746,9 @@
                                         
                                         var sub_k = data.Wtopk_sub.length;
 
+
+                                        console.log(sub_k);
+                                        console.log(items);
                                         subCluster = new Array(sub_k);
                                         for(var i=0;i<subCluster.length;i++) { 
                                             subCluster[i] = {};
@@ -724,8 +765,6 @@
                                         
                                         ////////////////////////////////////////////
                                         var N = selectedItems.length;
-                                        console.log(distanceMatrix_sub);
-                                        console.log(N);
                                         if (N != distanceMatrix_sub.length){
                                             console.log("error");
                                             return ;    
@@ -749,10 +788,6 @@
 
                                         for(var i=0;i<selectedItems.length;i++) {
                                             var topicIndex = cl_idx_sub[i];
-                                            if (coord[selectedItems[i]]===undefined){
-                                                console.log("error");
-                                            }
-                                            selectedItems[i] = selectedItems[i] -1;
                                             ctrary[topicIndex][0] += coord[selectedItems[i]-1][0];
                                             ctrary[topicIndex][1] += coord[selectedItems[i]-1][1];
                                             topicNum[topicIndex] += 1;
@@ -791,22 +826,21 @@
                                             tsne.initDataDist(distanceMatrix_sub,avg);                                            
                                         } else {
                                             tsne.noninitDataDist(distanceMatrix_sub,avg,Y);
-                                           console.log(Y.length);
+                                            console.log(Y.length);
                                         }
 
                                         for (var i = 0; i < 200; i++) tsne.step(sub_k,cl_idx_sub,ctrary);
 
                                         var intervalNum = 200;
+
                                         tsne_animation = setInterval(function() {
                                             for (var i = 0; i < 10; i++) tsne.step(sub_k,cl_idx_sub,ctrary);
                                             //console.log(tsne.getSolution());
                                             Y = rescale(tsne.getSolution(), lensInfo.width, lensInfo.height);
 
                                             calculatePositionUsingSubClusterForLensTopic(items, lensInfo);
+                                            mixTopicColor(items,10,sub_k,subCluster);
                                             drawLensItems(items, lensInfo);
-                                            
-                                            nodeGroup.select("g,subTopic").remove();
-                                            subText = nodeGroup.append("g").attr("class","subTopic");
 
                                             for(var i=0;i<subCluster.length;i++) { 
                                                 subCluster[i].X = 0;
@@ -821,31 +855,69 @@
                                                 subCluster[clusterIndex].num += 1;
                                             }
                                             
+                                            var leftNum = 0;
                                             for(var i=0;i<subCluster.length;i++) {
                                                 var num = subCluster[i].num;
                                                 subCluster[i].X/=num;
                                                 subCluster[i].Y/=num;
+
+                                                if(subCluster[i].X<lensInfo.centerX) {
+                                                    subCluster[i].textX = lensInfo.centerX-lensInfo.width/2;
+                                                    leftNum+=1
+                                                } else {
+                                                    subCluster[i].textX = lensInfo.centerX+lensInfo.width/2;
+                                                }
                                             }
+
+                                            var leftGap = lensInfo.height/leftNum;
+                                            var rightGap = lensInfo.height/(subCluster.length-leftNum);
+                                            var leftIndex=1, rightIndex=1;
+                                            for(var i=0;i<subCluster.length;i++) {
+                                                if(subCluster[i].X<lensInfo.centerX) {
+                                                    subCluster[i].textY = lensInfo.centerY+lensInfo.height/2+leftGap/2-leftGap*leftIndex;
+                                                    leftIndex+=1; 
+                                                } else {
+                                                    subCluster[i].textY = lensInfo.centerY+lensInfo.height/2+rightGap/2-rightGap*rightIndex;
+                                                    rightIndex+=1;
+                                                }
+                                            }
+
+                                            nodeGroup.select("g,subTopic").remove();
+                                            subText = nodeGroup.append("g").attr("class","subTopic");
 
                                             subText.selectAll("text").remove();
                                             subText.selectAll("text")
                                                 .data(subCluster).enter()
                                                 .append("text")
-                                                .attr('x', function(d) { return d.X; })
-                                                .attr('y', function(d) { return d.Y; })
-                                                .style("fill", "black")
+                                                .attr('x', function(d) { return d.textX; })
+                                                .attr('y', function(d) { return d.textY; })
+                                                .style("fill", function(d) { return d.subColor; })
                                                 .text(function(d) {
                                                     return d.keywords.join(' ');
                                                 })
                                                 .attr('font-family','sans-serif')
-                                                .attr('text-anchor','middle')
-                                                .style('font-size', '7px');
-                                            
+                                                .attr('text-anchor', function(d) {
+                                                    if(d.X<lensInfo.centerX) return 'end';
+                                                    else return 'start'
+                                                })
+                                                .style('font-size', '10px')
+                                                .style('font-weight', 'bold');
+
+
+                                            subText.selectAll("line").remove();
+                                            subText.selectAll("line")
+                                                .data(subCluster).enter()
+                                                .append("line")
+                                                .style("stroke", "black")
+                                                .style('stroke-width',0.5)
+                                                .attr("x1", function(d) { return d.textX; })
+                                                .attr("y1", function(d) { return d.textY; })
+                                                .attr("x2", function(d) { return d.X; })
+                                                .attr("y2", function(d) { return d.Y; });
 
                                             intervalNum-=1;
                                             if(intervalNum==0) clearInterval(tsne_animation);
                                         }, 50);
-                                        //console.log(111)
                                     });
 
                                     socket.emit('get_subTopic',{'idx':selectedItems});
@@ -1244,7 +1316,6 @@
                                 //Update
                                 //Transition from previous place to new place
 
-
                                 lensItems.transition()
                                     //.duration(500)
                                     .attr("width", function(d) {
@@ -1260,6 +1331,10 @@
                                         return d.lensY;
                                     })
                                     .attr('fill-opacity', 0.8)
+                                    .style("fill", function(d) {
+                                        return d.subColor;
+                                        //return color(d[scope.config.colorDim]);
+                                    })
 
                                 .attr("transform", function(d, i) {
 
@@ -1294,13 +1369,11 @@
                                     .attr("ry", function(d) {
                                         return scope.round ? +5 : 0;
                                     })
-
                                     .style("fill", function(d) {
-                                        return color(d.subtopic+9)
+                                        return color(d.subtopic+10)
                                         //return color(d[scope.config.colorDim]);
                                     })
                                     .transition()
-                                    .duration(500)
                                     .attr("x", function(d) {
                                         return d.lensX;
                                     })
@@ -3827,9 +3900,6 @@
                                     return;
                                 }
 
-
-
-
                                 if (dimSetting[scope.config.colorDim].dimType === 'ordinal') {
 
                                     var colorDomain = d3.extent(scope.data, function(d) {
@@ -3934,14 +4004,13 @@
                                         return d.keywords.join(' ');
                                     })
                                     .attr('font-family','sans-serif')
-                                    .attr('text-anchor','middle');
+                                    .attr('text-anchor','middle')
+                                    .style('fill','black');
 
                             };
 
                             var writeNodesInSVGForSameOrdDimGather = function() {
                                 // debugger;
-
-
 
                                 nodeGroup.selectAll(".dot")
                                     .data(scope.data, function(d) {
