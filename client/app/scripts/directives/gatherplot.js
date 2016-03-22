@@ -720,9 +720,63 @@
                                 }
                                 for(var i=0;i<items.length;i++) items[i].subColor = subTopicColor[items[i].subtopic];
                                 for(var i=0;i<sub_k;i++) subCluster[i].subColor = subTopicColor[i];
-
-
                             }
+
+
+                            var mixTopicColor2 = function(items,main_k,sub_k,subCluster) {
+                                var originalTopicNum = [];
+                                var originalTopicColor = [];
+                                var subTopicColor = [];
+
+                                for(var i=0;i<main_k;i++) {
+                                    var mainColor = color(i);
+                                    originalTopicColor.push([   // r,g,b to integer
+                                        parseInt(mainColor.slice(1,3), 16),
+                                        parseInt(mainColor.slice(3,5), 16), 
+                                        parseInt(mainColor.slice(5,7), 16)
+                                    ]);
+                                }
+                                for(var i=0;i<sub_k;i++) {
+                                    var originalTopicNum_sub = [];
+                                    for(var j=0;j<main_k;j++)  {
+                                        originalTopicNum_sub.push(0);
+                                    }
+                                    originalTopicNum.push(originalTopicNum_sub);
+                                }
+                                for(var i=0;i<items.length;i++) {
+                                    originalTopicNum[items[i].subtopic][parseInt(items[i].cluster)-1]+=1;
+                                }
+                                for(var i=0;i<sub_k;i++) {
+                                    var r=0,g=0,b=0;
+                                    for(var j=0;j<main_k;j++) {
+                                        r += originalTopicNum[i][j]*originalTopicColor[j][0];
+                                        g += originalTopicNum[i][j]*originalTopicColor[j][1];
+                                        b += originalTopicNum[i][j]*originalTopicColor[j][2];
+                                    }
+                                    var original_ith_topic_num = originalTopicNum[i].reduce(function(a,b) { return a+b; });
+
+                                    var range = 50;
+                                    r = Math.round(r/original_ith_topic_num+Math.random()*range);
+                                    g = Math.round(g/original_ith_topic_num+Math.random()*range);
+                                    b = Math.round(b/original_ith_topic_num+Math.random()*range);
+
+                                    r = r>255 ? 255:r;
+                                    r = r<0 ? 0:r;
+                                    g = g>255 ? 255:g;
+                                    g = g<0 ? 0:g;
+                                    b = b>255 ? 255:b;
+                                    b = b<0 ? 0:b;
+
+                                    subTopicColor.push('#'+r.toString(16)+g.toString(16)+b.toString(16));
+                                }
+
+                                
+                                for(var i=0;i<items.length;i++) items[i].subColor = subTopicColor[items[i].subtopic];
+                                for(var i=0;i<sub_k;i++) subCluster[i].subColor = subTopicColor[i];
+                            }
+
+
+
                             var calculatePositionForLensTopic = function(items, lensInfo) {
                                 Y = undefined;
                                 var selectedItems = items.map(function(d) {
@@ -746,15 +800,13 @@
                                         
                                         var sub_k = data.Wtopk_sub.length;
 
-
-                                        console.log(sub_k);
-                                        console.log(items);
                                         subCluster = new Array(sub_k);
                                         for(var i=0;i<subCluster.length;i++) { 
                                             subCluster[i] = {};
                                             subCluster[i].keywords = data.Wtopk_sub[i].slice(0,3);
                                         }
                                         
+                                        mixTopicColor2(items,10,sub_k,subCluster);
 
                                         var distanceMatrix_sub = data.distanceMatrix
                                         var coord = [];
@@ -826,7 +878,7 @@
                                             tsne.initDataDist(distanceMatrix_sub,avg);                                            
                                         } else {
                                             tsne.noninitDataDist(distanceMatrix_sub,avg,Y);
-                                            console.log(Y.length);
+                                            //console.log(Y.length);
                                         }
 
                                         for (var i = 0; i < 200; i++) tsne.step(sub_k,cl_idx_sub,ctrary);
@@ -839,13 +891,13 @@
                                             Y = rescale(tsne.getSolution(), lensInfo.width, lensInfo.height);
 
                                             calculatePositionUsingSubClusterForLensTopic(items, lensInfo);
-                                            mixTopicColor(items,10,sub_k,subCluster);
                                             drawLensItems(items, lensInfo);
 
                                             for(var i=0;i<subCluster.length;i++) { 
                                                 subCluster[i].X = 0;
                                                 subCluster[i].Y = 0;
                                                 subCluster[i].num = 0;
+                                                subCluster[i].id = i;
                                             }
                                             
                                             for(var i=0;i<items.length;i++) {
@@ -856,22 +908,26 @@
                                             }
                                             
                                             var leftNum = 0;
+                                            var gapBetweenLens = 15;
                                             for(var i=0;i<subCluster.length;i++) {
                                                 var num = subCluster[i].num;
                                                 subCluster[i].X/=num;
                                                 subCluster[i].Y/=num;
 
                                                 if(subCluster[i].X<lensInfo.centerX) {
-                                                    subCluster[i].textX = lensInfo.centerX-lensInfo.width/2;
+                                                    subCluster[i].textX = lensInfo.centerX-lensInfo.width/2 - gapBetweenLens;
                                                     leftNum+=1
                                                 } else {
-                                                    subCluster[i].textX = lensInfo.centerX+lensInfo.width/2;
+                                                    subCluster[i].textX = lensInfo.centerX+lensInfo.width/2 + gapBetweenLens;
                                                 }
                                             }
 
                                             var leftGap = lensInfo.height/leftNum;
                                             var rightGap = lensInfo.height/(subCluster.length-leftNum);
                                             var leftIndex=1, rightIndex=1;
+
+                                            subCluster.sort(function(a,b) { return a.Y<b.Y ? 1:-1; });
+
                                             for(var i=0;i<subCluster.length;i++) {
                                                 if(subCluster[i].X<lensInfo.centerX) {
                                                     subCluster[i].textY = lensInfo.centerY+lensInfo.height/2+leftGap/2-leftGap*leftIndex;
@@ -882,11 +938,13 @@
                                                 }
                                             }
 
-                                            nodeGroup.select("g,subTopic").remove();
-                                            subText = nodeGroup.append("g").attr("class","subTopic");
+                                            subCluster.sort(function(a,b) { return a.id>b.id ? 1:-1; });
 
-                                            subText.selectAll("text").remove();
-                                            subText.selectAll("text")
+                                            nodeGroup.select("g,subTopic").remove();
+                                            var subTopic = nodeGroup.append("g").attr("class","subTopic");
+
+                                            subTopic.selectAll("text").remove();
+                                            subTopic.selectAll("text")
                                                 .data(subCluster).enter()
                                                 .append("text")
                                                 .attr('x', function(d) { return d.textX; })
@@ -904,8 +962,8 @@
                                                 .style('font-weight', 'bold');
 
 
-                                            subText.selectAll("line").remove();
-                                            subText.selectAll("line")
+                                            subTopic.selectAll("line").remove();
+                                            subTopic.selectAll("line")
                                                 .data(subCluster).enter()
                                                 .append("line")
                                                 .style("stroke", "black")
@@ -914,6 +972,37 @@
                                                 .attr("y1", function(d) { return d.textY; })
                                                 .attr("x2", function(d) { return d.X; })
                                                 .attr("y2", function(d) { return d.Y; });
+
+                                            var subTexts = subTopic.selectAll("text")[0];
+                                            var subTextNum = subTexts.length;
+                                            var bboxList = [];
+                                            for(var i=0;i<subTextNum;i++) {
+                                                bboxList.push(subTexts[i].getBBox());
+                                            }
+
+                                            var margin = 7;
+                                            subTopic.selectAll("rect").remove();
+                                            subTopic.selectAll("rect")
+                                                .data(bboxList).enter()
+                                                .append("rect")
+                                                .attr("x", function(d) { return d.x-margin/2; })
+                                                .attr("y", function(d) { return d.y-margin/2; })
+                                                .attr("width", function(d) { return d.width+margin; })
+                                                .attr("height", function(d) { return d.height+margin; })
+                                                .attr("fill", "white")
+                                                .style("stroke", "black");
+
+
+                                            d3.selection.prototype.moveToFront = function() {  
+                                                return this.each(function() { 
+                                                    this.parentNode.appendChild(this); 
+                                                });
+                                            };
+
+                                            subTexts.forEach(function(d) {
+                                                d3.select(d).moveToFront();
+                                            })
+                                           
 
                                             intervalNum-=1;
                                             if(intervalNum==0) clearInterval(tsne_animation);

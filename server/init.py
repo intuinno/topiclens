@@ -138,6 +138,8 @@ def get_subTopic():
 	cl_idx_sub = eng.workspace['cl_idx_sub']
 	Wtopk_idx_sub = eng.workspace['Wtopk_idx_sub']
 	k_sub = eng.workspace['k_sub'] # number of topics that will be shown
+
+	print k_sub
 	
 
 
@@ -193,12 +195,13 @@ def get_subTopic_(message):
 	eng.workspace['idx'] = idx
 	
 	eng.sub_topic(nargout=0)
-	sub_k = int(eng.workspace['k_sub'])
+	k_sub = int(eng.workspace['k_sub'])
+	sub_k = int(eng.workspace['sub_k'])
 
 	idx = [i-1 for i in idx]
 	distanceMatrix_sub = distanceMatrix[idx,:][:,idx]
 
-	for i in xrange(1,sub_k+1):
+	for i in xrange(1,k_sub-sub_k+1):
 	#for i in xrange(1,2):
 		print i
 		eng.workspace['i'] = i
@@ -223,7 +226,7 @@ def get_subTopic_(message):
 		distanceMatrix_sub_ = distanceMatrix_sub.tolist()
 
 		emit('result data', {'distanceMatrix':distanceMatrix_sub_, 'cl_idx_sub':cl_idx_sub, 'Wtopk_sub':Wtopk_sub})
-		time.sleep(4)
+		time.sleep(3)
 	#return json.dumps({'distanceMatrix':distanceMatrix_sub, 'cl_idx_sub':cl_idx_sub, 'Wtopk_sub':Wtopk_sub})
 
 
