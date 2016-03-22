@@ -682,48 +682,8 @@
                             }
 
 
+                            
                             var mixTopicColor = function(items,main_k,sub_k,subCluster) {
-                                var originalTopicNum = [];
-                                var originalTopicColor = [];
-                                var subTopicColor = [];
-
-                                for(var i=0;i<main_k;i++) {
-                                    var mainColor = color(i);
-                                    originalTopicColor.push([   // r,g,b to integer
-                                        parseInt(mainColor.slice(1,3), 16),
-                                        parseInt(mainColor.slice(3,5), 16), 
-                                        parseInt(mainColor.slice(5,7), 16)
-                                    ]);
-                                }
-                                for(var i=0;i<sub_k;i++) {
-                                    var originalTopicNum_sub = [];
-                                    for(var j=0;j<main_k;j++)  {
-                                        originalTopicNum_sub.push(0);
-                                    }
-                                    originalTopicNum.push(originalTopicNum_sub);
-                                }
-                                for(var i=0;i<items.length;i++) {
-                                    originalTopicNum[items[i].subtopic][parseInt(items[i].cluster)-1]+=1;
-                                }
-                                for(var i=0;i<sub_k;i++) {
-                                    var r=0,g=0,b=0;
-                                    for(var j=0;j<main_k;j++) {
-                                        r += originalTopicNum[i][j]*originalTopicColor[j][0];
-                                        g += originalTopicNum[i][j]*originalTopicColor[j][1];
-                                        b += originalTopicNum[i][j]*originalTopicColor[j][2];
-                                    }
-                                    var original_ith_topic_num = originalTopicNum[i].reduce(function(a,b) { return a+b; });
-                                    r = Math.floor(r/original_ith_topic_num);
-                                    g = Math.floor(g/original_ith_topic_num);
-                                    b = Math.floor(b/original_ith_topic_num);
-                                    subTopicColor.push('#'+r.toString(16)+g.toString(16)+b.toString(16));
-                                }
-                                for(var i=0;i<items.length;i++) items[i].subColor = subTopicColor[items[i].subtopic];
-                                for(var i=0;i<sub_k;i++) subCluster[i].subColor = subTopicColor[i];
-                            }
-
-
-                            var mixTopicColor2 = function(items,main_k,sub_k,subCluster) {
                                 var originalTopicNum = [];
                                 var originalTopicColor = [];
                                 var subTopicColor = [];
@@ -764,7 +724,7 @@
                                     }
 
                                     var original_ith_topic_num = originalTopicNum[i].reduce(function(a,b) { return a+b; });
-                                    var range = 50;
+                                    var range = 60;
                                     r = Math.floor(r/original_ith_topic_num+(Math.random()*range-range/2));
                                     g = Math.floor(g/original_ith_topic_num+(Math.random()*range-range/2));
                                     b = Math.floor(b/original_ith_topic_num+(Math.random()*range-range/2));
@@ -798,7 +758,6 @@
                                 //            idx: JSON.stringify(selectedItems)
                                 //        }
                                 //    }).success(function(data) {
-                                console.log(selectedItems.length);
                                 socket.on('result data'+socketId, function(data) {
                                         clearInterval(tsne_animation);
                                         var cl_idx_sub = [];
@@ -808,7 +767,6 @@
                                             d.subtopic = cl_idx_sub[i];
                                         });
                                         
-                                        console.log(cl_idx_sub.length);
                                         var sub_k = data.Wtopk_sub.length;
 
                                         subCluster = new Array(sub_k);
@@ -817,7 +775,7 @@
                                             subCluster[i].keywords = data.Wtopk_sub[i].slice(0,3);
                                         }
                                         
-                                        mixTopicColor2(items,10,sub_k,subCluster);
+                                        mixTopicColor(items,10,sub_k,subCluster);
 
                                         var distanceMatrix_sub = data.distanceMatrix
                                         var coord = [];
@@ -848,6 +806,17 @@
                                         }
                                         var topicNum = new Array(sub_k);
                                         for(var i=0;i<sub_k;i++) topicNum[i]=0;
+
+                                        var summ1 = 0.0;
+                                        var summ2 = 0.0;
+                                        for(var i=0;i<coord.length;i++) {
+                                            summ1 += coord[i][0];
+                                            summ2 += coord[i][1];
+                                        }
+                                        for(var i=0;i<coord.length;i++) {
+                                            coord[i][0] = coord[i][0] - summ1/coord.length;
+                                            coord[i][1] = coord[i][1] - summ2/coord.length;
+                                        }
 
                                         for(var i=0;i<selectedItems.length;i++) {
                                             var topicIndex = cl_idx_sub[i];
@@ -881,23 +850,23 @@
 
                                         for(var i=0; i<sub_k;i++){
                                             ctrary[i][0] = (ctrary[i][0]-mean1)/std1;
-                                            ctrary[i][1] = (ctrary[i][1]-mean2)/std2;
+                                            ctrary[i][1] = -(ctrary[i][1]-mean2)/std2;
                                         }
                                         ////////////////////////////////////////////
-                                        
+                                        var LM = Math.floor(0.5*N);
                                         if (typeof(Y) === "undefined"){
-                                            tsne.initDataDist(distanceMatrix_sub,avg);                                            
+                                            tsne.initDataDist(distanceMatrix_sub,avg, LM);                                            
                                         } else {
-                                            tsne.noninitDataDist(distanceMatrix_sub,avg,Y);
+                                            tsne.noninitDataDist(distanceMatrix_sub,avg,Y, LM);
                                             //console.log(Y.length);
                                         }
 
-                                        for (var i = 0; i < 200; i++) tsne.step(sub_k,cl_idx_sub,ctrary);
+                                        for (var i = 0; i < 200; i++) tsne.step(sub_k,cl_idx_sub,ctrary, LM);
 
                                         var intervalNum = 200;
 
                                         tsne_animation = setInterval(function() {
-                                            for (var i = 0; i < 10; i++) tsne.step(sub_k,cl_idx_sub,ctrary);
+                                            for (var i = 0; i < 10; i++) tsne.step(sub_k,cl_idx_sub,ctrary, LM);
                                             //console.log(tsne.getSolution());
                                             Y = rescale(tsne.getSolution(), lensInfo.width, lensInfo.height);
 
