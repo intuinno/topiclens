@@ -119,7 +119,7 @@ def before__first_request_():
 
 @app.teardown_request
 def teardown_request(exception):
-	print('Teardown arose!'.format(exception))
+	pass
 
 
 @app.route('/get_subTopic')
@@ -175,7 +175,6 @@ def get_subTopic():
 @socketio.on('connect', namespace='/subtopic')
 def connect():
 	print "connected"
-	emit("server connected")
 
 @socketio.on('disconnect', namespace='/subtopic')
 def disconnect():
@@ -188,6 +187,7 @@ def get_subTopic_(message):
 	global distanceMatrix
 	
 	idx = message['idx']
+	socketId = message['socketId']
 
 	sameTopicWeight = 0.8
 	differentTopicWeight = 1.2
@@ -225,7 +225,7 @@ def get_subTopic_(message):
 			sameTopicWeight=sameTopicWeight, differentTopicWeight=differentTopicWeight)
 		distanceMatrix_sub_ = distanceMatrix_sub.tolist()
 
-		emit('result data', {'distanceMatrix':distanceMatrix_sub_, 'cl_idx_sub':cl_idx_sub, 'Wtopk_sub':Wtopk_sub})
+		emit('result data'+socketId, {'distanceMatrix':distanceMatrix_sub_, 'cl_idx_sub':cl_idx_sub, 'Wtopk_sub':Wtopk_sub})
 		time.sleep(3)
 	#return json.dumps({'distanceMatrix':distanceMatrix_sub, 'cl_idx_sub':cl_idx_sub, 'Wtopk_sub':Wtopk_sub})
 

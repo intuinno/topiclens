@@ -744,21 +744,30 @@
                                     originalTopicNum.push(originalTopicNum_sub);
                                 }
                                 for(var i=0;i<items.length;i++) {
-                                    originalTopicNum[items[i].subtopic][parseInt(items[i].cluster)-1]+=1;
+                                    try {
+                                        originalTopicNum[items[i].subtopic][parseInt(items[i].cluster)-1]+=1;
+                                    } catch(err) {
+                                        console.log(items[i]);
+                                        console.log(i);
+                                        console.log(originalTopicNum);
+                                        console.log(originalTopicNum[items[i].subtopic].length);
+                                        console.log(parseInt(items[i].cluster));
+                                    }
                                 }
                                 for(var i=0;i<sub_k;i++) {
                                     var r=0,g=0,b=0;
+
                                     for(var j=0;j<main_k;j++) {
                                         r += originalTopicNum[i][j]*originalTopicColor[j][0];
                                         g += originalTopicNum[i][j]*originalTopicColor[j][1];
                                         b += originalTopicNum[i][j]*originalTopicColor[j][2];
                                     }
-                                    var original_ith_topic_num = originalTopicNum[i].reduce(function(a,b) { return a+b; });
 
+                                    var original_ith_topic_num = originalTopicNum[i].reduce(function(a,b) { return a+b; });
                                     var range = 50;
-                                    r = Math.round(r/original_ith_topic_num+Math.random()*range);
-                                    g = Math.round(g/original_ith_topic_num+Math.random()*range);
-                                    b = Math.round(b/original_ith_topic_num+Math.random()*range);
+                                    r = Math.floor(r/original_ith_topic_num+(Math.random()*range-range/2));
+                                    g = Math.floor(g/original_ith_topic_num+(Math.random()*range-range/2));
+                                    b = Math.floor(b/original_ith_topic_num+(Math.random()*range-range/2));
 
                                     r = r>255 ? 255:r;
                                     r = r<0 ? 0:r;
@@ -770,7 +779,6 @@
                                     subTopicColor.push('#'+r.toString(16)+g.toString(16)+b.toString(16));
                                 }
 
-                                
                                 for(var i=0;i<items.length;i++) items[i].subColor = subTopicColor[items[i].subtopic];
                                 for(var i=0;i<sub_k;i++) subCluster[i].subColor = subTopicColor[i];
                             }
@@ -779,6 +787,8 @@
 
                             var calculatePositionForLensTopic = function(items, lensInfo) {
                                 Y = undefined;
+
+                                var socketId = Math.random().toString(36).substring(8);
                                 var selectedItems = items.map(function(d) {
                                     return +d.filenumber;
                                 });
@@ -788,8 +798,8 @@
                                 //            idx: JSON.stringify(selectedItems)
                                 //        }
                                 //    }).success(function(data) {
-                                
-                                socket.on('result data', function(data) {
+                                console.log(selectedItems.length);
+                                socket.on('result data'+socketId, function(data) {
                                         clearInterval(tsne_animation);
                                         var cl_idx_sub = [];
                                         for(var i=0;i<data.cl_idx_sub.length;i++) cl_idx_sub.push(data.cl_idx_sub[i]-1);
@@ -798,6 +808,7 @@
                                             d.subtopic = cl_idx_sub[i];
                                         });
                                         
+                                        console.log(cl_idx_sub.length);
                                         var sub_k = data.Wtopk_sub.length;
 
                                         subCluster = new Array(sub_k);
@@ -999,7 +1010,7 @@
                                                 });
                                             };
 
-                                            subTexts.forEach(function(d) {
+                                            subTexts.forEach(function(d) {  
                                                 d3.select(d).moveToFront();
                                             })
                                            
@@ -1009,7 +1020,7 @@
                                         }, 50);
                                     });
 
-                                    socket.emit('get_subTopic',{'idx':selectedItems});
+                                    socket.emit('get_subTopic',{'idx':selectedItems, 'socketId':socketId});
 
 
                                     //})
