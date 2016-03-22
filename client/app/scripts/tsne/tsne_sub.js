@@ -231,7 +231,6 @@ var subtsnejs = subtsnejs || { REVISION: 'ALPHA' };
     this.perplexity = getopt(opt, "perplexity", 30); // effective number of nearest neighbors
     this.dim = getopt(opt, "dim", 2); // by default 2-D tSNE
     this.epsilon = getopt(opt, "epsilon", 10); // learning rate
-    this.LM = getopt(opt, "LM", 10); //number of landmark
     this.iter = 0;
   }
 
@@ -253,7 +252,7 @@ var subtsnejs = subtsnejs || { REVISION: 'ALPHA' };
     // this function takes a given distance matrix and creates
     // matrix P from them.
     // D is assumed to be provided as a list of lists, and should be symmetric
-    initDataDist: function(D, avg) {
+    initDataDist: function(D, avg, LM) {
       var N = D.length;
       assert(N > 0, " X is empty? You must have some data!");
       // convert D to a (fast) typed array version
@@ -267,20 +266,20 @@ var subtsnejs = subtsnejs || { REVISION: 'ALPHA' };
       }
       for(var i=0; i<N; i++){
       //add C, C's size = (1, N)
-        dists[i*(N+1)+N]=0.5*avg;
-        dists[(N*N+N)+i]=0.5*avg;
+        dists[i*(N+1)+N]=0.1*avg;
+        dists[(N*N+N)+i]=0.1*avg;
       }
       dists[(N+1)*(N+1)-1]=0;
       // N=N+1;
       this.P = d2p(dists, this.perplexity, 1e-4);
       this.N = N;
-      this.initSolution(); // refresh this
+      this.initSolution(LM); // refresh this
       //console.log(N);
       //console.log(dists);
       //console.log(avg);
     },
 
-    noninitDataDist: function(D, avg, Y) {
+    noninitDataDist: function(D, avg, Y, LM) {
       var N = D.length;
       assert(N > 0, " X is empty? You must have some data!");
       // convert D to a (fast) typed array version
@@ -294,8 +293,8 @@ var subtsnejs = subtsnejs || { REVISION: 'ALPHA' };
       }
       for(var i=0; i<N; i++){
       //add C, C's size = (1, N)
-        dists[i*(N+1)+N]=0.5*avg;
-        dists[(N*N+N)+i]=0.5*avg;
+        dists[i*(N+1)+N]=0.1*avg;
+        dists[(N*N+N)+i]=0.1*avg;
       }
       dists[(N+1)*(N+1)-1]=0;
       // N=N+1;
@@ -304,20 +303,20 @@ var subtsnejs = subtsnejs || { REVISION: 'ALPHA' };
       this.gains = randn2d(this.N, this.dim, 1.0); // step gains to accelerate progress in unchanging directions
       this.ystep = randn2d(this.N, this.dim, 0.0); // momentum accumulator
       this.iter = 0;
-      this.landmark = selectlm(this.N, this.LM);
+      this.landmark = selectlm(this.N, LM);
       this.Y = Y // refresh this
       //console.log(N);
       //console.log(dists);
       //console.log(avg);
     },
     // (re)initializes the solution to random
-    initSolution: function() {
+    initSolution: function(LM) {
       // generate random solution to t-SNE
       this.Y = randn2d(this.N, this.dim); // the solution
       this.gains = randn2d(this.N, this.dim, 1.0); // step gains to accelerate progress in unchanging directions
       this.ystep = randn2d(this.N, this.dim, 0.0); // momentum accumulator
       this.iter = 0;
-      this.landmark = selectlm(this.N, this.LM);
+      this.landmark = selectlm(this.N, LM);
     },
 
     // return pointer to current solution
@@ -326,18 +325,18 @@ var subtsnejs = subtsnejs || { REVISION: 'ALPHA' };
     },
 
     // perform a single step of optimization to improve the embedding
-    step: function(sub_k, cl_idx_sub, ctrary) {
+    step: function(sub_k, cl_idx_sub, ctrary, LM) {
       this.iter += 1;
       var N = this.N;
-      if (isNaN(this.Y[0][0])) {
-        console.log("NaN");
-      }
-      var tempY = this.Y;
-      var cg = this.costGrad(this.Y, sub_k, cl_idx_sub, ctrary); // evaluate gradient
-      if (isNaN(cg.cost)) {
-        console.log("NaN");
-        this.costGrad(tempY, sub_k, cl_idx_sub, ctrary);   
-      }
+      // if (isNaN(this.Y[0][0])) {
+      //   console.log("NaN");
+      // }
+      //var tempY = this.Y;
+      var cg = this.costGrad(this.Y, sub_k, cl_idx_sub, ctrary, LM); // evaluate gradient
+      // if (isNaN(cg.cost)) {
+      //   console.log("NaN");
+      //   this.costGrad(tempY, sub_k, cl_idx_sub, ctrary);   
+      // }
       var cost = cg.cost;
       var grad = cg.grad;
 
@@ -366,11 +365,11 @@ var subtsnejs = subtsnejs || { REVISION: 'ALPHA' };
       }
 
       // reproject Y to be zero mean
-      for(var i=0;i<N;i++) {
-        for(var d=0;d<this.dim;d++) {
-          this.Y[i][d] -= ymean[d]/N;
-        }
-      }
+      // for(var i=0;i<N;i++) {
+      //   for(var d=0;d<this.dim;d++) {
+      //     this.Y[i][d] -= ymean[d]/N;
+      //   }
+      // }
 
       var sum1 = 0.0;
       var sum2 = 0.0;
@@ -428,12 +427,12 @@ var subtsnejs = subtsnejs || { REVISION: 'ALPHA' };
     },
 
     // return cost and gradient, given an arrangement
-    costGrad: function(Y, sub_k, cl_idx_sub, ctrary) {
+    costGrad: function(Y, sub_k, cl_idx_sub, ctrary, LM) {
       var N = this.N;
       var dim = this.dim; // dim of output space
       var P = this.P;
       var pmul = this.iter < 100 ? 4 : 1; // trick that helps with local optima
-      var m = this.LM;
+      var m = LM;
       // compute current Q distribution, unnormalized first
       var Qu = zeros((N+1)*(N+1));
       var qsum = 0.0;
@@ -511,7 +510,7 @@ var subtsnejs = subtsnejs || { REVISION: 'ALPHA' };
       //console.log(Q);
       //console.log(cost);
       //console.log(grad);
-      return {cost: cost, grad: grad};
+      return {cost: cost, grad: grad, Q: Q};
     }
   }
 
