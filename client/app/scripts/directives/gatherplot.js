@@ -39,6 +39,7 @@
                             var opt = { epsilon: 20 };
                             var tsne = new subtsnejs.subtSNE(opt);
                             var tsne_animation;
+                            var mouseOverTimer;
                             var Y;
                             var subCluster;
                             var subText;
@@ -316,26 +317,48 @@
                                         .attr("class", "dot")
                                         .attr('fill-opacity',0.8)
                                         .on("mouseover", function(d) {
-                                            console.log(d);
+                                            var pageX = d3.event.pageX,
+                                                pageY = d3.event.pageY;
+                                            mouseOverTimer = setTimeout(function() {
+                                                nodeGroup.selectAll('text').style('opacity',0);
 
-                                            tooltip.transition()
-                                                .duration(500)
-                                                .style("opacity", 0);
+                                                var authorList = d.authors.split(', ');
+                                                var tooltipString = '<b>Authors: ';
+                                                for(var i=0;i<authorList.length;i++) {
+                                                    if(i==4) tooltipString+='<br/>'+authorList[i];
+                                                    else tooltipString+=authorList[i];
+                                                }
+                                                tooltipString+='<br/>Title: <br/>';
+                                                var titleWords = d.title.split(' ');
+                                                var accumulatedLength=0;
+                                                var maxLineLength = 40;
+                                                for(var i=0;i<titleWords.length;i++) {
+                                                    accumulatedLength+=titleWords[0].length+1;
+                                                    if(accumulatedLength>maxLineLength) {
+                                                        accumulatedLength=0;
+                                                        tooltipString+='<br/>'+titleWords[i]+' ';
+                                                    }
+                                                    else tooltipString+=titleWords[i]+' ';
+                                                }
+                                                tooltipString+='</b>'
+
+                                                tooltip.transition()
+                                                    .duration(100)
+                                                    .style("opacity", 0.9);
 
 
-                                            tooltip.transition()
-                                                .duration(200)
-                                                .style("opacity", 0.9);
+                                                //tooltip.html(scope.xdim + ":" + xOriginalValue(d) + "<br/>" + scope.ydim + ":" + yOriginalValue(d) + "<br/>" + scope.config.colorDim + ":" + colorOriginalValue(d) + "")
+                                                tooltip.html(tooltipString)
+                                                    .style("left", (pageX + 5) + "px")
+                                                    .style("top", (pageY - 28) + "px");
 
+                                            }, 700);
 
-                                            tooltip.html(scope.xdim + ":" + xOriginalValue(d) + "<br/>" + scope.ydim + ":" + yOriginalValue(d) + "<br/>" + scope.config.colorDim + ":" + colorOriginalValue(d) + "")
-                                                .style("left", (d3.event.pageX + 5) + "px")
-                                                .style("top", (d3.event.pageY - 28) + "px");
                                         })
                                         .on("mouseout", function(d) {
-                                            tooltip.transition()
-                                                .duration(500)
-                                                .style("opacity", 0);
+                                            clearTimeout(mouseOverTimer);
+                                            nodeGroup.selectAll('text').style('opacity',1);
+                                            tooltip.style("opacity", 0);
                                         })
                                         .on("mousedown", function(d) {
                                             if (d3.event.shiftKey) d3.select(this).classed("selected", d.selected = !d.selected);
@@ -921,7 +944,7 @@
 
                                             subCluster.sort(function(a,b) { return a.id>b.id ? 1:-1; });
 
-                                            nodeGroup.select("g,subTopic").remove();
+                                            nodeGroup.select("g.subTopic").remove();
                                             var subTopic = nodeGroup.append("g").attr("class","subTopic");
 
                                             subTopic.selectAll("text").remove();
@@ -940,7 +963,8 @@
                                                     else return 'start'
                                                 })
                                                 .style('font-size', '10px')
-                                                .style('font-weight', 'bold');
+                                                .style('font-weight', 'bold')
+                                                .style('pointer-events', 'none');
 
 
                                             subTopic.selectAll("line").remove();
@@ -1459,6 +1483,56 @@
                                     })
                                     .attr("transform", function(d, i) {
                                         return "translate(" + (d.XOffsetLens) + "," + (-(d.YOffsetLens)) + ") ";
+                                    });
+
+
+                                lensItems.on("mouseover", function(d) {
+                                        var pageX = d3.event.pageX,
+                                            pageY = d3.event.pageY;
+                                        mouseOverTimer = setTimeout(function() {
+                                            d3.select('g.subTopic').selectAll('rect').style('opacity',0);
+                                            d3.select('g.subTopic').selectAll('line').style('opacity',0);
+                                            d3.select('g.subTopic').selectAll('text').style('opacity',0);
+
+                                            var authorList = d.authors.split(', ');
+                                            var tooltipString = '<b>Authors: ';
+                                            for(var i=0;i<authorList.length;i++) {
+                                                if(i==4) tooltipString+='<br/>'+authorList[i];
+                                                else tooltipString+=authorList[i];
+                                            }
+                                            tooltipString+='<br/>Title: <br/>';
+                                            var titleWords = d.title.split(' ');
+                                            var accumulatedLength=0;
+                                            var maxLineLength = 40;
+                                            for(var i=0;i<titleWords.length;i++) {
+                                                accumulatedLength+=titleWords[0].length+1;
+                                                if(accumulatedLength>maxLineLength) {
+                                                    accumulatedLength=0;
+                                                    tooltipString+='<br/>'+titleWords[i]+' ';
+                                                }
+                                                else tooltipString+=titleWords[i]+' ';
+                                            }
+                                            tooltipString+='</b>'
+
+                                            tooltip.transition()
+                                                .duration(100)
+                                                .style("opacity", 0.9);
+
+
+                                            //tooltip.html(scope.xdim + ":" + xOriginalValue(d) + "<br/>" + scope.ydim + ":" + yOriginalValue(d) + "<br/>" + scope.config.colorDim + ":" + colorOriginalValue(d) + "")
+                                            tooltip.html(tooltipString)
+                                                .style("left", (pageX + 5) + "px")
+                                                .style("top", (pageY - 28) + "px");
+
+                                        }, 700);
+
+                                    })
+                                    .on("mouseout", function(d) {
+                                        clearTimeout(mouseOverTimer);
+                                        d3.select('g.subTopic').selectAll('rect').style('opacity',1);
+                                        d3.select('g.subTopic').selectAll('line').style('opacity',1);
+                                        d3.select('g.subTopic').selectAll('text').style('opacity',1);
+                                        tooltip.style("opacity", 0);
                                     });
 
                             
@@ -4075,7 +4149,8 @@
                                     })
                                     .attr('font-family','sans-serif')
                                     .attr('text-anchor','middle')
-                                    .style('fill','black');
+                                    .style('fill','black')
+                                    .style('pointer-events', 'none');
 
                             };
 
