@@ -22,7 +22,6 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 
 app.config['DEBUG'] = True
 app.config.from_object(__name__)
-app.config.from_envvar('FLASKR_SETTINGS', silent=True)
 
 
 app.config['PROFILE'] = True
@@ -188,21 +187,23 @@ def get_subTopic_(message):
 	
 	idx = message['idx']
 	socketId = message['socketId']
-
+	print "get Request - %s" % socketId
 	sameTopicWeight = 0.8
 	differentTopicWeight = 1.2
 	
 	eng.workspace['idx'] = idx
-	
+	print "before subtopic"
 	eng.sub_topic(nargout=0)
+	print "after subtopic"
 	k_sub = int(eng.workspace['k_sub'])
 	sub_k = int(eng.workspace['sub_k'])
 
 	idx = [i-1 for i in idx]
 	distanceMatrix_sub = distanceMatrix[idx,:][:,idx]
 
+	print "before iteration"
+	print k_sub, sub_k
 	for i in xrange(1,k_sub-sub_k+1):
-	#for i in xrange(1,2):
 		print i
 		eng.workspace['i'] = i
 		eng.sub_topic_ith_Iter(nargout=0)
@@ -226,7 +227,9 @@ def get_subTopic_(message):
 		distanceMatrix_sub_ = distanceMatrix_sub.tolist()
 
 		emit('result data'+socketId, {'distanceMatrix':distanceMatrix_sub_, 'cl_idx_sub':cl_idx_sub, 'Wtopk_sub':Wtopk_sub})
-		time.sleep(3)
+		#time.sleep(3)
+
+	return 1
 	#return json.dumps({'distanceMatrix':distanceMatrix_sub, 'cl_idx_sub':cl_idx_sub, 'Wtopk_sub':Wtopk_sub})
 
 
