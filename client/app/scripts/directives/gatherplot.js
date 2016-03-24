@@ -808,6 +808,17 @@
                                         var topicNum = new Array(sub_k);
                                         for(var i=0;i<sub_k;i++) topicNum[i]=0;
 
+                                        var summ1 = 0.0;
+                                        var summ2 = 0.0;
+                                        for(var i=0;i<coord.length;i++) {
+                                            summ1 += coord[i][0];
+                                            summ2 += coord[i][1];
+                                        }
+                                        for(var i=0;i<coord.length;i++) {
+                                            coord[i][0] = coord[i][0] - summ1/coord.length;
+                                            coord[i][1] = coord[i][1] - summ2/coord.length;
+                                        }
+
                                         for(var i=0;i<selectedItems.length;i++) {
                                             var topicIndex = cl_idx_sub[i];
                                             ctrary[topicIndex][0] += coord[selectedItems[i]-1][0];
@@ -840,23 +851,23 @@
 
                                         for(var i=0; i<sub_k;i++){
                                             ctrary[i][0] = (ctrary[i][0]-mean1)/std1;
-                                            ctrary[i][1] = (ctrary[i][1]-mean2)/std2;
+                                            ctrary[i][1] = -(ctrary[i][1]-mean2)/std2;
                                         }
                                         ////////////////////////////////////////////
-                                        
+                                        var LM = Math.floor(0.5*N);
                                         if (typeof(Y) === "undefined"){
-                                            tsne.initDataDist(distanceMatrix_sub,avg);                                            
+                                            tsne.initDataDist(distanceMatrix_sub,avg, LM);                                            
                                         } else {
-                                            tsne.noninitDataDist(distanceMatrix_sub,avg,Y);
+                                            tsne.noninitDataDist(distanceMatrix_sub,avg,Y, LM);
                                             //console.log(Y.length);
                                         }
 
-                                        for (var i = 0; i < 200; i++) tsne.step(sub_k,cl_idx_sub,ctrary);
+                                        for (var i = 0; i < 200; i++) tsne.step(sub_k,cl_idx_sub,ctrary, LM);
 
                                         var intervalNum = 200;
 
                                         tsne_animation = setInterval(function() {
-                                            for (var i = 0; i < 10; i++) tsne.step(sub_k,cl_idx_sub,ctrary);
+                                            for (var i = 0; i < 10; i++) tsne.step(sub_k,cl_idx_sub,ctrary, LM);
                                             //console.log(tsne.getSolution());
                                             Y = rescale(tsne.getSolution(), lensInfo.width, lensInfo.height);
 
