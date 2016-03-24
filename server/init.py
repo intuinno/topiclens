@@ -4,14 +4,10 @@ from werkzeug.contrib.profiler import ProfilerMiddleware
 from flask import Flask, request, g, render_template
 from flask.ext.triangle import Triangle
 from flask.ext.socketio import SocketIO, emit
-from scipy import sparse, io
-from sklearn.metrics.pairwise import pairwise_distances
 import numpy as np
 from matlab import engine
 import os, json, time
 from flask.ext.cors import CORS
-import pdb
-from jinja2 import Environment
 
 
 # Configuration
