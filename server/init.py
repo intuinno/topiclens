@@ -4,6 +4,7 @@ from werkzeug.contrib.profiler import ProfilerMiddleware
 from flask import Flask, request, g, render_template
 from flask.ext.triangle import Triangle
 from flask.ext.socketio import SocketIO, emit
+from scipy import sparse, io
 import numpy as np
 from matlab import engine
 import os, json, time
