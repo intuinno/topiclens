@@ -80,7 +80,7 @@ def before__first_request_():
 	voca = eng.workspace['dict']
 	print "%.4f" % (time.time()-tic)
 	
-	distanceMatrix = io.loadmat('./../tdm2.mat')['DD']
+	distanceMatrix = io.loadmat('./../newtdm2.mat')['DD']
 	
 
 
@@ -133,7 +133,7 @@ def get_subTopic():
 	cl_idx_sub = eng.workspace['cl_idx_sub']
 	Wtopk_idx_sub = eng.workspace['Wtopk_idx_sub']
 	k_sub = eng.workspace['k_sub'] # number of topics that will be shown
-
+	
 	print k_sub
 	
 
@@ -192,14 +192,17 @@ def get_subTopic_(message):
 	eng.sub_topic(nargout=0)
 	print "after subtopic"
 	k_sub = int(eng.workspace['k_sub'])
-	sub_k = int(eng.workspace['sub_k'])
-
+	sub_k = int(eng.workspace['sub_k'])	
 	idx = [i-1 for i in idx]
 	distanceMatrix_sub = distanceMatrix[idx,:][:,idx]
-
 	print "before iteration"
-	print k_sub, sub_k
-	for i in xrange(1,k_sub-sub_k+1):
+	
+	if k_sub-sub_k==0:
+		iterNum = 1
+	else:
+		iterNum = k_sub-sub_k
+
+	for i in xrange(1,iterNum+1):
 		print i
 		eng.workspace['i'] = i
 		eng.sub_topic_ith_Iter(nargout=0)
@@ -223,7 +226,7 @@ def get_subTopic_(message):
 		distanceMatrix_sub_ = distanceMatrix_sub.tolist()
 
 		emit('result data'+socketId, {'distanceMatrix':distanceMatrix_sub_, 'cl_idx_sub':cl_idx_sub, 'Wtopk_sub':Wtopk_sub})
-		#time.sleep(3)
+#	time.sleep(15)
 
 	return 1
 	#return json.dumps({'distanceMatrix':distanceMatrix_sub, 'cl_idx_sub':cl_idx_sub, 'Wtopk_sub':Wtopk_sub})

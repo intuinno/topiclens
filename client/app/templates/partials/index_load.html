@@ -28,8 +28,9 @@
 
                                 <button type="button" class="btn btn-default active" ng-model="nomaConfig.lens" btn-radio="'noLens'">No Lens</button>
 
-
-                                <button type="button" class="btn btn-default" ng-model="nomaConfig.lens" btn-radio="'histLens'">Histogram Lens</button>
+<!--                                <button type="button" class="btn btn-default" ng-model="nomaConfig.lens" btn-radio="'histLens'">Histogram Lens</button>
+-->
+								<button type="button" class="btn btn-default" ng-model="nomaConfig.lens" btn-radio="'topicLens'">Topic Lens</button>
 
 
                     </div>
@@ -40,7 +41,7 @@
             <div ng-hide="percentComplete == 0 || percentComplete == 100"><progressbar class="progress-striped" value="percentComplete" max='100' type="warning">Download {{percentComplete}}%</progressbar></div>
         
 
-            <div gatherplot data="nomaData" config="nomaConfig" border="nomaBorder" round="nomaRound" shaperenderingmode="nomaShapeRendering" dimsum="dimsum" on-click="d3OnClick(item)" xdim="{{nomaConfig.xDim}}" ydim="{{nomaConfig.yDim}}" context="context" comment="isComment"></div>
+            <div width=600 height=500 gatherplot data="nomaData" config="nomaConfig" border="nomaBorder" round="nomaRound" shaperenderingmode="nomaShapeRendering" dimsum="dimsum" on-click="d3OnClick(item)" xdim="{{nomaConfig.xDim}}" ydim="{{nomaConfig.yDim}}" context="context" comment="isComment"></div>
 
             <div ng-show="isCommentShowing" class="chart-title">
                 <h4>{{loadedCommentText}}</h4>

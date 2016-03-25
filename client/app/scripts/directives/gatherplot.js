@@ -44,6 +44,8 @@
                             var subCluster;
                             var subText;
 
+                            var shiftDowned = false;
+
                             var xRange, yRange;
 
 
@@ -157,7 +159,10 @@
 
                                 tooltip = d3.select("body").append("div")
                                     .attr("class", "tooltip")
-                                    .style("opacity", 0);
+                                    .style("opacity", 0)
+                                    .style('width','auto')
+                                    .style('height','auto')
+                                    .style('border','1px solid black');
 
                                 clusterControlBox = d3.select("body").append("div")
                                     .attr("class", "clusterControlBox")
@@ -350,7 +355,8 @@
                                                 //tooltip.html(scope.xdim + ":" + xOriginalValue(d) + "<br/>" + scope.ydim + ":" + yOriginalValue(d) + "<br/>" + scope.config.colorDim + ":" + colorOriginalValue(d) + "")
                                                 tooltip.html(tooltipString)
                                                     .style("left", (pageX + 5) + "px")
-                                                    .style("top", (pageY - 28) + "px");
+                                                    .style("top", (pageY - 28) + "px")
+                                                    .style('background-color','white');
 
                                             }, 700);
 
@@ -885,6 +891,10 @@
                                             //console.log(Y.length);
                                         }
 
+                                        console.log(sub_k);
+                                        console.log(cl_idx_sub);
+                                        console.log(ctrary);
+                                        console.log(LM);
                                         for (var i = 0; i < 200; i++) tsne.step(sub_k,cl_idx_sub,ctrary, LM);
 
                                         var intervalNum = 200;
@@ -1413,10 +1423,10 @@
                                 lensItems.transition()
                                     //.duration(500)
                                     .attr("width", function(d) {
-                                        return +d.nodeWidthLens;
+                                        return +d.nodeWidthLens*1.5;
                                     })
                                     .attr("height", function(d) {
-                                        return +d.nodeHeightLens;
+                                        return +d.nodeHeightLens*1.5;
                                     })
                                     .attr("x", function(d) {
                                         return d.lensX;
@@ -1452,10 +1462,10 @@
                                     .attr("x", function(d) {
                                         return xMap(d); })
                                     .attr("width", function(d) {
-                                        return +d.nodeWidth;
+                                        return +d.nodeWidth*1.5;
                                     })
                                     .attr("height", function(d) {
-                                        return +d.nodeHeight;
+                                        return +d.nodeHeight*1.5;
                                     })
                                     .attr("rx", function(d) {
                                         return scope.round ? +5 : 0;
@@ -1548,10 +1558,10 @@
                                     .duration(500)
                                     .attr("width", function(d) {
                                         // console.log(initialSquareLenth);
-                                        return +d.nodeWidth;
+                                        return +d.nodeWidth*1.5;
                                     })
                                     .attr("height", function(d) {
-                                        return +d.nodeHeight;
+                                        return +d.nodeHeight*1.5;
                                     })
                                     .attr("y", function(d) {
                                         return yMap(d); })
@@ -1610,7 +1620,7 @@
 
                             var drawInitialTopicLensItems = function(centerX, centerY, width, height) {
 
-                                var lensInfo = {};
+                                //var lensInfo = {};
 
                                 lensInfo.centerX = centerX;
                                 lensInfo.centerY = centerY;
@@ -1690,17 +1700,17 @@
 
                                 // var lensInfo = {};
 
-                                // d3.select(this)
-                                //     .attr("x", xPos = Math.max(initialHistLensWidth / 2, Math.min(width - initialHistLensWidth / 2, d3.event.sourceEvent.x)) - initialHistLensWidth / 2)
-                                //     .attr("y", yPos = Math.max(initialHistLensHeight / 2, Math.min(height - initialHistLensHeight / 2, d3.event.sourceEvent.y)) - initialHistLensHeight / 2);
+                                //d3.select(this)
+                                //    .attr("x", xPos = Math.max(initialHistLensWidth / 2, Math.min(width - initialHistLensWidth / 2, d3.event.sourceEvent.x)) - initialHistLensWidth / 2)
+                                //    .attr("y", yPos = Math.max(initialHistLensHeight / 2, Math.min(height - initialHistLensHeight / 2, d3.event.sourceEvent.y)) - initialHistLensHeight / 2);
 
                                 // // labelDiv.text(xPos);
 
-                                // lensInfo.centerX = xPos + initialHistLensWidth / 2;
-                                // lensInfo.centerY = yPos + initialHistLensHeight / 2;
-                                // lensInfo.type = 'hist';
-                                // lensInfo.width = initialHistLensWidth;
-                                // lensInfo.height = initialHistLensHeight;
+                                //lensInfo.centerX = xPos + initialHistLensWidth / 2;
+                                //lensInfo.centerY = yPos + initialHistLensHeight / 2;
+                                //lensInfo.type = 'hist';
+                                //lensInfo.width = initialHistLensWidth;
+                                //lensInfo.height = initialHistLensHeight;
 
 
                                 redrawLensTopic(lensInfo);
@@ -1821,17 +1831,16 @@
 
                                 clearLens();
 
-                                var lensInfo = {};
+                                //var lensInfo = {};
 
-                                var drag = d3.behavior.drag()
+                                  var drag = d3.behavior.drag()
                                     .on("drag", dragmoveTopicLens)
                                     .on("dragstart", function() {
+                                        d3.event.sourceEvent.stopPropagation(); // silence other listeners
                                         clearInterval(tsne_animation);
                                         tsne_animation = null;
-                                        d3.event.sourceEvent.stopPropagation(); // silence other listeners
                                     })
                                     .on("dragend", dragendTopicLens);
-
 
 
                                 nodeGroup.append("rect")
@@ -1840,7 +1849,48 @@
                                     .attr("y", height / 2)
                                     .attr("width", initialHistLensWidth)
                                     .attr("height", initialHistLensHeight)
-                                    .call(drag);
+                                    .call(drag)
+                                
+                                d3.select('body').on('keydown',function(){
+                                    if(d3.event.keyCode==16) {
+                                        shiftDowned=true;
+                                    }
+                                    else if(shiftDowned&&d3.event.keyCode==38){
+                                        var lens = nodeGroup.select('.lens');
+                                        var width = parseFloat(lens.attr('width')),
+                                            height = parseFloat(lens.attr('height')),
+                                            newWidth = width*1.2,
+                                            newHeight = height*1.2;
+                                        lens.attr('width',function(){ return newWidth; })
+                                            .attr('height',function(){ return newHeight; });
+                                        initialHistLensWidth = newWidth;
+                                        initialHistLensHeight = newHeight;
+                                        lensInfo.centerX += width*0.1;
+                                        lensInfo.centerY += height*0.1;
+                                        lensInfo.width = newWidth;
+                                        lensInfo.height = newHeight;
+                                        redrawLensTopic(lensInfo);
+                                    }
+                                    else if(shiftDowned&&d3.event.keyCode==40){
+                                        var lens = nodeGroup.select('.lens')
+                                        var width = parseFloat(lens.attr('width')),
+                                            height = parseFloat(lens.attr('height')),
+                                            newWidth = width*0.8,
+                                            newHeight = height*0.8;
+                                        lens.attr('width',function(){ return newWidth; })
+                                            .attr('height',function(){ return newHeight; });
+                                        initialHistLensWidth = newWidth;
+                                        initialHistLensHeight = newHeight;
+                                        lensInfo.centerX -= width*0.1;
+                                        lensInfo.centerY -= height*0.1;
+                                        lensInfo.width = newWidth;
+                                        lensInfo.height = newHeight;
+                                        redrawLensTopic(lensInfo);
+                                    }
+                                })
+                                .on('keyup',function(event){
+                                    shiftDowned=false;
+                                });
 
                                 drawInitialTopicLensItems(width / 2 + initialHistLensWidth / 2, height / 2 + initialHistLensHeight / 2, initialHistLensWidth, initialHistLensHeight);
                             };
@@ -4111,10 +4161,10 @@
                                     .attr("y", yMap)
                                     .attr("width", function(d) {
                                         // console.log(initialSquareLenth);
-                                        return +d.nodeWidth;
+                                        return +d.nodeWidth*1.5;
                                     })
                                     .attr("height", function(d) {
-                                        return +d.nodeHeight;
+                                        return +d.nodeHeight*1.5;
                                     })
                                     .attr("rx", function(d) {
                                         return scope.round ? +5 : 0;
