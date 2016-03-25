@@ -884,7 +884,7 @@
                                         }
                                         ////////////////////////////////////////////
                                         var LM = Math.floor(0.5*N);
-                                        if (typeof(Y) === "undefined"){
+                                        if (Y == undefined){
                                             tsne.initDataDist(distanceMatrix_sub,avg, LM);                                            
                                         } else {
                                             tsne.noninitDataDist(distanceMatrix_sub,avg,Y, LM);
@@ -895,6 +895,10 @@
                                         console.log(cl_idx_sub);
                                         console.log(ctrary);
                                         console.log(LM);
+                                        console.log(sub_k.length);
+                                        console.log(cl_idx_sub.length);
+                                        console.log(ctrary.length);
+                                        console.log(LM.length);
                                         for (var i = 0; i < 200; i++) tsne.step(sub_k,cl_idx_sub,ctrary, LM);
 
                                         var intervalNum = 200;
@@ -1869,6 +1873,7 @@
                                         lensInfo.centerY += height*0.1;
                                         lensInfo.width = newWidth;
                                         lensInfo.height = newHeight;
+                                        clearInterval(tsne_animation);
                                         redrawLensTopic(lensInfo);
                                     }
                                     else if(shiftDowned&&d3.event.keyCode==40){
@@ -1885,6 +1890,7 @@
                                         lensInfo.centerY -= height*0.1;
                                         lensInfo.width = newWidth;
                                         lensInfo.height = newHeight;
+                                        clearInterval(tsne_animation);
                                         redrawLensTopic(lensInfo);
                                     }
                                 })

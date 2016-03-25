@@ -73,7 +73,7 @@ addpath('./library/tSNE_matlab');
 % dict = dict(idxs);
 
 %% sub_A set
-load tdm;
+%% load tdm;
 if iscell(idx)
     idx = cell2mat(idx);
 end

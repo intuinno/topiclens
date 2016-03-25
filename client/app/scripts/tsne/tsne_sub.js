@@ -445,6 +445,7 @@ var subtsnejs = subtsnejs || { REVISION: 'ALPHA' };
         for(var j=i+1;j<N;j++) {
           if ((tmp_idx_for_i<m && landmark[tmp_idx_for_i]==i) || (tmp_idx_for_j<m && landmark[tmp_idx_for_j]==j)){
             if(Y[j]===undefined){
+              console.log(Y.length);
               console.log("error");
             }
             var dhere1 = Y[i][0] - Y[j][0];
