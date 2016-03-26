@@ -328,12 +328,12 @@
                                                 nodeGroup.selectAll('text').style('opacity',0);
 
                                                 var authorList = d.authors.split(', ');
-                                                var tooltipString = '<b>Authors: ';
+                                                var tooltipString = '<b>Authors:<br/>';
                                                 for(var i=0;i<authorList.length;i++) {
                                                     if(i==4) tooltipString+='<br/>'+authorList[i];
                                                     else tooltipString+=authorList[i];
                                                 }
-                                                tooltipString+='<br/>Title: <br/>';
+                                                tooltipString+='<br/>Title:<br/>';
                                                 var titleWords = d.title.split(' ');
                                                 var accumulatedLength=0;
                                                 var maxLineLength = 40;
@@ -685,10 +685,10 @@
 
 
                             var rescale = function(mappedX, width, height) {
-                                var maxX = -1e32,
-                                    maxY = -1e32,
-                                    minX = 1e32,
-                                    minY = 1e32,
+                                var maxX = -1e10,
+                                    maxY = -1e10,
+                                    minX = 1e10,
+                                    minY = 1e10,
                                     displayRatio = 0.8;
 
                                 for (var i = 0; i < mappedX.length; i++) {
@@ -704,7 +704,7 @@
                                 var rescaleX = (width/rangeX) * displayRatio,
                                     rescaleY = (height/rangeY) * displayRatio;
 
-                                for (var i = 0; i < mappedX.length; i++) {
+                                for (var i=0; i<mappedX.length; i++) {
                                     mappedX_tmp.push([mappedX[i][0]*rescaleX, mappedX[i][1]*rescaleY]);
                                 }
 
@@ -712,7 +712,6 @@
                             }
 
 
-                            
                             var mixTopicColor = function(items,main_k,sub_k,subCluster) {
                                 var originalTopicNum = [];
                                 var originalTopicColor = [];
@@ -734,15 +733,7 @@
                                     originalTopicNum.push(originalTopicNum_sub);
                                 }
                                 for(var i=0;i<items.length;i++) {
-                                    try {
-                                        originalTopicNum[items[i].subtopic][parseInt(items[i].cluster)-1]+=1;
-                                    } catch(err) {
-                                        console.log(items[i]);
-                                        console.log(i);
-                                        console.log(originalTopicNum);
-                                        console.log(originalTopicNum[items[i].subtopic].length);
-                                        console.log(parseInt(items[i].cluster));
-                                    }
+                                    originalTopicNum[items[i].subtopic][parseInt(items[i].cluster)-1]+=1;
                                 }
                                 for(var i=0;i<sub_k;i++) {
                                     var r=0,g=0,b=0;
@@ -754,7 +745,7 @@
                                     }
 
                                     var original_ith_topic_num = originalTopicNum[i].reduce(function(a,b) { return a+b; });
-                                    var range = 60;
+                                    var range = 100;
                                     r = Math.floor(r/original_ith_topic_num+(Math.random()*range-range/2));
                                     g = Math.floor(g/original_ith_topic_num+(Math.random()*range-range/2));
                                     b = Math.floor(b/original_ith_topic_num+(Math.random()*range-range/2));
@@ -766,37 +757,30 @@
                                     b = b>255 ? 255:b;
                                     b = b<0 ? 0:b;
 
-                                    subTopicColor.push('#'+r.toString(16)+g.toString(16)+b.toString(16));
+                                    r = r<16 ? '0'+r.toString(16):r.toString(16);
+                                    g = g<16 ? '0'+g.toString(16):g.toString(16);
+                                    b = b<16 ? '0'+b.toString(16):b.toString(16);
+                                    subTopicColor.push('#'+r+g+b);
                                 }
-
                                 for(var i=0;i<items.length;i++) items[i].subColor = subTopicColor[items[i].subtopic];
                                 for(var i=0;i<sub_k;i++) subCluster[i].subColor = subTopicColor[i];
                             }
 
 
-
                             var calculatePositionForLensTopic = function(items, lensInfo) {
                                 Y = undefined;
 
-                                var socketId = Math.random().toString(36).substring(8);
+                                var socketId = Math.random().toString(16)
                                 var selectedItems = items.map(function(d) {
                                     return +d.filenumber;
                                 });
 
-                                //$http.get('http://davian.korea.ac.kr:5004/get_subTopic', {
-                                //        params: {
-                                //            idx: JSON.stringify(selectedItems)
-                                //        }
-                                //    }).success(function(data) {
                                 socket.on('result data'+socketId, function(data) {
                                         clearInterval(tsne_animation);
                                         var cl_idx_sub = [];
                                         for(var i=0;i<data.cl_idx_sub.length;i++) cl_idx_sub.push(data.cl_idx_sub[i]-1);
 
-                                        items.forEach(function(d, i) {
-                                            d.subtopic = cl_idx_sub[i];
-                                        });
-                                        
+                                        for(var i=0;i<items.length;i++) items[i].subtopic=cl_idx_sub[i];
                                         var sub_k = data.Wtopk_sub.length;
 
                                         subCluster = new Array(sub_k);
@@ -806,15 +790,14 @@
                                         }
                                         
                                         mixTopicColor(items,10,sub_k,subCluster);
-
+                                        
                                         var distanceMatrix_sub = data.distanceMatrix
                                         var coord = [];
                                         var totalData = scope.data;
                                         for(var i=0;i<totalData.length;i++) {
                                             coord.push([parseFloat(totalData[i].X), parseFloat(totalData[i].Y)]);
                                         }
-                                        
-                                        ////////////////////////////////////////////
+
                                         var N = selectedItems.length;
                                         if (N != distanceMatrix_sub.length){
                                             console.log("error");
@@ -837,8 +820,8 @@
                                         var topicNum = new Array(sub_k);
                                         for(var i=0;i<sub_k;i++) topicNum[i]=0;
 
-                                        var summ1 = 0.0;
-                                        var summ2 = 0.0;
+                                        var summ1 = 0,
+                                            summ2 = 0;
                                         for(var i=0;i<coord.length;i++) {
                                             summ1 += coord[i][0];
                                             summ2 += coord[i][1];
@@ -858,54 +841,42 @@
                                             ctrary[i][0]/=topicNum[i];
                                             ctrary[i][1]/=topicNum[i];
                                         }
-                                        var sum1 = 0.0;
-                                        var sum2 = 0.0;
+                                        var sum1 = 0,
+                                            sum2 = 0;
                                         for(var i=0; i<sub_k;i++){
                                             sum1 += ctrary[i][0]
                                             sum2 += ctrary[i][1]
                                         }
-                                        var mean1 = sum1/sub_k;
-                                        var mean2 = sum2/sub_k;
+                                        var mean1 = sum1/sub_k,
+                                            mean2 = sum2/sub_k;
 
-                                        var var1 = 0.0;
-                                        var var2 = 0.0;
+                                        var var1 = 0,
+                                            var2 = 0;
                                         for(var i=0; i<sub_k;i++){
                                             var1 += Math.pow((ctrary[i][0]-mean1),2);
                                             var2 += Math.pow((ctrary[i][1]-mean2),2);
                                         }
                                         var1 = var1/sub_k;
                                         var2 = var2/sub_k;
-                                        var std1 = Math.sqrt(var1);
-                                        var std2 = Math.sqrt(var2);
+                                        var std1 = Math.sqrt(var1),
+                                            std2 = Math.sqrt(var2);
 
                                         for(var i=0; i<sub_k;i++){
                                             ctrary[i][0] = (ctrary[i][0]-mean1)/std1;
                                             ctrary[i][1] = -(ctrary[i][1]-mean2)/std2;
                                         }
-                                        ////////////////////////////////////////////
+
                                         var LM = Math.floor(0.5*N);
                                         if (Y == undefined){
                                             tsne.initDataDist(distanceMatrix_sub,avg, LM);                                            
                                         } else {
                                             tsne.noninitDataDist(distanceMatrix_sub,avg,Y, LM);
-                                            //console.log(Y.length);
                                         }
 
-                                        console.log(sub_k);
-                                        console.log(cl_idx_sub);
-                                        console.log(ctrary);
-                                        console.log(LM);
-                                        console.log(sub_k.length);
-                                        console.log(cl_idx_sub.length);
-                                        console.log(ctrary.length);
-                                        console.log(LM.length);
-                                        for (var i = 0; i < 200; i++) tsne.step(sub_k,cl_idx_sub,ctrary, LM);
-
+                                        for (var i = 0; i < 100; i++) tsne.step(sub_k,cl_idx_sub,ctrary, LM);
                                         var intervalNum = 200;
-
                                         tsne_animation = setInterval(function() {
                                             for (var i = 0; i < 10; i++) tsne.step(sub_k,cl_idx_sub,ctrary, LM);
-                                            //console.log(tsne.getSolution());
                                             Y = rescale(tsne.getSolution(), lensInfo.width, lensInfo.height);
 
                                             calculatePositionUsingSubClusterForLensTopic(items, lensInfo);
@@ -940,8 +911,8 @@
                                                 }
                                             }
 
-                                            var leftGap = lensInfo.height/leftNum;
-                                            var rightGap = lensInfo.height/(subCluster.length-leftNum);
+                                            var leftGap = lensInfo.height/leftNum,
+                                                rightGap = lensInfo.height/(subCluster.length-leftNum);
                                             var leftIndex=1, rightIndex=1;
 
                                             subCluster.sort(function(a,b) { return a.Y<b.Y ? 1:-1; });
@@ -1021,7 +992,6 @@
                                             subTexts.forEach(function(d) {  
                                                 d3.select(d).moveToFront();
                                             })
-                                           
 
                                             intervalNum-=1;
                                             if(intervalNum==0) clearInterval(tsne_animation);
@@ -1029,14 +999,6 @@
                                     });
 
                                     socket.emit('get_subTopic',{'idx':selectedItems, 'socketId':socketId});
-
-
-                                    //})
-                                    //.error(function(error) {
-                                    //    $log.log(error);
-                                    //});
-
-                                // handleOffsetRectLens(items, box, size);
                             };
 
 
@@ -1051,33 +1013,10 @@
                                     })
                                     .entries(items);
 
-                                /*
-                                assignClusterIDOfNodesInOneKeyNestedItems(nestedLensItems);
-
-                                var box = getLensClusterSize(nestedLensItems.length, lensInfo);
-
-                                var maxNumElementInCluster = getClusterWithMaximumPopulationFromOneKeyNestedItems(nestedLensItems);
-
-                                var size = calculateNodesSizeForAbsolute(box, maxNumElementInCluster);
-
-                                if (size > maxDotSize) {
-
-                                    size = maxDotSize;
-                                }
-                                */
-
+                                
                                 nestedLensItems.forEach(function(d) {
                                     handleOffsetHistLens2(d.values);
                                 });
-
-                                /*
-                                nestedLensItems.forEach(function(d, i) {
-                                    d.values.forEach(function(d) {
-                                        d.lensX = lensInfo.centerX;
-                                        d.lensY = lensInfo.centerY;
-                                    });
-                                });
-                                */
 
                                 
                                 for (var i = 0; i < items.length; i++) {
@@ -1423,9 +1362,7 @@
 
                                 //Update
                                 //Transition from previous place to new place
-
                                 lensItems.transition()
-                                    //.duration(500)
                                     .attr("width", function(d) {
                                         return +d.nodeWidthLens*1.5;
                                     })
@@ -1441,14 +1378,8 @@
                                     .attr('fill-opacity', 0.8)
                                     .style("fill", function(d) {
                                         return d.subColor;
-                                        //return color(d[scope.config.colorDim]);
                                     })
-
                                 .attr("transform", function(d, i) {
-
-                                    // if (d.cancer== "Cancer") {
-                                    //     console.log(height);
-                                    // }
                                     return "translate(" + (d.XOffsetLens) + "," + (-(d.YOffsetLens)) + ") ";
                                 });
 
@@ -1478,8 +1409,7 @@
                                         return scope.round ? +5 : 0;
                                     })
                                     .style("fill", function(d) {
-                                        return color(d.subtopic+10)
-                                        //return color(d[scope.config.colorDim]);
+                                        return color(d.subtopic+10);
                                     })
                                     .transition()
                                     .attr("x", function(d) {
@@ -1489,7 +1419,6 @@
                                         return d.lensY;
                                     })
                                     .attr("width", function(d) {
-                                        // console.log(initialSquareLenth);
                                         return +d.nodeWidthLens;
                                     })
                                     .attr("height", function(d) {
@@ -1501,53 +1430,51 @@
 
 
                                 lensItems.on("mouseover", function(d) {
-                                        var pageX = d3.event.pageX,
-                                            pageY = d3.event.pageY;
-                                        mouseOverTimer = setTimeout(function() {
-                                            d3.select('g.subTopic').selectAll('rect').style('opacity',0);
-                                            d3.select('g.subTopic').selectAll('line').style('opacity',0);
-                                            d3.select('g.subTopic').selectAll('text').style('opacity',0);
+                                    var pageX = d3.event.pageX,
+                                        pageY = d3.event.pageY;
 
-                                            var authorList = d.authors.split(', ');
-                                            var tooltipString = '<b>Authors: ';
-                                            for(var i=0;i<authorList.length;i++) {
-                                                if(i==4) tooltipString+='<br/>'+authorList[i];
-                                                else tooltipString+=authorList[i];
+                                    mouseOverTimer = setTimeout(function() {
+                                        d3.select('g.subTopic').selectAll('rect').style('opacity',0);
+                                        d3.select('g.subTopic').selectAll('line').style('opacity',0);
+                                        d3.select('g.subTopic').selectAll('text').style('opacity',0);
+
+                                        var authorList = d.authors.split(', ');
+                                        var tooltipString = '<b>Authors:<br/>';
+                                        for(var i=0;i<authorList.length;i++) {
+                                            if(i==4) tooltipString+='<br/>'+authorList[i];
+                                            else tooltipString+=authorList[i];
+                                        }
+                                        tooltipString+='<br/>Title:<br/>';
+                                        var titleWords = d.title.split(' ');
+                                        var accumulatedLength=0;
+                                        var maxLineLength = 40;
+                                        for(var i=0;i<titleWords.length;i++) {
+                                            accumulatedLength+=titleWords[0].length+1;
+                                            if(accumulatedLength>maxLineLength) {
+                                                accumulatedLength=0;
+                                                tooltipString+='<br/>'+titleWords[i]+' ';
                                             }
-                                            tooltipString+='<br/>Title: <br/>';
-                                            var titleWords = d.title.split(' ');
-                                            var accumulatedLength=0;
-                                            var maxLineLength = 40;
-                                            for(var i=0;i<titleWords.length;i++) {
-                                                accumulatedLength+=titleWords[0].length+1;
-                                                if(accumulatedLength>maxLineLength) {
-                                                    accumulatedLength=0;
-                                                    tooltipString+='<br/>'+titleWords[i]+' ';
-                                                }
-                                                else tooltipString+=titleWords[i]+' ';
-                                            }
-                                            tooltipString+='</b>'
+                                            else tooltipString+=titleWords[i]+' ';
+                                        }
+                                        tooltipString+='</b>'
 
-                                            tooltip.transition()
-                                                .duration(100)
-                                                .style("opacity", 0.9);
+                                        tooltip.transition()
+                                            .duration(100)
+                                            .style("opacity", 0.9);
 
+                                        tooltip.html(tooltipString)
+                                            .style("left", (pageX + 5) + "px")
+                                            .style("top", (pageY - 28) + "px");
+                                    }, 700);
 
-                                            //tooltip.html(scope.xdim + ":" + xOriginalValue(d) + "<br/>" + scope.ydim + ":" + yOriginalValue(d) + "<br/>" + scope.config.colorDim + ":" + colorOriginalValue(d) + "")
-                                            tooltip.html(tooltipString)
-                                                .style("left", (pageX + 5) + "px")
-                                                .style("top", (pageY - 28) + "px");
-
-                                        }, 700);
-
-                                    })
-                                    .on("mouseout", function(d) {
-                                        clearTimeout(mouseOverTimer);
-                                        d3.select('g.subTopic').selectAll('rect').style('opacity',1);
-                                        d3.select('g.subTopic').selectAll('line').style('opacity',1);
-                                        d3.select('g.subTopic').selectAll('text').style('opacity',1);
-                                        tooltip.style("opacity", 0);
-                                    });
+                                })
+                                .on("mouseout", function(d) {
+                                    clearTimeout(mouseOverTimer);
+                                    d3.select('g.subTopic').selectAll('rect').style('opacity',1);
+                                    d3.select('g.subTopic').selectAll('line').style('opacity',1);
+                                    d3.select('g.subTopic').selectAll('text').style('opacity',1);
+                                    tooltip.style("opacity", 0);
+                                });
 
                             
                                 //Exit
@@ -1559,9 +1486,8 @@
                                         'lensItems': false
                                     })
                                     .transition()
-                                    .duration(500)
+                                    .duration(300)
                                     .attr("width", function(d) {
-                                        // console.log(initialSquareLenth);
                                         return +d.nodeWidth*1.5;
                                     })
                                     .attr("height", function(d) {
@@ -1580,8 +1506,6 @@
                             };
 
                             var reverseTransform = function(coor, transfactor, scalefactor) {
-
-                                // return (coor + transfactor)*scalefactor;
                                 return coor;
                             };
 
@@ -2416,7 +2340,7 @@
 
                                     drawAxes();
 
-                                    drawLegends();
+                                    // drawLegends();
 
                                 } else {
 

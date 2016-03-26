@@ -46,11 +46,9 @@ def supervisedTSNE(distanceMatrix, cl_idx, sameTopicWeight=0.9, differentTopicWe
 				distanceMatrix[i,j]*=differentTopicWeight
 		distanceMatrix[i,:] /= distanceMatrix[i,:].max()
 
-	return np.round(distanceMatrix,decimals=4)
+	return np.round(distanceMatrix,decimals=3)
 
 
-# Routing
-# @app.before_first_request
 def before__first_request_():
 	global eng
 	global mappedX
@@ -67,10 +65,6 @@ def before__first_request_():
 	eng.cd(os.path.dirname(os.getcwd()))
 	print "%.4f" % (time.time()-tic)
 
-	#tic = time.time()
-	##print "Get data - ",
-	#[mappedX, cl_idx, Wtopk_idx,voca] = eng.main_topic(nargout=4)
-	#print "%.4f" % (time.time()-tic)
 
 	tic = time.time()
 	eng.main_topic2(nargout=0)
@@ -83,8 +77,6 @@ def before__first_request_():
 	
 	distanceMatrix = io.loadmat('./../newtdm2.mat')['DD']
 	
-
-
 	tic = time.time()
 	print "Calculate data - ",
 
@@ -126,18 +118,13 @@ def get_subTopic():
 
 	idx = json.loads(request.args.get('idx'))
 
-	# pdb.set_trace()
 	eng.workspace['idx'] = idx
-	# [mappedX_sub, cl_idx_sub, Wtopk_idx_sub] = eng.sub_topic(idx,cl_idx,nargout=3)
 	eng.sub_topic(nargout=0)
 	mappedXP_sub = eng.workspace['mappedX_sub']
 	cl_idx_sub = eng.workspace['cl_idx_sub']
 	Wtopk_idx_sub = eng.workspace['Wtopk_idx_sub']
 	k_sub = eng.workspace['k_sub'] # number of topics that will be shown
 	
-	print k_sub
-	
-
 
 	idx = [i-1 for i in idx]
 
@@ -185,8 +172,8 @@ def get_subTopic_(message):
 	idx = message['idx']
 	socketId = message['socketId']
 	print "get Request - %s" % socketId
-	sameTopicWeight = 0.8
-	differentTopicWeight = 1.2
+	sameTopicWeight = 0.75
+	differentTopicWeight = 1.25
 	
 	eng.workspace['idx'] = idx
 	print "before subtopic"
@@ -210,7 +197,6 @@ def get_subTopic_(message):
 
 		cl_idx_sub = eng.workspace['cl_idx_sub']
 		Wtopk_idx_sub = eng.workspace['Wtopk_idx_sub']
-		# k_sub = eng.workspace['k_sub'] # number of topics that will be shown
 
 		Wtopk_sub = []
 		for idxArray in Wtopk_idx_sub:
@@ -227,10 +213,8 @@ def get_subTopic_(message):
 		distanceMatrix_sub_ = distanceMatrix_sub.tolist()
 
 		emit('result data'+socketId, {'distanceMatrix':distanceMatrix_sub_, 'cl_idx_sub':cl_idx_sub, 'Wtopk_sub':Wtopk_sub})
-#	time.sleep(15)
-
+	# time.sleep(15)
 	return 1
-	#return json.dumps({'distanceMatrix':distanceMatrix_sub, 'cl_idx_sub':cl_idx_sub, 'Wtopk_sub':Wtopk_sub})
 
 
 
