@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from werkzeug.contrib.profiler import ProfilerMiddleware
+# from werkzeug.contrib.profiler import ProfilerMiddleware
 from flask import Flask, request, g, render_template
 from flask.ext.triangle import Triangle
 from flask.ext.socketio import SocketIO, emit
@@ -22,7 +22,7 @@ app.config.from_object(__name__)
 
 
 app.config['PROFILE'] = True
-app.wsgi_app = ProfilerMiddleware(app.wsgi_app, restrictions=[10])
+# app.wsgi_app = ProfilerMiddleware(app.wsgi_app, restrictions=[10])
 socketio = SocketIO(app)
 # @app.after_request
 # def after_request(response):
@@ -67,7 +67,20 @@ def before__first_request_():
 
 
 	tic = time.time()
-	eng.main_topic2(nargout=0)
+	#dataset
+	#vis=0
+	#cnn=1
+	#nyt=2
+	# dataset=2
+	# if dataset ==0:
+	#eng.main_topic(nargout=0)
+	#distanceMatrix = io.loadmat('./../Visdata.mat')['DD']
+	# elif dataset ==1:
+	# eng.main_cnn(nargout=0)
+	# distanceMatrix = io.loadmat('./../result2.mat')['DD']
+	# else:
+	eng.main_nyt(nargout=0)
+	distanceMatrix = io.loadmat('./../nyt.mat')['DD']
 
 	mappedX = eng.workspace['mappedX']
 	cl_idx = eng.workspace['cl_idx']
@@ -75,7 +88,7 @@ def before__first_request_():
 	voca = eng.workspace['dict']
 	print "%.4f" % (time.time()-tic)
 	
-	distanceMatrix = io.loadmat('./../newtdm2.mat')['DD']
+	
 	
 	tic = time.time()
 	print "Calculate data - ",
@@ -96,8 +109,8 @@ def before__first_request_():
 	# cl_idx = cl_idx
 	# distanceMatrix = distanceMatrix
 
-	sameTopicWeight = 0.9
-	differentTopicWeight = 1.1
+	sameTopicWeight = 0.8
+	differentTopicWeight = 1.2
 	distanceMatrix_main = supervisedTSNE(distanceMatrix, cl_idx,
 		sameTopicWeight=sameTopicWeight, differentTopicWeight=differentTopicWeight)
 
@@ -172,8 +185,8 @@ def get_subTopic_(message):
 	idx = message['idx']
 	socketId = message['socketId']
 	print "get Request - %s" % socketId
-	sameTopicWeight = 0.75
-	differentTopicWeight = 1.25
+	sameTopicWeight = 0.8
+	differentTopicWeight = 1.2
 	
 	eng.workspace['idx'] = idx
 	print "before subtopic"
@@ -181,6 +194,7 @@ def get_subTopic_(message):
 	print "after subtopic"
 	k_sub = int(eng.workspace['k_sub'])
 	sub_k = int(eng.workspace['sub_k'])	
+
 	idx = [i-1 for i in idx]
 	distanceMatrix_sub = distanceMatrix[idx,:][:,idx]
 	print "before iteration"
@@ -189,6 +203,8 @@ def get_subTopic_(message):
 		iterNum = 1
 	else:
 		iterNum = k_sub-sub_k
+
+	print iterNum
 
 	for i in xrange(1,iterNum+1):
 		print i
@@ -213,7 +229,8 @@ def get_subTopic_(message):
 		distanceMatrix_sub_ = distanceMatrix_sub.tolist()
 
 		emit('result data'+socketId, {'distanceMatrix':distanceMatrix_sub_, 'cl_idx_sub':cl_idx_sub, 'Wtopk_sub':Wtopk_sub})
-	# time.sleep(15)
+		
+		time.sleep(2)
 	return 1
 
 

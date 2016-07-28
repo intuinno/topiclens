@@ -328,15 +328,7 @@ var subtsnejs = subtsnejs || { REVISION: 'ALPHA' };
     step: function(sub_k, cl_idx_sub, ctrary, LM) {
       this.iter += 1;
       var N = this.N;
-      // if (isNaN(this.Y[0][0])) {
-      //   console.log("NaN");
-      // }
-      //var tempY = this.Y;
       var cg = this.costGrad(this.Y, sub_k, cl_idx_sub, ctrary, LM); // evaluate gradient
-      // if (isNaN(cg.cost)) {
-      //   console.log("NaN");
-      //   this.costGrad(tempY, sub_k, cl_idx_sub, ctrary);   
-      // }
       var cost = cg.cost;
       var grad = cg.grad;
 
@@ -364,13 +356,6 @@ var subtsnejs = subtsnejs || { REVISION: 'ALPHA' };
         }
       }
 
-      // reproject Y to be zero mean
-      // for(var i=0;i<N;i++) {
-      //   for(var d=0;d<this.dim;d++) {
-      //     this.Y[i][d] -= ymean[d]/N;
-      //   }
-      // }
-
       var sum1 = 0.0;
       var sum2 = 0.0;
       for(var i=0; i<N;i++){
@@ -382,6 +367,7 @@ var subtsnejs = subtsnejs || { REVISION: 'ALPHA' };
 
       var var1 = 0.0;
       var var2 = 0.0;
+
       for(var i=0; i<N;i++){
         var1 += Math.pow((this.Y[i][0]-mean1),2);
         var2 += Math.pow((this.Y[i][1]-mean2),2);
@@ -395,7 +381,7 @@ var subtsnejs = subtsnejs || { REVISION: 'ALPHA' };
         this.Y[i][0] = (this.Y[i][0]-mean1)/std1;
         this.Y[i][1] = (this.Y[i][1]-mean2)/std2;
       }
-      //if(this.iter%100===0) console.log('iter ' + this.iter + ', cost: ' + cost);
+
       return cost; // return current cost
     },
 
@@ -419,7 +405,6 @@ var subtsnejs = subtsnejs || { REVISION: 'ALPHA' };
           
           var analytic = grad[i][d];
           var numerical = (cg0.cost - cg1.cost) / ( 2 * e );
-          //console.log(i + ',' + d + ': gradcheck analytic: ' + analytic + ' vs. numerical: ' + numerical);
 
           this.Y[i][d] = yold;
         }
@@ -501,8 +486,8 @@ var subtsnejs = subtsnejs || { REVISION: 'ALPHA' };
           if(cl_idx_sub[i] == k){
             cost += - P[i*(N+1)+N] * Math.log(Q[i*(N+1)+N]);
             var premult = 4 * (pmul * P[i*(N+1)+N] - Q[i*(N+1)+N]) * Qu[i*(N+1)+N];
-            gsum[0] += premult * (Y[i][0] - ctrary[k][0]);
-            gsum[1] += premult * (Y[i][1] - ctrary[k][1]);  
+            gsum[0] += premult * 2 * (Y[i][0] - ctrary[k][0]);
+            gsum[1] += premult * 2 * (Y[i][1] - ctrary[k][1]);  
           }
         }
         grad.push(gsum);

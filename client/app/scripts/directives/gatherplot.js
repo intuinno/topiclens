@@ -35,7 +35,7 @@
                                 maxDotSize = 5;
                             }
 
-                            var socket = io.connect('http://davian.korea.ac.kr:5004/subtopic');
+                            var socket = io.connect('http://0.0.0.0:5004/subtopic');
                             var opt = { epsilon: 20 };
                             var tsne = new subtsnejs.subtSNE(opt);
                             var tsne_animation;
@@ -866,7 +866,7 @@
                                             ctrary[i][1] = -(ctrary[i][1]-mean2)/std2;
                                         }
 
-                                        var LM = Math.floor(0.5*N);
+                                        var LM = Math.floor(0.6*N);
                                         if (Y == undefined){
                                             tsne.initDataDist(distanceMatrix_sub,avg, LM);                                            
                                         } else {

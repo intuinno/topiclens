@@ -1,0 +1,49 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+<SCRIPT> 
+var num = 0;
+function func(checkbox_num){
+	var left = Math.random()*400 + 100;
+	var top = Math.random()*400 + 100;
+
+	$('.aa').css({left:left, top:top, position:'absolute'})
+	num+=1;
+
+	if(num>2) {
+		$('.kkk').text('힝 속았지~');
+	}
+}
+
+</script>
+ <title>설문조사</title>
+
+</head>
+<p> 설문조사를 저장해 주시면 추첨을 통해 경품을 드려요!!</p>
+<form name="fm" method="get">
+<div width=400 height=400>
+ <p> 성별</p>
+ <input type="radio" name="chk_sex" value="남자"checked="true">남자
+ <input type="radio" name="chk_sex" value="여자">여자
+ <p></p>
+ <p>연령</p>
+ <input type="radio" name="chk_age" value="십대"checked="true">10대
+ <input type="radio" name="chk_age" value="이십대">20대
+ <input type="radio" name="chk_age" value="삼십대">30대
+ <input type="radio" name="chk_age" value="사십대">40대
+
+
+<p> 평소 잉여거릴 때 무엇을 하시나요?? <input type="text"></p>
+
+ <p>연락처(경품 수령시 연락처)
+ <input type="text"> </p>
+
+</div>
+</form>
+<div class='kkk'></div>
+ <p><form name="input" method="post" action="">
+  <input type="button" value="저장" onmouseover="func(45)" class='aa'></form></p>
+ </body>
+</html>

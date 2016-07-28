@@ -1,4 +1,4 @@
-function [mappedX, cl_idx, Wtopk_idx, dict] = main_topic_tsne()
+
 
 addpath('./library/nmf');     
 addpath('./library/ramkis');
@@ -138,7 +138,7 @@ addpath('./library/tSNE_matlab');
 % save tdm A addl_stopwords dict;
 %% running standard nmf
 clear all;
-load tdm;
+load Visdata;
 % no of topics
 k = 10 ;
 % no of top keywords
@@ -173,6 +173,4 @@ mappedX = 'undefined';
 % mappedX = tsne_sup(target_A', cl_idx, .7, no_dims, initial_dims, perplexity);
 % Run t?SNE
 %mappedX = tsne(target_A', cl_idx, no_dims, initial_dims, perplexity);
-
-end
 
